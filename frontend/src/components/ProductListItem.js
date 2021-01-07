@@ -45,18 +45,19 @@ const ProductListItem = ({ product }) => {
       <td>{product.minimum}</td>
       <td>€{product.price}</td>
       <td>
-        {product.color.map((col, i) =>
-          col.inStock !== "" ? (
-            <div key={col.name}>
-              <i>{col.name}</i> : {col.inStock}
-            </div>
-          ) : (
-            <span key={col.name}>
-              <i>{col.name}</i>
-              {i !== product.color.length - 1 && ", "}
-            </span>
-          )
-        )}
+        {product.color &&
+          product.color.map((col, i) =>
+            col.inStock !== "" ? (
+              <div key={col.name}>
+                <i>{col.name}</i> : {col.inStock}
+              </div>
+            ) : (
+              <span key={col.name}>
+                <i>{col.name}</i>
+                {i !== product.color.length - 1 && ", "}
+              </span>
+            )
+          )}
       </td>
       <td>{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
       <td>

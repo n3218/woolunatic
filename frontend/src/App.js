@@ -17,11 +17,12 @@ import ProductScreen from "./screens/ProductScreen"
 import Switch from "react-bootstrap/esm/Switch"
 import CartScreen from "./screens/CartScreen"
 import OrderScreen from "./screens/OrderScreen"
-import UserListScreen from "./screens/UserListScreen"
-import UserEditScreen from "./screens/UserEditScreen"
-import ProductListScreen from "./screens/ProductListScreen"
-import ProductEditScreen from "./screens/ProductEditScreen"
-import OrderListScreen from "./screens/OrderListScreen"
+import UserListScreen from "./admin/UserListScreen"
+import UserEditScreen from "./admin/UserEditScreen"
+import ProductListScreen from "./admin/ProductListScreen"
+import ProductEditScreen from "./admin/ProductEditScreen"
+import OrderListScreen from "./admin/OrderListScreen"
+import AdminScreen from "./admin/AdminScreen"
 
 const App = () => {
   return (
@@ -45,18 +46,17 @@ const App = () => {
             <Route path="/admin/user/:id/edit" component={UserEditScreen} />
 
             <Route path="/admin/product/:id/edit" component={ProductEditScreen} />
-
             <Route path="/admin/productlist" component={ProductListScreen} exact />
             <Route path="/admin/productlist/:pageNumber" component={ProductListScreen} exact />
             <Route path="/admin/orderlist" component={OrderListScreen} exact />
             <Route path="/admin/orderlist/:pageNumber" component={OrderListScreen} exact />
+            <Route path="/admin" component={AdminScreen} exact />
 
             <Route path="/collection/page/:pageNumber" component={CollectionScreen} exact />
             <Route path="/search/:keyword" component={CollectionScreen} exact />
             <Route path="/search/:keyword/page/:pageNumber" component={CollectionScreen} exact />
             <Route path="/collection" component={CollectionScreen} exact />
-
-            <Route path="/" exact component={HomeScreen} />
+            <Route path="/" component={HomeScreen} exact />
           </Switch>
         </Container>
       </main>

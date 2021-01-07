@@ -36,7 +36,7 @@ const Product = ({ product }) => {
         </Card.Text> */}
 
         <Card.Text className="my-0">€{product.price} / 100g</Card.Text>
-        {product.color.length > 1 && <Card.Text className="my-0 text-danger">{product.color.length} colors</Card.Text>}
+        {product.color && product.color.length > 1 && <Card.Text className="my-0 text-danger">{product.color.length} colors</Card.Text>}
       </Card.Body>
     </Card>
   )

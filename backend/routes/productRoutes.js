@@ -8,7 +8,8 @@ router //
   .route("/")
   .get(getProducts)
   .post(protect, admin, createProduct)
-router.get("/top", getTopProducts)
+router //
+  .get("/top", getTopProducts)
 router //
   .route("/:id")
   .get(getProductById)
