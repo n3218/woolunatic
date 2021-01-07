@@ -22,6 +22,9 @@ const Header = () => {
     <header>
       {userInfo && userInfo.isAdmin && (
         <Navbar id="admin-menu">
+          <LinkContainer to="/admin">
+            <Nav.Link>Admin</Nav.Link>
+          </LinkContainer>
           <LinkContainer to="/admin/userlist">
             <Nav.Link>Users</Nav.Link>
           </LinkContainer>

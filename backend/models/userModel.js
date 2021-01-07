@@ -1,6 +1,13 @@
 import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 
+const addressSchema = mongoose.Schema({
+  address: { type: String, required: true },
+  city: { type: String, required: true },
+  zipCode: { type: String, required: true },
+  country: { type: String, required: true }
+})
+
 const userSchema = mongoose.Schema(
   {
     name: {
@@ -20,7 +27,8 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       required: true,
       default: false
-    }
+    },
+    address: [addressSchema]
   },
   {
     timestamps: true

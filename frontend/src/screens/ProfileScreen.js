@@ -68,7 +68,7 @@ const ProfileScreen = ({ history, location }) => {
         {loading ? (
           <Loader />
         ) : error ? (
-          <Message variant="danger">{error}</Message>
+          <Message variant="warning">{error}</Message>
         ) : (
           <ListGroup>
             <ListGroup.Item>

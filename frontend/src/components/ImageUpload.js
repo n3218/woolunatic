@@ -4,8 +4,10 @@ import { Form, Row, Col } from "react-bootstrap"
 import Loader from "../components/Loader"
 
 const ImageUpload = ({ image, setUploading, setImage, uploading }) => {
+  //
   const uploadFileHandler = async e => {
     const file = e.target.files
+
     const formData = new FormData()
     for (let i in file) {
       if (typeof file[i] === "object") {
@@ -14,6 +16,7 @@ const ImageUpload = ({ image, setUploading, setImage, uploading }) => {
     }
 
     setUploading(true)
+
     try {
       const config = {
         headers: {

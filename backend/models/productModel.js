@@ -16,32 +16,25 @@ const reviewSchema = mongoose.Schema(
   }
 )
 
-const colorSchema = mongoose.Schema({
-  name: { type: String, required: false },
-  inStock: { type: String, required: false },
-  images: [{ type: String, required: false }]
-})
-
 const productSchema = mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User"
+    art: {
+      type: String,
+      required: false
+    },
+    brand: {
+      type: String,
+      required: false
     },
     name: {
       type: String,
       required: true
     },
-    image: [
-      {
-        type: String,
-        required: false
-      }
-    ],
-    color: [colorSchema],
-    reviews: [reviewSchema],
-    brand: {
+    color: {
+      type: String,
+      required: false
+    },
+    colorWay: {
       type: String,
       required: false
     },
@@ -49,15 +42,15 @@ const productSchema = mongoose.Schema(
       type: String,
       required: false
     },
-    fibers: {
-      type: String,
-      required: false
-    },
     meterage: {
       type: String,
       required: false
     },
-    minimum: {
+    fibers: {
+      type: String,
+      required: false
+    },
+    price: {
       type: Number,
       required: true,
       default: 0
@@ -66,6 +59,13 @@ const productSchema = mongoose.Schema(
       type: String,
       required: false
     },
+    image: [
+      {
+        type: String,
+        required: false
+      }
+    ],
+    reviews: [reviewSchema],
     rating: {
       type: Number,
       required: false,
@@ -76,15 +76,25 @@ const productSchema = mongoose.Schema(
       required: false,
       default: 0
     },
-    price: {
+    minimum: {
       type: Number,
       required: true,
       default: 0
+    },
+    inStock: {
+      type: Array,
+      required: false,
+      default: []
     },
     outOfStock: {
       type: Boolean,
       required: true,
       default: false
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User"
     }
   },
   {
