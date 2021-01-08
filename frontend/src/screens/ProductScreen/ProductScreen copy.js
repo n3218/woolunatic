@@ -4,12 +4,12 @@ import { Col, ListGroup, Row, Card, Button, Form } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import ImageGallery from "react-image-gallery"
 import ReactHtmlParser from "react-html-parser"
-import Rating from "../components/Rating/Rating"
-import { productDetailsAction, productCreateReviewAction } from "../actions/productActions"
-import Message from "../components/Message"
-import Loader from "../components/Loader"
-import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants"
-import Meta from "../components/Meta"
+import Rating from "../../components/Rating/Rating"
+import { productDetailsAction, productCreateReviewAction } from "../../actions/productActions"
+import Message from "../../components/Message"
+import Loader from "../../components/Loader"
+import { PRODUCT_CREATE_REVIEW_RESET } from "../../constants/productConstants"
+import Meta from "../../components/Meta"
 
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()

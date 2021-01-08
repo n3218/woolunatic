@@ -19,6 +19,7 @@ const importData = async () => {
     const sampleProducts = products.map(p => {
       return { ...p, user: adminUser }
     })
+
     await Product.insertMany(sampleProducts)
     console.log("Data Imported!".green.inverse)
     process.exit()
@@ -30,9 +31,9 @@ const importData = async () => {
 
 const destroyData = async () => {
   try {
-    await Order.deleteMany()
+    // await Order.deleteMany()
     await Product.deleteMany()
-    await User.deleteMany()
+    // await User.deleteMany()
     console.log("Data Destroyed!".red.inverse)
     process.exit()
   } catch (error) {

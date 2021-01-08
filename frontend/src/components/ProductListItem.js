@@ -39,25 +39,19 @@ const ProductListItem = ({ product }) => {
       <td>
         <Link to={`/products/${product._id}`}>{product.name}</Link>
       </td>
+      <td>{product.color && product.color}</td>
       <td>{product.category}</td>
       <td>{product.fibers}</td>
       <td>{product.meterage}</td>
-      <td>{product.minimum}</td>
+      <td>{product.minimum > 0 && product.minimum}</td>
       <td>€{product.price}</td>
       <td>
-        {product.color &&
-          product.color.map((col, i) =>
-            col.inStock !== "" ? (
-              <div key={col.name}>
-                <i>{col.name}</i> : {col.inStock}
-              </div>
-            ) : (
-              <span key={col.name}>
-                <i>{col.name}</i>
-                {i !== product.color.length - 1 && ", "}
-              </span>
-            )
-          )}
+        {product.inStock.map((el, i) => (
+          <span>
+            {el !== 0 && el}
+            {i !== product.inStock.length - 1 && ", "}
+          </span>
+        ))}
       </td>
       <td>{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
       <td>
