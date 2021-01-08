@@ -1,0 +1,64 @@
+@import "../../index.css";
+
+.product-card {
+  border: 0;
+  overflow: hidden;
+  display: block;
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.05);
+  margin-bottom: 10px;
+  height: 100%;
+}
+
+.product-card_img-container {
+  overflow: hidden;
+}
+
+.product-card_img:hover {
+  transform: scale(1.1);
+  transition: all 0.5s cubic-bezier(0, 0, 0.44, 1.18);
+}
+
+.product-card_body {
+  position: relative;
+  padding: 10px 8px 10px 8px;
+}
+
+.product-card_brand {
+  font-size: 0.8em;
+  color: var(--secondary);
+  line-height: 0.8;
+}
+
+.product-card_name {
+  line-height: 0.6;
+  color: var(--secondary);
+  font-size: 1.1em;
+  border-bottom: 1px solid lightgray;
+}
+
+.product-card_color {
+  font-size: 1.1em;
+  color: var(--gray);
+  line-height: 1;
+}
+
+.product-card_fibers {
+  color: var(--gray);
+  line-height: 1;
+  font-size: 0.9em;
+}
+
+.product-card_price {
+  color: var(--primary);
+  font-weight: bold;
+  text-align: right;
+  margin-top: -5px;
+}
+
+.product-card_meterage {
+  color: var(--gray);
+  line-height: 0.7;
+  font-size: 0.8em;
+
+  text-align: right;
+}

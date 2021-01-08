@@ -43,8 +43,9 @@ const productSchema = mongoose.Schema(
       required: false
     },
     meterage: {
-      type: String,
-      required: false
+      type: Number,
+      required: false,
+      default: 0
     },
     fibers: {
       type: String,
@@ -83,7 +84,7 @@ const productSchema = mongoose.Schema(
     },
     inStock: {
       type: Array,
-      required: false,
+      required: true,
       default: []
     },
     outOfStock: {

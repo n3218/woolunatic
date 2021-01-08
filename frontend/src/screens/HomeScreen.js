@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col } from "react-bootstrap"
-import Product from "../components/Product"
+import Product from "../components/Product/Product"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
 import { productTopAction } from "../actions/productActions"
@@ -33,7 +33,7 @@ const HomeScreen = () => {
           <Row>
             {products &&
               products.map(product => (
-                <Col key={product._id} xs={4} sm={3} md={3} lg={2} className="product-card-block">
+                <Col key={product._id} xs={4} sm={3} md={3} lg={2} xl={2} className="product-card-block">
                   <Product product={product} />
                 </Col>
               ))}
