@@ -161,6 +161,10 @@ const OrderScreen = ({ match, history }) => {
               )}
             </ListGroup.Item>
           </ListGroup>
+          <div className="jumbotron text-right">
+            <h5>Test user for PayPal payments : sb-k30x54012881@personal.example.com</h5>
+            <h5>Test password for PayPal payments : {`RHU*Oy6{`}</h5>
+          </div>
         </Col>
 
         <OrderSummary cart={order} items={order.orderItems} error={error}>

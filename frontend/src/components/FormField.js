@@ -30,7 +30,9 @@ export const FormFieldAsRowCheckbox = ({ value, label, onChange }) => {
   return (
     <Form.Group controlId="isAdmin">
       <Row>
-        <Col sm="2">{/* <Form.Label>{label}</Form.Label> */}</Col>
+        <Col sm="2">
+          <Form.Label>{label}</Form.Label>
+        </Col>
         <Col>
           <Form.Check type="checkbox" label={label} checked={value} onChange={e => onChange(e.target.checked)}></Form.Check>
         </Col>

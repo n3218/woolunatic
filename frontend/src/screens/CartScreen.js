@@ -11,7 +11,6 @@ import CartItems from "../components/CartItems"
 const CartScreen = ({ match, location, history }) => {
   const productId = match.params.id
   const qty = location.search ? Number(location.search.split("=")[1].split("&")[0]) : 1
-  const color = location.search ? location.search.split("=")[2] : ""
   const dispatch = useDispatch()
   const cart = useSelector(state => state.cart)
   const { cartItems } = cart
@@ -23,9 +22,9 @@ const CartScreen = ({ match, location, history }) => {
       history.push("/login")
     }
     if (productId) {
-      dispatch(cartAddItemAction(productId, qty, color))
+      dispatch(cartAddItemAction(productId, qty))
     }
-  }, [dispatch, productId, qty, color, history, userInfo])
+  }, [dispatch, productId, qty, history, userInfo])
 
   const checkoutHandler = () => {
     history.push("/login?redirect=shipping")

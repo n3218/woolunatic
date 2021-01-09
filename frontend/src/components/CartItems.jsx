@@ -11,18 +11,18 @@ const CartItems = ({ cartItems }) => {
     dispatch(cartRemoveItemAction(id, color))
   }
 
-  const showOptions = min => {
-    let values = []
-    for (let i = min; i <= 2000; i += 50) {
-      values.push(i)
-    }
-    return values
-  }
+  // const showOptions = min => {
+  //   let values = []
+  //   for (let i = min; i <= 2000; i += 50) {
+  //     values.push(i)
+  //   }
+  //   return values
+  // }
 
   return (
     <ListGroup variant="flush">
       {cartItems.map(item => (
-        <ListGroup.Item key={`${item.product}-${item.color}`}>
+        <ListGroup.Item key={`${item.product}-${item.qty}`}>
           <Row>
             <Col xl={2} xs={2}>
               <Image src={item.image} alt={item.name} fluid thumbnail />
@@ -54,7 +54,7 @@ const CartItems = ({ cartItems }) => {
                     <strong>Item meterage: </strong> {item.meterage * item.qty * 0.01}m
                   </div>
 
-                  {!item.minimum ? (
+                  {/* {!item.minimum ? (
                     <>{item.qty} g</>
                   ) : (
                     <Form.Group controlId="qty">
@@ -66,9 +66,9 @@ const CartItems = ({ cartItems }) => {
                         ))}
                       </Form.Control>
                     </Form.Group>
-                  )}
+                  )} */}
                   <div>
-                    <Button variant="link" className="text-danger m-0 p-0" onClick={() => removeFromCartHandler(item.product, item.color)}>
+                    <Button variant="link" className="text-danger m-0 p-0" onClick={() => removeFromCartHandler(item.product, item.qty)}>
                       <small>delete</small>
                     </Button>
                   </div>

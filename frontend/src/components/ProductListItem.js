@@ -26,6 +26,8 @@ const ProductListItem = ({ product }) => {
 
   return (
     <tr key={product._id} className={`${product.outOfStock && "font-weight-light"}`}>
+      <td>{product.art}</td>
+
       <td width="50px">
         {product.image.length === 0 ? (
           <div>
@@ -42,17 +44,11 @@ const ProductListItem = ({ product }) => {
       <td>{product.color && product.color}</td>
       <td>{product.category}</td>
       <td>{product.fibers}</td>
+      <td>{product.nm}</td>
       <td>{product.meterage}</td>
       <td>{product.minimum > 0 && product.minimum}</td>
       <td>€{product.price}</td>
-      <td>
-        {product.inStock.map((el, i) => (
-          <span>
-            {el !== 0 && el}
-            {i !== product.inStock.length - 1 && ", "}
-          </span>
-        ))}
-      </td>
+      <td>{product.inStock}</td>
       <td>{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
       <td>
         <LinkContainer to={`/admin/product/${product._id}/edit`}>

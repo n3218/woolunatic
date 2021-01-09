@@ -64,13 +64,17 @@ export const createProduct = asyncHandler(async (req, res) => {
     image: [],
     brand: "",
     category: "",
+    inStock: "",
     outOfStock: false,
     numReviews: 0,
     description: "",
     fibers: "",
     meterage: "",
     minimum: 0,
-    color: []
+    color: "",
+    colorWay: "",
+    art: "",
+    nm: ""
   })
 
   const createdProduct = await product.save()
@@ -81,7 +85,7 @@ export const createProduct = asyncHandler(async (req, res) => {
 // @route  PUT /api/products/:id
 // @access Private/+Admin
 export const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, outOfStock, fibers, meterage, minimum, color } = req.body
+  const { name, price, description, image, brand, category, inStock, outOfStock, fibers, meterage, minimum, color, colorWay, art, nm } = req.body
   const product = await Product.findById(req.params.id)
 
   if (product) {
@@ -90,12 +94,16 @@ export const updateProduct = asyncHandler(async (req, res) => {
     product.image = image
     product.brand = brand
     product.category = category
+    product.inStock = inStock
     product.outOfStock = outOfStock
     product.description = description
     product.fibers = fibers
     product.meterage = meterage
     product.minimum = minimum
     product.color = color
+    product.colorWay = colorWay
+    product.art = art
+    product.nm = nm
 
     const updatedProduct = await product.save()
     res.json(updatedProduct)

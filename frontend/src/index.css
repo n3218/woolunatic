@@ -169,11 +169,7 @@ th:first-of-type {
   padding-right: 8px;
   padding-left: 8px;
 }
-.product-card {
-  border: 0;
-  overflow: hidden;
-  display: block;
-}
+
 .card-body {
   padding: 0 0 10px 0;
 }
@@ -241,13 +237,6 @@ button.image-gallery-icon {
   margin: 20%;
   filter: opacity(0.3);
 }
-.img-card:hover {
-  transform: scale(1.1);
-  transition: all 0.5s cubic-bezier(0, 0, 0.44, 1.18);
-}
-.img-card-container {
-  overflow: hidden;
-}
 
 .product-brand {
   text-align: center;
@@ -285,4 +274,8 @@ button.image-gallery-icon {
 label {
   margin-top: 0.8rem;
   margin-bottom: 0;
+}
+
+.form-check-input {
+  margin-top: 1em;
 }

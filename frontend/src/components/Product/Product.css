@@ -24,13 +24,15 @@
 }
 
 .product-card_brand {
-  font-size: 0.8em;
-  color: var(--secondary);
+  font-size: 0.9em;
+  color: var(--gray);
   line-height: 0.8;
+  margin-bottom: 0;
 }
 
 .product-card_name {
-  line-height: 0.6;
+  margin-top: 0.3rem;
+
   color: var(--secondary);
   font-size: 1.1em;
   border-bottom: 1px solid lightgray;
@@ -40,19 +42,21 @@
   font-size: 1.1em;
   color: var(--gray);
   line-height: 1;
+  margin-top: 0rem;
 }
 
 .product-card_fibers {
   color: var(--gray);
-  line-height: 1;
+  line-height: 1.2;
   font-size: 0.9em;
 }
 
 .product-card_price {
   color: var(--primary);
+  font-size: 1.2em;
   font-weight: bold;
   text-align: right;
-  margin-top: -5px;
+  margin-top: -3px;
 }
 
 .product-card_meterage {

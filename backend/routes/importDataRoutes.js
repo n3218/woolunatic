@@ -57,7 +57,7 @@ router.post("/", upload.single("csv-file"), (req, res) => {
         meterage: Number(row.meterage),
         fibers: row.fibers,
         price: Number(row.price),
-
+        nm: row.nm,
         image: row.image
           .replace(/[\'\[\]\"]+?/g, "")
           .split(",")
@@ -66,10 +66,7 @@ router.post("/", upload.single("csv-file"), (req, res) => {
         rating: Number(row.rating),
         numReviews: Number(row.numReviews),
         minimum: Number(row.minimum),
-        inStock: row.inStock
-          .replace(/[\'\[\]\"]+?/g, "")
-          .split(",")
-          .map(el => Number(el.trim())),
+        inStock: row.inStock,
         outOfStock: row.outOfStock === "FALSE" ? false : true,
         user: row.user,
         createdAt: row.createdAt,

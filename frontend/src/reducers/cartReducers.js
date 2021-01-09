@@ -12,12 +12,12 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
   switch (action.type) {
     case CART_ADD_ITEM:
       const item = action.payload
-      const existItem = state.cartItems.find(x => x.product === item.product && x.color === item.color)
+      const existItem = state.cartItems.find(x => x.product === item.product && x.qty === item.qty)
 
       if (existItem) {
         return {
           ...state,
-          cartItems: state.cartItems.map(x => (x.product === existItem.product && x.color === existItem.color ? item : x))
+          cartItems: state.cartItems.map(x => (x.product === existItem.product && x.qty === existItem.qty ? item : x))
         }
       } else {
         return {
@@ -27,8 +27,8 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
       }
 
     case CART_UPDATE_ITEM:
-      const { product, qty, color } = action.payload
-      const updatingItem = state.cartItems.filter(el => el.product === product && el.color === color)[0]
+      const { product, qty } = action.payload
+      const updatingItem = state.cartItems.filter(el => el.product === product && el.qty === qty)[0]
       return {
         ...state,
         cartItems: [...state.cartItems.map(el => (el.product === updatingItem.product && el.color === updatingItem.color ? { ...updatingItem, qty } : el))]
@@ -36,11 +36,10 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
 
     case CART_REMOVE_ITEM:
       console.log("cartReducer:")
-      console.log("action.payload.color: ", action.payload.color)
       console.log("action.payload.id: ", action.payload.id)
       return {
         ...state,
-        cartItems: state.cartItems.filter(item => !(item.color === action.payload.color && item.product === action.payload.id))
+        cartItems: state.cartItems.filter(item => !(item.qty === action.payload.qty && item.product === action.payload.id))
       }
 
     case CART_SAVE_SHIPPING_ADDRESS:
