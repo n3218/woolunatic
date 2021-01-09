@@ -42,6 +42,11 @@ const productSchema = mongoose.Schema(
       type: String,
       required: false
     },
+    nm: {
+      type: String,
+      required: false,
+      default: ""
+    },
     meterage: {
       type: Number,
       required: false,
@@ -83,9 +88,8 @@ const productSchema = mongoose.Schema(
       default: 0
     },
     inStock: {
-      type: Array,
-      required: true,
-      default: []
+      type: String,
+      required: false
     },
     outOfStock: {
       type: Boolean,

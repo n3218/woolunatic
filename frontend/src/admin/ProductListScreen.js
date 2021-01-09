@@ -63,12 +63,14 @@ const ProductListScreen = ({ history, match }) => {
           <Table striped hover responsive className="table-sm">
             <thead>
               <tr>
+                <th>ART</th>
                 <th>PIC</th>
                 <th>BRAND</th>
                 <th>NAME</th>
                 <th>COLOR</th>
                 <th>CATEGORY</th>
                 <th>FIBERS</th>
+                <th>NM</th>
                 <th>MERETAGE</th>
                 <th>MINIMUM</th>
                 <th>PRICE</th>

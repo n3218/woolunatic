@@ -18,6 +18,8 @@ const ProductScreen = ({ history, match }) => {
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState("")
   const [initialImages, setInitialImages] = useState([])
+  const [inStockArr, setInStockArr] = useState([])
+
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const productDetails = useSelector(state => state.productDetails)
@@ -34,6 +36,15 @@ const ProductScreen = ({ history, match }) => {
     if (!product._id || product._id !== match.params.id) {
       dispatch(productDetailsAction(match.params.id))
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
+    }
+    if (product.inStock) {
+      console.log("product.inStock: ", product.inStock)
+      const arr = product.inStock
+        .split(",")
+        .map(el => parseInt(el.trim()))
+        .sort((a, b) => a - b)
+      console.log("arr: ", arr)
+      setInStockArr([...arr])
     }
     if (product.image) {
       let checkedImgArr = []
@@ -67,7 +78,7 @@ const ProductScreen = ({ history, match }) => {
 
   const showOptions = min => {
     let values = []
-    let maxVal = product.inStock.sort()[product.inStock.length - 1]
+    let maxVal = inStockArr[inStockArr.length - 1]
     for (let i = min; i <= maxVal; i += 50) {
       values.push(i)
     }
@@ -162,9 +173,7 @@ const ProductScreen = ({ history, match }) => {
                                   Select...
                                 </option>
                                 {product.inStock &&
-                                  product.inStock.length > 0 &&
-                                  product.inStock[0] !== 0 &&
-                                  product.inStock.map((el, i) => (
+                                  inStockArr.map((el, i) => (
                                     <option key={i} value={el}>
                                       {el} gr
                                     </option>

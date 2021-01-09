@@ -6,7 +6,7 @@ const OrderSummary = ({ cart, items, children, error }) => {
   return (
     <Col md={3}>
       <Card>
-        <Card.Header class="card-header text-center">
+        <Card.Header className="card-header text-center">
           <h3>Order Summary</h3>
         </Card.Header>
 

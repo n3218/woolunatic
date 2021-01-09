@@ -7,17 +7,9 @@ import {
 } from "../constants/cartConstants"
 import axios from "axios"
 
-export const cartAddItemAction = (id, qty, color) => async (dispatch, getState) => {
+export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(`/api/products/${id}`)
-  const queryColor = data.color.filter(col => col._id === color)[0]
-  const colorImages = queryColor.images
-  const colorName = queryColor.name
-  let imgOfColor = ""
-  if (colorImages.length > 0) {
-    imgOfColor = colorImages[0]
-  } else {
-    imgOfColor = data.image[0]
-  }
+
   dispatch({
     type: CART_ADD_ITEM,
     payload: {
@@ -27,32 +19,31 @@ export const cartAddItemAction = (id, qty, color) => async (dispatch, getState) 
       fibers: data.fibers,
       meterage: data.meterage,
       minimum: data.minimum,
-      image: imgOfColor,
+      image: data.image[0],
       price: data.price,
-      color: colorName,
+      color: data.color,
       qty
     }
   })
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }
 
-export const cartUpdateItemAction = (product, qty, color) => async (dispatch, getState) => {
+export const cartUpdateItemAction = (product, qty) => async (dispatch, getState) => {
   dispatch({
     type: CART_UPDATE_ITEM,
     payload: {
       product,
-      qty,
-      color
+      qty
     }
   })
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }
 
-export const cartRemoveItemAction = (id, color) => async (dispatch, getState) => {
-  console.log("cartRemoveItemAction: ", id, color)
+export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {
+  console.log("cartRemoveItemAction: ", id, qty)
   dispatch({
     type: CART_REMOVE_ITEM,
-    payload: { id, color }
+    payload: { id, qty }
   })
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }

@@ -25,22 +25,24 @@ const Product = ({ product }) => {
           <Card.Img src={imgSrc} variant="top" alt={product.name} className="product-card_img" />
         </Link>
       </div>
+
       <Card.Body className="product-card_body">
         {product.brand && (
-          <div className="product-card_brand">
+          <Card.Text className="product-card_brand">
             <nobr>{product.brand}</nobr>
-          </div>
-        )}
-        <div>
-          <Link className="product-card_name" to={`/products/${product._id}`}>
-            <nobr>{product.name}</nobr>
-          </Link>
-        </div>
-
-        {product.color && (
-          <Card.Text as="div" className="product-card_color">
-            {product.color}
           </Card.Text>
+        )}
+        {product.name && (
+          <Card.Title className="product-card_name">
+            <Link to={`/products/${product._id}`}>
+              <nobr>{product.name}</nobr>
+            </Link>
+          </Card.Title>
+        )}
+        {product.color && (
+          <Card.Subtitle as="div" className="product-card_color">
+            <nobr>{product.color}</nobr>
+          </Card.Subtitle>
         )}
 
         {product.fibers && (
@@ -55,7 +57,12 @@ const Product = ({ product }) => {
           </Card.Text>
         )}
 
-        <Card.Title as="div">
+        <Card.Text as="div">
+          {product.meterage && (
+            <Card.Text as="div" className="product-card_meterage">
+              <nobr>{product.meterage}m/100g</nobr>
+            </Card.Text>
+          )}
           {product.price && (
             <Card.Text as="div" className="product-card_price">
               <nobr>
@@ -63,12 +70,7 @@ const Product = ({ product }) => {
               </nobr>
             </Card.Text>
           )}
-          {product.meterage && (
-            <Card.Text as="div" className="product-card_meterage">
-              <nobr>{product.meterage}m/100g</nobr>
-            </Card.Text>
-          )}
-        </Card.Title>
+        </Card.Text>
       </Card.Body>
     </Card>
   )
