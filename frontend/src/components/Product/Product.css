@@ -35,13 +35,13 @@
 
   color: var(--secondary);
   font-size: 1.1em;
-  border-bottom: 1px solid lightgray;
+  /* border-bottom: 1px solid lightgray; */
 }
 
 .product-card_color {
   font-size: 1.1em;
   color: var(--gray);
-  line-height: 1;
+  line-height: 1.2;
   margin-top: 0rem;
 }
 

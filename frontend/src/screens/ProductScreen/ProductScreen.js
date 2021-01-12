@@ -132,8 +132,8 @@ const ProductScreen = ({ history, match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Art:</Col>
-                    <Col>{product.art}</Col>
+                    <Col>Basic Color:</Col>
+                    <Col>{product.colorWay}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -146,6 +146,12 @@ const ProductScreen = ({ history, match }) => {
                   <Row>
                     <Col>Meterage:</Col>
                     <Col>{product.meterage}m / 100g</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>NM:</Col>
+                    <Col>{product.nm}</Col>
                   </Row>
                 </ListGroup.Item>
               </ListGroup>

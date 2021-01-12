@@ -41,6 +41,7 @@ const ProductListItem = ({ product }) => {
       <td>
         <Link to={`/products/${product._id}`}>{product.name}</Link>
       </td>
+      <td>{product.colorWay && product.colorWay}</td>
       <td>{product.color && product.color}</td>
       <td>{product.category}</td>
       <td>{product.fibers}</td>
