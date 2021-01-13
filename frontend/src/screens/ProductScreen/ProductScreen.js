@@ -36,10 +36,6 @@ const ProductScreen = ({ history, match }) => {
   }
 
   useEffect(() => {
-    // if (error) {
-    //   history.push(`/cart/${match.params.id}?qty=${qty}`)
-    // }
-    // if (!error) {
     if (successCreateReview) {
       setRating(0)
       setComment("")
@@ -56,6 +52,7 @@ const ProductScreen = ({ history, match }) => {
         .map(el => parseInt(el.trim()))
         .sort((a, b) => a - b)
       setInStockArr([...arr])
+      if (arr.length === 1) setQty(arr[0])
     }
     if (product && Array.isArray(product.image) && product.image.length > 0) {
       console.log("if image")
@@ -66,7 +63,6 @@ const ProductScreen = ({ history, match }) => {
       console.log("if no image")
       setInitialImages([...imagesForGallery([noimage])])
     }
-    // }
   }, [dispatch, match, successCreateReview, product, productId])
 
   const addToCartHandler = () => {
@@ -109,7 +105,6 @@ const ProductScreen = ({ history, match }) => {
     )
   }, [product])
 
-  console.log("initialImages: ", initialImages)
   return (
     <>
       {loading ? (
