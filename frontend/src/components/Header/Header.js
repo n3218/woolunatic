@@ -58,7 +58,7 @@ const Header = () => {
               <LinkContainer to="/how-to">
                 <Nav.Link className="underlink">How To Order</Nav.Link>
               </LinkContainer>
-              <NavDropdown title="Collection" id="basic-nav-dropdown">
+              <NavDropdown title="Yarn Collection" id="basic-nav-dropdown">
                 <LinkContainer to="/search/cashmere|кашемир">
                   <NavDropdown.Item>Cashmere</NavDropdown.Item>
                 </LinkContainer>
