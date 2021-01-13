@@ -5,9 +5,10 @@ import Product from "../models/productModel.js"
 // @route  GET /api/products
 // @access Public
 export const getProducts = asyncHandler(async (req, res) => {
-  let pageSize
-  pageSize = 500
+  let order = req.body.order ? req.body.order : "desc"
+  let sortBy = req.body.sortBy ? req.body.sortBy : "_id"
   const page = Number(req.query.pageNumber) || 1
+  let pageSize = Number(36)
   const keyword = req.query.keyword
     ? {
         $or: [
@@ -15,18 +16,26 @@ export const getProducts = asyncHandler(async (req, res) => {
           { name: { $regex: req.query.keyword, $options: "i" } },
           { brand: { $regex: req.query.keyword, $options: "i" } },
           { color: { $regex: req.query.keyword, $options: "i" } },
-          { colorWay: { $regex: req.query.keyword, $options: "i" } }
+          { colorWay: { $regex: req.query.keyword, $options: "i" } },
+          { category: { $regex: req.query.keyword, $options: "i" } }
         ]
       }
     : {}
-
   const count = await Product.countDocuments({ ...keyword })
   const products = await Product.find({ ...keyword })
-    .sort({ updatedAt: -1 })
+    .sort([[sortBy, order]])
     .limit(pageSize)
     .skip(pageSize * (page - 1))
 
   res.json({ products, page, pages: Math.ceil(count / pageSize), count })
+})
+
+// @desc   Get top rated products
+// @route  GET /api/products/top
+// @access Public
+export const getTopProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort({ updatedAt: -1 }).limit(12)
+  res.json(products)
 })
 
 // @desc   Fetch single product
@@ -145,12 +154,4 @@ export const createProductReview = asyncHandler(async (req, res) => {
     res.status(404)
     throw new Error("Product not found")
   }
-})
-
-// @desc   Get top rated products
-// @route  GET /api/products/top
-// @access Public
-export const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ updatedAt: -1 }).limit(12)
-  res.json(products)
 })

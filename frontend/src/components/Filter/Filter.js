@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from "react"
 import { Card, Form, Button } from "react-bootstrap"
 import "./Filter.css"
 
-const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
+const Filter = ({ products, filteredProducts, setFilteredProducts, handleFilters }) => {
   console.log("Filter: products.length", products.length)
-  const data = useMemo(() => products, [])
+  const data = useMemo(() => products, [products])
 
   const initialFilter = {
     fibers: [],
@@ -13,6 +13,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     lengthBy: 0,
     colors: []
   }
+
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(0)
   const [lengthMin, setLengthMin] = useState(0)
@@ -22,9 +23,9 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
   const [colors, setColors] = useState({})
   const [filterState, setFilterState] = useState(initialFilter)
 
-  useEffect(() => {
-    if (filteredProducts.length === 0) setFilteredProducts([...data])
-  }, [])
+  // useEffect(() => {
+  //   if (filteredProducts.length === 0) setFilteredProducts([...data])
+  // }, [data])
 
   useEffect(() => {
     const brandsMap = []
@@ -38,7 +39,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     let lengthMinVar = 0
     let lengthMaxVar = 0
 
-    data.map(product => {
+    filteredProducts.map(product => {
       if (priceMinVar === 0) priceMinVar = Number(product.price)
       if (Number(product.price) < Number(priceMinVar)) priceMinVar = Number(product.price)
       if (product.price > priceMaxVar) priceMaxVar = product.price
@@ -104,15 +105,6 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     setFilterState({ ...filterState, priceBy: priceMaxVar })
   }, [filteredProducts, data, products])
 
-  const onChangeFibersHandler = e => {
-    if (filterState.fibers.includes(e.target.id)) {
-      setFilterState({ ...filterState, fibers: [...filterState.fibers.filter(fab => fab !== e.target.id)] })
-    } else {
-      setFilterState({ ...filterState, fibers: [...filterState.fibers, e.target.id] })
-    }
-    setFilteredProducts(filteredProducts.filter(prod => prod.fibers.toLowerCase().includes(e.target.value.toLowerCase())))
-  }
-
   // onChangeBrandsHandler
   const onChangeBrandsHandler = e => {
     if (filterState.brands.includes(e.target.id)) {
@@ -127,8 +119,6 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
         if (filterState.brands.includes(prod.brand)) return true
       })
     )
-
-    // setFilteredProducts(multiPropsFilter(filteredProducts, { ...filterState, brands: [...filterState.brands, e.target.id] }))
   }
 
   const onChangePriceHandler = e => {
@@ -141,22 +131,29 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     setFilteredProducts(products)
   }
 
-  // const multiPropsFilter = (productsToFilter, filters) => {
-  //   const filterKeys = Object.keys(filters)
-  //   return productsToFilter.filter(product => {
-  //     return filterKeys.every(key => {
-  //       if (!filters[key].length) return true
-  //       // Loops again if product[key] is an array (for material attribute).
-  //       if (Array.isArray(product[key])) {
-  //         return product[key].some(keyEle => filters[key].includes(keyEle))
-  //       }
-  //       return filters[key].includes(product[key])
-  //     })
-  //   })
-  // }
-
   console.log("filter: filter: ", filterState)
   console.log("filter: filteredProducts: ", filteredProducts)
+
+  const onChangeFibersHandler = e => {
+    if (filterState.fibers.includes(e.target.id)) {
+      setFilterState({ ...filterState, fibers: [...filterState.fibers.filter(fab => fab !== e.target.id)] })
+    } else {
+      setFilterState({ ...filterState, fibers: [...filterState.fibers, e.target.id] })
+    }
+    setFilteredProducts(filteredProducts.filter(prod => prod.fibers.toLowerCase().includes(e.target.value.toLowerCase())))
+  }
+
+  const handleToggle = (value, cat) => {
+    const currentIndex = filterState[cat].indexOf(value)
+    const copy = [...filterState[cat]]
+    if (currentIndex === -1) {
+      copy.push(value)
+    } else {
+      copy.splice(currentIndex, 1)
+    }
+    setFilterState({ ...filterState, [cat]: copy })
+    handleFilters(filterState)
+  }
 
   return (
     <>
@@ -184,7 +181,13 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
               <Form.Label className="text-primary">Fiber Content</Form.Label>
               {fibers.map(fib => (
                 <div key={fib[0]}>
-                  <Form.Check type="checkbox" id={fib[0]} label={`${fib[0]} (${fib[1]})`} checked={filterState.fibers.includes(fib[0])} onChange={onChangeFibersHandler} />
+                  <Form.Check //
+                    type="checkbox"
+                    id={fib[0]}
+                    label={`${fib[0]} (${fib[1]})`}
+                    onChange={() => handleToggle(fib[0])}
+                    checked={filterState.fibers.indexOf(fib[0]) === -1 ? false : true}
+                  />
                 </div>
               ))}
             </Form.Group>
@@ -202,7 +205,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
               <ol className="colour colour-filter colors">
                 {Object.keys(colors).map(key => (
                   <li key={key} className={key}>
-                    <a rel="nofollow" className={key}>
+                    <a rel="nofollow" className={key} title={key}>
                       {key}
                     </a>
                   </li>
