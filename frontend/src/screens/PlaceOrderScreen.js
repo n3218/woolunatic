@@ -8,10 +8,16 @@ import Meta from "../components/Meta"
 import { ORDER_CREATE_RESET } from "../constants/orderConstants"
 import CartItems from "../components/CartItems"
 import OrderSummary from "../components/OrderSummary"
+import { USER_DETAILS_RESET } from "../constants/userConstants"
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch()
+
   const cart = useSelector(state => state.cart)
+  const { shippingAddress } = cart
+  if (!shippingAddress.address) {
+    history.push("/shipping")
+  }
 
   // Calculate prices
   const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
@@ -27,6 +33,7 @@ const PlaceOrderScreen = ({ history }) => {
     if (success) {
       history.push(`/orders/${order._id}`)
     }
+    dispatch({ type: USER_DETAILS_RESET })
     dispatch({ type: ORDER_CREATE_RESET })
     // eslint-disable-next-line
   }, [history, success])

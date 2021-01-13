@@ -1,0 +1,29 @@
+.product-list {
+  width: 100%;
+  max-width: 100%;
+}
+
+.product-list th {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.product-list thead {
+  border-bottom: 2px solid black;
+  width: 100%;
+}
+
+.product-list th,
+.product-list td {
+  height: 30px;
+  padding-right: 0 1rem;
+}
+
+.product-list-item td {
+  color: var(--primary);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-right: 1px solid lightgray;
+}

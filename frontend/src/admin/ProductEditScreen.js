@@ -42,7 +42,7 @@ const ProductEditScreen = ({ history, match }) => {
     if (successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_RESET })
       dispatch({ type: PRODUCT_DETAILS_RESET })
-      history.push("/admin/productlist")
+      history.push(`/products/${productId}`)
     } else {
       if (!product.name || product._id !== productId) {
         dispatch(productDetailsAction(productId))

@@ -104,6 +104,6 @@ ol.colors {
 .colour-filter > li.brown:before {
   background: brown;
 }
-.colour-filter > li.colormix:before {
+.colour-filter > li.multicolor:before {
   background: linear-gradient(45deg, #fffc00, red 60%, #2780e3);
 }

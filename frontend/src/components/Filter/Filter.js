@@ -102,7 +102,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
 
     setColors(colorsMap)
     setFilterState({ ...filterState, priceBy: priceMaxVar })
-  }, [filteredProducts])
+  }, [filteredProducts, data, products])
 
   const onChangeFibersHandler = e => {
     if (filterState.fibers.includes(e.target.id)) {

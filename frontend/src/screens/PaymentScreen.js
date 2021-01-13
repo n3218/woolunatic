@@ -9,9 +9,10 @@ import Meta from "../components/Meta"
 const PaymentScreen = ({ history }) => {
   const cart = useSelector(state => state.cart)
   const { shippingAddress } = cart
-  if (!shippingAddress) {
+  if (!shippingAddress.address) {
     history.push("/shipping")
   }
+
   const [paymentMethod, setPaymentMethod] = useState("PayPal")
   const dispatch = useDispatch()
 
