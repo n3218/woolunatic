@@ -113,8 +113,9 @@ export const productUpdateAction = product => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    await axios.put(`/api/products/${product._id}`, product, config)
-    dispatch({ type: PRODUCT_UPDATE_SUCCESS })
+    const { data } = await axios.put(`/api/products/${product._id}`, product, config)
+    dispatch({ type: PRODUCT_UPDATE_SUCCESS, payload: data })
+    dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     if (message === "Not authorized, token failed") {

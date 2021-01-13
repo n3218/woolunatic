@@ -12,16 +12,14 @@ const storage = multer.diskStorage({
     cb(null, "uploads/imports")
   },
   filename(req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
+    cb(null, `data-${new Date().toISOString().slice(0, 16)}${path.extname(file.originalname)}`)
   }
 })
 
 function checkFileType(file, cb) {
-  console.log("checkFileType")
   const filetypes = /csv/
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
   const mimetype = filetypes.test(file.mimetype)
-
   if (extname && mimetype) {
     return cb(null, true)
   } else {
@@ -42,13 +40,16 @@ router.post("/", upload.single("csv-file"), (req, res) => {
   //
   //
   const newProducts = []
+  const newProductsMap = {}
+  //
+  //
   fs.createReadStream(req.file.path)
     .pipe(csv.parse({ headers: true }))
     .on("error", error => console.error(error))
     .on("data", row => {
       let newProduct = {
         // _id: row._id,
-        art: row.art,
+        art: row.brand + "_" + row.name + "_" + row.color,
         brand: row.brand,
         name: row.name,
         color: row.color,
@@ -56,27 +57,37 @@ router.post("/", upload.single("csv-file"), (req, res) => {
         category: row.category,
         meterage: Number(row.meterage),
         fibers: row.fibers,
-        price: Number(row.price),
+        price: Number(row.price.replace(/[ €]+/g, "")),
         nm: row.nm,
-        image: row.image
-          .replace(/[\'\[\]\"]+?/g, "")
-          .split(",")
-          .map(el => String(el.trim())),
+        // image: row.image
+        //   .replace(/[\'\[\]\"]+?/g, "")
+        //   .split(",")
+        //   .map(el => String(el.trim())),
         // reviews: [{ ...row.reviews.replace(/[\'\[\]]+?/g, "") }],
-        rating: Number(row.rating),
-        numReviews: Number(row.numReviews),
-        minimum: Number(row.minimum),
+        // rating: Number(row.rating),
+        // numReviews: Number(row.numReviews),
+        // minimum: Number(row.minimum),
         inStock: row.inStock,
-        outOfStock: row.outOfStock === "FALSE" ? false : true,
-        user: row.user,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-        description: row.description
+        // outOfStock: row.outOfStock === "FALSE" ? false : true,
+        // user: row.user
+        user: `5fc6e1458fa9f7a30eaf05ec`
+
+        // createdAt: row.createdAt,
+        // updatedAt: row.updatedAt,
+        // description: row.description
       }
-      newProducts.push(newProduct)
+      if (newProductsMap[newProduct.art]) {
+        newProductsMap[newProduct.art].inStock = newProductsMap[newProduct.art].inStock + "," + newProduct.inStock
+      } else {
+        newProductsMap[newProduct.art] = newProduct
+      }
+      // newProducts.push(newProduct)
     })
     .on("end", async rowCount => {
-      // console.log("newProducts: ", newProducts)
+      console.log("newProductsMap: ", newProductsMap)
+
+      Object.keys(newProductsMap).map(key => newProducts.push(newProductsMap[key]))
+      console.log("newProducts: ", newProducts)
       // await Product.updateMany({ _id: { $in: ids } }, newProducts)
       await Product.insertMany(newProducts)
       console.log(`Parsed ${rowCount} rows`)

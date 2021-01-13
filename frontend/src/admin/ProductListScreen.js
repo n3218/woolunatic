@@ -8,6 +8,7 @@ import { PRODUCT_CREATE_RESET } from "../constants/productConstants"
 import Paginate from "../components/Paginate"
 import Meta from "../components/Meta"
 import ProductListItem from "../components/ProductListItem"
+import { Route } from "react-router-dom"
 
 const ProductListScreen = ({ history, match }) => {
   const dispatch = useDispatch()
@@ -15,7 +16,6 @@ const ProductListScreen = ({ history, match }) => {
 
   const productList = useSelector(state => state.productList)
   const { loading, error, products, page, pages } = productList
-
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const productDelete = useSelector(state => state.productDelete)
@@ -60,30 +60,32 @@ const ProductListScreen = ({ history, match }) => {
       ) : (
         <>
           <Meta title="Admin | Product List | Woolunatics" />
-          <Table striped hover responsive className="table-sm">
+          <Table striped hover responsive className="table-sm product-list">
             <thead>
               <tr>
-                <th>ART</th>
-                <th>PIC</th>
-                <th>BRAND</th>
-                <th>NAME</th>
-                <th>COLORWAY</th>
-                <th>COLOR</th>
-                <th>CATEGORY</th>
-                <th>FIBERS</th>
-                <th>NM</th>
-                <th>MERETAGE</th>
-                <th>MINIMUM</th>
-                <th>PRICE</th>
-                <th>IN STOCK</th>
-                <th>GONE</th>
-                <th>EDIT</th>
-                <th>DEL</th>
+                {/* <th>art</th> */}
+                {/* <th className="product-list-min">image</th> */}
+                <th>brand</th>
+                <th>name</th>
+                <th>color</th>
+                <th>colorWay</th>
+                <th>category</th>
+                <th>fibers</th>
+                <th>nm</th>
+                <th>meterage</th>
+                <th>price</th>
+                <th className="product-list-max">inStock</th>
+                <th className="product-list-min">minimum</th>
+                <th className="product-list-min">gone</th>
+                <th className="product-list-min">edit</th>
+                <th className="product-list-min">delete</th>
               </tr>
             </thead>
             <tbody>
               {products.map(product => (
-                <ProductListItem key={product._id} product={product} />
+                // <Route render={({ history }) => <SearchBox history={history} />} />
+                <Route render={({ history }) => <ProductListItem history={history} key={product._id} product={product} />} />
+                // <ProductListItem key={product._id} product={product} />
               ))}
             </tbody>
           </Table>

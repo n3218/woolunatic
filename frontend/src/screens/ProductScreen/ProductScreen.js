@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Col, ListGroup, Row, Card, Button, Form } from "react-bootstrap"
 import { Link } from "react-router-dom"
@@ -8,18 +8,19 @@ import Rating from "../../components/Rating/Rating"
 import { productDetailsAction, productCreateReviewAction } from "../../actions/productActions"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
-import { PRODUCT_CREATE_REVIEW_RESET } from "../../constants/productConstants"
+import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DETAILS_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
 import "./ProductScreen.css"
 
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
+  const productId = match.params.id
+  console.log(match.params.id)
   const [qty, setQty] = useState(1)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState("")
   const [initialImages, setInitialImages] = useState([])
   const [inStockArr, setInStockArr] = useState([])
-
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const productDetails = useSelector(state => state.productDetails)
@@ -28,55 +29,57 @@ const ProductScreen = ({ history, match }) => {
   const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview
   const noimage = "/assets/noimage.webp"
 
+  const imagesForGallery = imageArray => {
+    let currentImages = []
+    imageArray.map(img => currentImages.push({ original: img, thumbnail: img }))
+    return currentImages
+  }
+
   useEffect(() => {
+    // if (error) {
+    //   history.push(`/cart/${match.params.id}?qty=${qty}`)
+    // }
+    // if (!error) {
     if (successCreateReview) {
       setRating(0)
       setComment("")
     }
-    if (!product._id || product._id !== match.params.id) {
-      dispatch(productDetailsAction(match.params.id))
+    if (!product || !product._id || product._id !== productId) {
+      console.log("if !product._id")
+      dispatch(productDetailsAction(productId))
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     }
-    if (product.inStock) {
-      console.log("product.inStock: ", product.inStock)
+    if (product && product.inStock) {
+      console.log("if (product.inStock")
       const arr = product.inStock
         .split(",")
         .map(el => parseInt(el.trim()))
         .sort((a, b) => a - b)
-      console.log("arr: ", arr)
       setInStockArr([...arr])
     }
-    if (product.image) {
+    if (product && Array.isArray(product.image) && product.image.length > 0) {
+      console.log("if image")
       let checkedImgArr = []
-      product.image.map(img => {
-        return fetch(img)
-          .then(res => {
-            if (res.ok) {
-              checkedImgArr.push(img)
-            } else {
-              checkedImgArr.push(noimage)
-            }
-          })
-          .then(() => {
-            let currentImages = imagesForGallery(checkedImgArr)
-            setInitialImages([...currentImages])
-          })
-      })
+      product.image.map(img => checkImg(img, checkedImgArr))
+      setInitialImages([...imagesForGallery(checkedImgArr)])
     } else {
-      setInitialImages(imagesForGallery([noimage]))
+      console.log("if no image")
+      setInitialImages([...imagesForGallery([noimage])])
     }
-  }, [dispatch, match, successCreateReview, product])
+    // }
+  }, [dispatch, match, successCreateReview, product, productId])
 
   const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${qty}`)
+    history.push(`/cart/${productId}?qty=${qty}`)
   }
 
   const submitHandler = e => {
     e.preventDefault()
-    dispatch(productCreateReviewAction(match.params.id, { rating, comment }))
+    dispatch(productCreateReviewAction(productId, { rating, comment }))
   }
 
   const showOptions = min => {
+    console.log("showOptions")
     let values = []
     let maxVal = inStockArr[inStockArr.length - 1]
     for (let i = min; i <= maxVal; i += 50) {
@@ -85,12 +88,28 @@ const ProductScreen = ({ history, match }) => {
     return values
   }
 
-  const imagesForGallery = imageArray => {
-    let currentImages = []
-    imageArray.map(img => currentImages.push({ original: img, thumbnail: img }))
-    return currentImages
+  const checkImg = async (img, checkedImgArr) => {
+    console.log("checkImg")
+    await fetch(img).then(res => {
+      if (res.ok) {
+        checkedImgArr.push(img)
+      } else {
+        checkedImgArr.push(noimage)
+      }
+      console.log("")
+    })
   }
 
+  const renderGallery = useMemo(() => {
+    console.log("useMemo")
+    return (
+      <div id="product-gallery">
+        <ImageGallery items={initialImages} showPlayButton={false} showIndex={true} thumbnailPosition="left" />
+      </div>
+    )
+  }, [product])
+
+  console.log("initialImages: ", initialImages)
   return (
     <>
       {loading ? (
@@ -102,7 +121,7 @@ const ProductScreen = ({ history, match }) => {
           <Meta title={product.name} description={product.description} />
           <div className="submenu">
             {userInfo && userInfo.isAdmin && (
-              <Link to={`/admin/product/${match.params.id}/edit`} className="btn btn-primary submenu">
+              <Link to={`/admin/product/${productId}/edit`} className="btn btn-primary submenu">
                 Edit
               </Link>
             )}
@@ -111,7 +130,7 @@ const ProductScreen = ({ history, match }) => {
           <div id="product-details">
             {/* ---------------------------Gallery--------------------------- */}
 
-            <div id="product-gallery">{product.image && <ImageGallery items={initialImages} showPlayButton={false} showIndex={true} thumbnailPosition="left" />}</div>
+            {initialImages && renderGallery}
 
             {/* ---------------------------Title--------------------------- */}
 
@@ -175,9 +194,11 @@ const ProductScreen = ({ history, match }) => {
                           <Col>
                             <Form.Group controlId="qty">
                               <Form.Control as="select" className="order-select" value={qty} onChange={e => setQty(e.target.value)} required>
-                                <option key="0" value="">
-                                  Select...
-                                </option>
+                                {inStockArr.length > 1 && (
+                                  <option key="0" value="">
+                                    Select...
+                                  </option>
+                                )}
                                 {product.inStock &&
                                   inStockArr.map((el, i) => (
                                     <option key={i} value={el}>

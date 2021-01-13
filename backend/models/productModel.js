@@ -18,53 +18,17 @@ const reviewSchema = mongoose.Schema(
 
 const productSchema = mongoose.Schema(
   {
-    art: {
-      type: String,
-      required: false
-    },
-    brand: {
-      type: String,
-      required: false
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    color: {
-      type: String,
-      required: false
-    },
-    colorWay: {
-      type: String,
-      required: false
-    },
-    category: {
-      type: String,
-      required: false
-    },
-    nm: {
-      type: String,
-      required: false,
-      default: ""
-    },
-    meterage: {
-      type: Number,
-      required: false,
-      default: 0
-    },
-    fibers: {
-      type: String,
-      required: false
-    },
-    price: {
-      type: Number,
-      required: true,
-      default: 0
-    },
-    description: {
-      type: String,
-      required: false
-    },
+    art: { type: String, required: false },
+    brand: { type: String, required: false },
+    name: { type: String, required: true },
+    color: { type: String, required: false },
+    colorWay: { type: String, required: false },
+    category: { type: String, required: false },
+    nm: { type: String, required: false, default: "" },
+    meterage: { type: Number, required: false, default: 0 },
+    fibers: { type: String, required: false, default: "" },
+    price: { type: Number, required: true, default: 0 },
+    description: { type: String, required: false, default: "" },
     image: [
       {
         type: String,
@@ -72,30 +36,11 @@ const productSchema = mongoose.Schema(
       }
     ],
     reviews: [reviewSchema],
-    rating: {
-      type: Number,
-      required: false,
-      default: 0
-    },
-    numReviews: {
-      type: Number,
-      required: false,
-      default: 0
-    },
-    minimum: {
-      type: Number,
-      required: true,
-      default: 0
-    },
-    inStock: {
-      type: String,
-      required: false
-    },
-    outOfStock: {
-      type: Boolean,
-      required: true,
-      default: false
-    },
+    rating: { type: Number, required: false, default: 0 },
+    numReviews: { type: Number, required: false, default: 0 },
+    minimum: { type: Number, required: true, default: 0 },
+    inStock: { type: String, required: false, default: "" },
+    outOfStock: { type: Boolean, required: true, default: false },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

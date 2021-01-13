@@ -10,10 +10,13 @@ export const getProducts = asyncHandler(async (req, res) => {
   const page = Number(req.query.pageNumber) || 1
   const keyword = req.query.keyword
     ? {
-        description: {
-          $regex: req.query.keyword,
-          $options: "i"
-        }
+        $or: [
+          //
+          { name: { $regex: req.query.keyword, $options: "i" } },
+          { brand: { $regex: req.query.keyword, $options: "i" } },
+          { color: { $regex: req.query.keyword, $options: "i" } },
+          { colorWay: { $regex: req.query.keyword, $options: "i" } }
+        ]
       }
     : {}
 
@@ -23,7 +26,7 @@ export const getProducts = asyncHandler(async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1))
 
-  res.json({ products, page, pages: Math.ceil(count / pageSize) })
+  res.json({ products, page, pages: Math.ceil(count / pageSize), count })
 })
 
 // @desc   Fetch single product
