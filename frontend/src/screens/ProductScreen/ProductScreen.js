@@ -54,11 +54,12 @@ const ProductScreen = ({ history, match }) => {
       setInStockArr([...arr])
       if (arr.length === 1) setQty(arr[0])
     }
-    if (product && Array.isArray(product.image) && product.image.length > 0) {
+
+    if (!loading && product && Array.isArray(product.image) && product.image.length > 0) {
       console.log("if image")
       let checkedImgArr = []
       product.image.map(img => checkImg(img, checkedImgArr))
-      setInitialImages([...imagesForGallery(checkedImgArr)])
+      // setInitialImages([...imagesForGallery(checkedImgArr)])
     } else {
       console.log("if no image")
       setInitialImages([...imagesForGallery([noimage])])
@@ -88,23 +89,20 @@ const ProductScreen = ({ history, match }) => {
     console.log("checkImg")
     await fetch(img).then(res => {
       if (res.ok) {
+        console.log("checkImg: ok")
+
         checkedImgArr.push(img)
       } else {
+        console.log("checkImg: else")
+
         checkedImgArr.push(noimage)
       }
-      console.log("")
+      console.log("checkedImgArr: ", checkedImgArr)
     })
+    setInitialImages([...imagesForGallery(checkedImgArr)])
   }
 
-  const renderGallery = useMemo(() => {
-    console.log("useMemo")
-    return (
-      <div id="product-gallery">
-        <ImageGallery items={initialImages} showPlayButton={false} showIndex={true} thumbnailPosition="left" />
-      </div>
-    )
-  }, [product])
-
+  console.log("initialImages: ", initialImages)
   return (
     <>
       {loading ? (
@@ -125,7 +123,9 @@ const ProductScreen = ({ history, match }) => {
           <div id="product-details">
             {/* ---------------------------Gallery--------------------------- */}
 
-            {initialImages && renderGallery}
+            <div id="product-gallery">
+              <ImageGallery items={initialImages} showPlayButton={false} showIndex={true} thumbnailPosition="left" />
+            </div>
 
             {/* ---------------------------Title--------------------------- */}
 

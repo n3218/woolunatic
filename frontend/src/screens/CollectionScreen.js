@@ -5,7 +5,6 @@ import Product from "../components/Product/Product"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
 import { listProducts } from "../actions/productActions"
-import Paginate from "../components/Paginate"
 import Meta from "../components/Meta"
 import Filter from "../components/Filter/Filter"
 
