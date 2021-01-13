@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
@@ -6,6 +6,7 @@ import { cartRemoveItemAction } from "../actions/cartActions"
 
 const CartItems = ({ cartItems }) => {
   const dispatch = useDispatch()
+
   const removeFromCartHandler = (id, color) => {
     dispatch(cartRemoveItemAction(id, color))
   }
@@ -16,19 +17,23 @@ const CartItems = ({ cartItems }) => {
         <ListGroup.Item key={`${item.product}-${item.qty}`}>
           <Row>
             <Col xl={2} xs={2}>
-              <Image src={item.image} alt={item.name} fluid thumbnail />
+              <Image src={item.image ? item.image : "/assets/noimage.webp"} alt={item.name} fluid thumbnail />
             </Col>
             <Col>
               <div>
-                <small>{item.brand}</small> <Link to={`/products/${item.product}`}>{item.name}</Link>
+                <small>{item.brand}</small>{" "}
+                <Link to={`/products/${item.product}`} className="text-capitalize">
+                  {item.name}
+                </Link>
               </div>
               {item.meterage && <div>{item.meterage}m / 100g</div>}
               {item.fibers && (
                 <div>
+                  <b>Fibers: </b>
                   <small>{item.fibers}</small>
                 </div>
               )}
-              <div>
+              <div className="text-capitalize">
                 <b>Color: </b> {item.color && item.color}
               </div>
               <div>
@@ -40,6 +45,9 @@ const CartItems = ({ cartItems }) => {
                 <Col>
                   <div>
                     <strong>Item price: </strong> €{(item.price * item.qty * 0.01).toFixed(2)}
+                  </div>
+                  <div>
+                    <strong>Item weight: </strong> {item.qty}g
                   </div>
                   <div>
                     <strong>Item meterage: </strong> {item.meterage * item.qty * 0.01}m

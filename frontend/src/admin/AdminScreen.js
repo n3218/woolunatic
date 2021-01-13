@@ -57,7 +57,7 @@ const AdminScreen = ({ history }) => {
             <Form.Group controlId="csv-file">
               <Row>
                 <Col sm="2">
-                  <Form.Label>Update Products by uploading CSV file (fields separated by ',')</Form.Label>
+                  <Form.Label>Update Products by uploading CSV file (fields separated by commas)</Form.Label>
                 </Col>
                 <Col>
                   <Form.File //
