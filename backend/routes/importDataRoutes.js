@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
     cb(null, "uploads/imports")
   },
   filename(req, file, cb) {
-    cb(null, `data-${new Date().toISOString().slice(0, 16)}${path.extname(file.originalname)}`)
+    cb(null, `data-${new Date().toISOString().slice(0, 13)}${path.extname(file.originalname)}`)
   }
 })
 
@@ -49,7 +49,7 @@ router.post("/", upload.single("csv-file"), (req, res) => {
     .on("data", row => {
       let newProduct = {
         // _id: row._id,
-        art: row.brand + "_" + row.name + "_" + row.color,
+        // art: row.brand + "_" + row.name + "_" + row.color,
         brand: row.brand,
         name: row.name,
         color: row.color,
