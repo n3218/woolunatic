@@ -8,7 +8,7 @@ export const getProducts = asyncHandler(async (req, res) => {
   let order = req.body.order ? req.body.order : "desc"
   let sortBy = req.body.sortBy ? req.body.sortBy : "_id"
   const page = Number(req.query.pageNumber) || 1
-  let pageSize = Number(36)
+  let pageSize = Number(500)
   const keyword = req.query.keyword
     ? {
         $or: [
