@@ -74,11 +74,7 @@ const AdminScreen = ({ history }) => {
             </Form.Group>
           </Form>
           {uploading && <Loader />}
-          {!uploading && data.success && (
-            <Message variant="success">
-              File {data.fileName} successfully uploaded! {data.rowCount}
-            </Message>
-          )}
+          {!uploading && data.success && <Message variant="success">File {data.fileName} successfully uploaded!</Message>}
           <Jumbotron>
             <p>
               This is a form for uploading product data (<span className="text-danger">inserts new products ONLY</span>)
