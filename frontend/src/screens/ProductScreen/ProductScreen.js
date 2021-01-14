@@ -49,7 +49,7 @@ const ProductScreen = ({ history, match }) => {
       console.log("if (product.inStock")
       const arr = product.inStock
         .split(",")
-        .map(el => parseInt(el.trim()))
+        .map(el => Number(el.trim()))
         .sort((a, b) => a - b)
       setInStockArr([...arr])
       if (arr.length === 1) setQty(arr[0])
@@ -78,7 +78,8 @@ const ProductScreen = ({ history, match }) => {
   const showOptions = min => {
     console.log("showOptions")
     let values = []
-    let maxVal = inStockArr[inStockArr.length - 1]
+    let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
+    let maxVal = inStockArr[inStockArr.length - 1] - minLeftover
     for (let i = min; i <= maxVal; i += 50) {
       values.push(i)
     }

@@ -49,7 +49,7 @@ router.post("/", upload.single("csv-file"), (req, res) => {
     .on("data", row => {
       let newProduct = {
         // _id: row._id,
-        // art: row.brand + "_" + row.name + "_" + row.color,
+        art: row.brand + "_" + row.name + "_" + row.color,
         brand: row.brand,
         name: row.name,
         color: row.color,
