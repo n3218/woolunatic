@@ -169,6 +169,12 @@ const ProductScreen = ({ history, match }) => {
                     <Col>{product.nm}</Col>
                   </Row>
                 </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Category:</Col>
+                    <Col className="text-capitalize">{product.category && product.category.split(",").join(", ")}</Col>
+                  </Row>
+                </ListGroup.Item>
               </ListGroup>
             </div>
 

@@ -39,7 +39,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts, handleFilters
     let lengthMinVar = 0
     let lengthMaxVar = 0
 
-    filteredProducts.map(product => {
+    products.map(product => {
       if (priceMinVar === 0) priceMinVar = Number(product.price)
       if (Number(product.price) < Number(priceMinVar)) priceMinVar = Number(product.price)
       if (product.price > priceMaxVar) priceMaxVar = product.price
@@ -61,17 +61,14 @@ const Filter = ({ products, filteredProducts, setFilteredProducts, handleFilters
       }
 
       // fibers
-      product.fibers
-        .replace(/[0-9%,+]/g, "")
-        .trim()
-        .split(" ")
-        .map(fib => {
-          if (fibersMap[fib]) {
-            fibersMap[fib] = fibersMap[fib] + 1
-          } else {
-            fibersMap[fib] = 1
-          }
-        })
+      product.category.split(",").map(category => {
+        let fib = category.trim()
+        if (fibersMap[fib]) {
+          fibersMap[fib] = fibersMap[fib] + 1
+        } else {
+          fibersMap[fib] = 1
+        }
+      })
 
       // colors
       let colorVar = product.colorWay.trim().toLowerCase()

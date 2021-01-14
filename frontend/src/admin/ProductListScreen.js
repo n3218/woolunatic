@@ -84,7 +84,7 @@ const ProductListScreen = ({ history, match }) => {
             <tbody>
               {products.map(product => (
                 // <Route render={({ history }) => <SearchBox history={history} />} />
-                <Route render={({ history }) => <ProductListItem history={history} key={product._id} product={product} />} />
+                <Route key={product._id} render={({ history }) => <ProductListItem history={history} key={product._id} product={product} />} />
                 // <ProductListItem key={product._id} product={product} />
               ))}
             </tbody>
