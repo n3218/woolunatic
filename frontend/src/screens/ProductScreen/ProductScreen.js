@@ -142,13 +142,13 @@ const ProductScreen = ({ history, match }) => {
                 <ListGroup.Item>
                   <Row>
                     <Col>Color:</Col>
-                    <Col>{product.color}</Col>
+                    <Col className="text-capitalize">{product.color}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Basic Color:</Col>
-                    <Col>{product.colorWay}</Col>
+                    <Col className="text-capitalize">{product.colorWay}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -186,7 +186,7 @@ const ProductScreen = ({ history, match }) => {
 
                       {!product.outOfStock && (
                         <Row>
-                          <Col>Qty</Col>
+                          <Col>Weight:</Col>
                           <Col>
                             <Form.Group controlId="qty">
                               <Form.Control as="select" className="order-select" value={qty} onChange={e => setQty(e.target.value)} required>
@@ -198,14 +198,14 @@ const ProductScreen = ({ history, match }) => {
                                 {product.inStock &&
                                   inStockArr.map((el, i) => (
                                     <option key={i} value={el}>
-                                      {el} gr
+                                      {el}g cone
                                     </option>
                                   ))}
 
                                 {product.minimum &&
                                   showOptions(product.minimum).map(el => (
                                     <option key={el} value={el}>
-                                      {el}
+                                      {el}g
                                     </option>
                                   ))}
                               </Form.Control>

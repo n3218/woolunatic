@@ -84,17 +84,20 @@ router.post("/", upload.single("csv-file"), (req, res) => {
       // newProducts.push(newProduct)
     })
     .on("end", async rowCount => {
-      console.log("newProductsMap: ", newProductsMap)
-
+      console.log("newProductsMap: ")
       Object.keys(newProductsMap).map(key => newProducts.push(newProductsMap[key]))
-      console.log("newProducts: ", newProducts)
+      console.log("newProducts: ")
+      console.log("Created new products: ", newProducts.length)
       // await Product.updateMany({ _id: { $in: ids } }, newProducts)
       await Product.insertMany(newProducts)
       console.log(`Parsed ${rowCount} rows`)
     })
   //
   //
-  res.send(`/${req.file.path}`)
+  // console.log("newProducts.length: ", newProducts.length)
+  // console.log("req.file.path: ", req.file.path)
+  // console.log("rowCount: ", rowCount)
+  res.json({ success: true, fileName: req.file.path })
 })
 
 export default router
