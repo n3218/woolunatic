@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react"
 import { useSelector } from "react-redux"
 import axios from "axios"
-import { Form, Row, Col } from "react-bootstrap"
+import { Form, Row, Col, Jumbotron, Table } from "react-bootstrap"
 import Loader from "../components/Loader"
 import Meta from "../components/Meta"
 import "react-quill/dist/quill.snow.css"
+import Message from "../components/Message"
 
 const AdminScreen = ({ history }) => {
   const [uploading, setUploading] = useState(false)
+  const [data, setData] = useState("")
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
 
@@ -34,7 +36,7 @@ const AdminScreen = ({ history }) => {
       const { data } = await axios.post("/api/importdata", formData, config)
       console.log("data: ", data)
 
-      // setCsvFile(data)
+      setData(data)
       setUploading(false)
     } catch (error) {
       console.error(error)
@@ -67,11 +69,50 @@ const AdminScreen = ({ history }) => {
                     onChange={uploadCsvFileHandler}
                     accept="text/csv"
                   ></Form.File>
-                  {uploading && <Loader />}
                 </Col>
               </Row>
             </Form.Group>
           </Form>
+          {uploading && <Loader />}
+          {!uploading && data.success && (
+            <Message variant="success">
+              File {data.fileName} successfully uploaded! {data.rowCount}
+            </Message>
+          )}
+          <Jumbotron>
+            <p>
+              This is a form for uploading product data (<span className="text-danger">inserts new products ONLY</span>)
+            </p>
+            <p>
+              File example here: <a href="https://docs.google.com/spreadsheets/d/1YpUqced7qPwX1tomarHuTFO9BGcNOeXGdNqbeKfqqxk/edit?usp=sharing">https://docs.google.com/spreadsheets/... </a>
+            </p>
+            System is looking for next headers in any order:
+            <Table striped hover responsive className="table-sm product-list">
+              <thead>
+                <tr>
+                  <th>category</th>
+                  <th>brand</th>
+                  <th>name</th>
+                  <th>colorWay</th>
+                  <th>color</th>
+                  <th>fibers</th>
+                  <th>inStock</th>
+                  <th>nm</th>
+                  <th>price</th>
+                  <th>meterage</th>
+                </tr>
+              </thead>
+            </Table>
+            <ol>
+              <li>
+                save/export excel file as <strong>.csv</strong> (text file with comma separated fields) to your computer
+              </li>
+              <li>
+                upload <strong>.csv</strong> file via this field.
+              </li>
+            </ol>
+            <p className="text-danger">File may contain any other columns and order of columns does not matter</p>.
+          </Jumbotron>
         </Col>
       </Row>
     </>
