@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useState, useEffect } from "react"
 import { Card, Form, Button } from "react-bootstrap"
 import "./Filter.css"
 //
@@ -10,11 +10,15 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     lengthBy: 0,
     color: []
   }
+  const [initialFilterData, setInitialFilterData] = useState(initialFilter)
+  const [filterState, setFilterState] = useState(initialFilter)
+
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(0)
+  const [priceMaxInitial, setPriceMaxInitial] = useState(0)
   const [lengthMin, setLengthMin] = useState(0)
   const [lengthMax, setLengthMax] = useState(0)
-  const [filterState, setFilterState] = useState(initialFilter)
+  const [lengthMaxInitial, setLengthMaxInitial] = useState(0)
   const [initialProducts, setInitialProducts] = useState([])
   const [category, setCategory] = useState("")
   const [color, setColor] = useState("")
@@ -28,7 +32,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
 
     const brandMap = {}
     const brandArr = []
-    const categoryMap = {}
+    const categoryMap = { cashmere: 0, "cashmere mix": 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, "camel hair": 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
     const categoryArr = []
     const colorMap = { white: 0, natural: 0, beige: 0, yellow: 0, orange: 0, red: 0, pink: 0, purple: 0, blue: 0, green: 0, gray: 0, brown: 0, black: 0, multicolor: 0 }
     const colorArr = []
@@ -58,18 +62,16 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     setLengthMin(lengthMinVar)
     setLengthMax(lengthMaxVar)
 
+    Object.keys(categoryMap).map(key => categoryArr.push([key, categoryMap[key]]))
+    Object.keys(colorMap).map(key => colorArr.push([key, colorMap[key]]))
     Object.keys(brandMap).map(key => brandArr.push([key, brandMap[key]]))
     let brandArrSorted = brandArr.sort((a, b) => (a[0] > b[0] ? 1 : -1))
 
-    Object.keys(categoryMap).map(key => categoryArr.push([key, categoryMap[key]]))
-    let categoryArrSorted = categoryArr.sort((a, b) => (a[0] > b[0] ? 1 : -1))
-
-    Object.keys(colorMap).map(key => colorArr.push([key, colorMap[key]]))
-
-    console.log("colorArr:", colorArr)
-    setCategory(categoryArrSorted)
+    setCategory(categoryArr)
     setColor(colorArr)
     setBrand(brandArrSorted)
+    if (priceMaxInitial === 0) setPriceMaxInitial(priceMaxVar)
+    if (lengthMaxInitial === 0) setLengthMaxInitial(lengthMaxVar)
 
     setFilterState({ ...filterState, priceBy: priceMaxVar, lengthBy: lengthMaxVar })
   }, [filteredProducts])
@@ -92,12 +94,12 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
 
   const onChangePriceHandler = e => {
     setFilterState({ ...filterState, priceBy: e.target.value })
-    // setFilteredProducts(filteredProducts.filter(prod => prod.price <= e.target.value))
+    setFilteredProducts(filteredProducts.filter(prod => prod.price <= e.target.value))
   }
 
   const onChangeLengthHandler = e => {
     setFilterState({ ...filterState, lengthBy: e.target.value })
-    // setFilteredProducts(filteredProducts.filter(prod => prod.price <= e.target.value))
+    setFilteredProducts(filteredProducts.filter(prod => prod.meterage <= e.target.value))
   }
 
   const clearFilterHandler = () => {
@@ -131,12 +133,13 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
   console.log("Filter: filter: ", filterState)
   // console.log("Filter: filteredProducts: ", filteredProducts)
   console.log("color: ", color)
+
   return (
     <>
       <Card className="filter px-3">
         <Card.Body>
-          <Button onClick={clearFilterHandler} variant="primary" className="my-3 px-5">
-            Clear filter
+          <Button onClick={clearFilterHandler} variant="primary" block className="my-3">
+            <nobr>Clear filter</nobr>
           </Button>
 
           <Card.Subtitle className="my-1">total ( {products.length} ) yarns</Card.Subtitle>
@@ -144,13 +147,13 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
           <Form>
             <Form.Group controlId="formBasicRange">
               <Form.Label className="text-primary">Price, €/100g</Form.Label>
-              <Form.Control min={priceMin} max={priceMax} step={0.5} type="range" onChange={onChangePriceHandler} value={filterState.priceBy} />
+              <Form.Control min={priceMin} max={priceMaxInitial} step={0.5} type="range" onChange={onChangePriceHandler} value={filterState.priceBy} />
               <div className="label-comment">
                 <div>€{priceMin}</div>
                 <div>
                   {priceMin} - {filterState.priceBy}
                 </div>
-                <div>€{priceMax}</div>
+                <div>€{priceMaxInitial}</div>
               </div>
             </Form.Group>
             <Form.Group controlId="formBasicRange">
@@ -170,13 +173,13 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
             </Form.Group>
             <Form.Group controlId="formBasicRange">
               <Form.Label className="text-primary">Length, m/100g</Form.Label>
-              <Form.Control min={lengthMin} max={lengthMax} step={10} type="range" onChange={onChangeLengthHandler} value={filterState.lengthBy} />
+              <Form.Control min={lengthMin} max={lengthMaxInitial} step={10} type="range" onChange={onChangeLengthHandler} value={filterState.lengthBy} />
               <div className="label-comment">
                 <div>{lengthMin}m</div>
                 <div>
                   {lengthMin} - {filterState.lengthBy}
                 </div>
-                <div>{lengthMax}m</div>
+                <div>{lengthMaxInitial}m</div>
               </div>
             </Form.Group>
             <Form.Group controlId="formBasicRange">
