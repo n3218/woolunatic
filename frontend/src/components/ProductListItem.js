@@ -6,9 +6,9 @@ import { productDeleteAction } from "../actions/productActions"
 import "./ProductListItem.css"
 
 const ProductListItem = ({ product, history }) => {
-  // const noimage = "/assets/noimage.webp"
+  const noimage = "/assets/noimage.webp"
   const dispatch = useDispatch()
-  // const [imgSrc, setImgSrc] = useState(noimage)
+  const [imgSrc, setImgSrc] = useState(noimage)
 
   const deleteHandler = id => {
     if (window.confirm("Are you sure?")) {
@@ -16,23 +16,21 @@ const ProductListItem = ({ product, history }) => {
     }
   }
 
-  // fetch(product.image[0]).then(res => {
-  //   if (res.ok) {
-  //     setImgSrc(product.image[0])
-  //   } else {
-  //     setImgSrc(noimage)
-  //   }
-  // })
+  fetch(product.image[0]).then(res => {
+    if (res.ok) {
+      setImgSrc(product.image[0])
+    } else {
+      setImgSrc(noimage)
+    }
+  })
 
   const detailsHandler = () => history.push(`/products/${product._id}`)
 
   return (
     <tr key={product._id} className={`product-list-item ${product.outOfStock && "font-weight-light"}`}>
-      {/* <td onClick={detailsHandler}>{product.art}</td> */}
-
-      {/* <td onClick={detailsHandler} className="product-list-min">
+      <td onClick={detailsHandler} className="product-list-min">
         {Array.isArray(product.image) && product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={imgSrc} alt={product.name} fluid className="product-list-image" />}
-      </td> */}
+      </td>
       <td onClick={detailsHandler}>{product.brand}</td>
       <td onClick={detailsHandler}>{product.name}</td>
       <td onClick={detailsHandler}>{product.color && product.color}</td>

@@ -1,6 +1,6 @@
 .product-list {
   width: 100%;
-  max-width: 100%;
+  table-layout: fixed;
 }
 
 .product-list th {
@@ -10,7 +10,7 @@
 
 .product-list thead {
   border-bottom: 2px solid black;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .product-list th,
@@ -26,4 +26,8 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   border-right: 1px solid lightgray;
+}
+
+.product-list-image {
+  width: 60px;
 }

@@ -13,27 +13,23 @@ const CollectionScreen = ({ match }) => {
   const pageNumber = Number(match.params.pageNumber) || 1
   const dispatch = useDispatch()
   const productList = useSelector(state => state.productList)
-  const { loading, error, products, page, pages, success } = productList
-
+  const { loading, error, success, products } = productList
   const [filteredProducts, setFilteredProducts] = useState([])
 
   useEffect(() => {
     if (success) {
-      setFilteredProducts([...filteredProducts, ...products])
+      setFilteredProducts([...products])
     }
-  }, [products])
+  }, [products, success])
 
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber))
   }, [dispatch, keyword, pageNumber])
 
-  const handleFilters = (filters, category) => {
-    console.log("handleFilters:filters: ", filters)
-  }
+  // console.log("CollectionScreen:keyword: ", keyword)
+  // console.log("CollectionScreen:pageNumber: ", pageNumber)
+  // console.log("CollectionScreen:filteredProducts: ", filteredProducts)
 
-  console.log("keyword: ", keyword)
-  console.log("pageNumber: ", pageNumber)
-  console.log("filteredProducts: ", filteredProducts)
   return (
     <div>
       {error && <Message variant="danger">{error}</Message>}
@@ -42,26 +38,21 @@ const CollectionScreen = ({ match }) => {
         <Meta />
         <Row>
           <Col xs={2} xl={2}>
-            {filteredProducts && <Filter handleFilters={filters => handleFilters(filters, "category")} products={products} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />}
+            {success && filteredProducts && <Filter products={products} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />}
           </Col>
           <Col xs={10} xl={10}>
             <Row>
-              {filteredProducts &&
+              {success &&
+                filteredProducts &&
                 filteredProducts.map(product => (
                   <Col key={product._id} xs={6} sm={6} md={4} lg={3} xl={2} className="product-card-block">
                     <Product product={product} />
                   </Col>
                 ))}
             </Row>
-            {loading ? (
-              <Loader />
-            ) : (
-              <div className="text-center">
-                <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} variant="primary" className="my-3 px-5">
+            {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} variant="primary" className="my-3 px-5">
                   Load More
-                </Button>
-              </div>
-            )}
+                </Button> */}</div>}
           </Col>
         </Row>
       </>

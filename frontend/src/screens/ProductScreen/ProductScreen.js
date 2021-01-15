@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Col, ListGroup, Row, Card, Button, Form } from "react-bootstrap"
 import { Link } from "react-router-dom"
@@ -8,14 +8,14 @@ import Rating from "../../components/Rating/Rating"
 import { productDetailsAction, productCreateReviewAction } from "../../actions/productActions"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
-import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DETAILS_RESET } from "../../constants/productConstants"
+import { PRODUCT_CREATE_REVIEW_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
 import "./ProductScreen.css"
 
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
   const productId = match.params.id
-  console.log(match.params.id)
+
   const [qty, setQty] = useState(1)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState("")
@@ -35,18 +35,27 @@ const ProductScreen = ({ history, match }) => {
     return currentImages
   }
 
+  const checkImg = async (img, checkedImgArr) => {
+    await fetch(img).then(res => {
+      if (res.ok) {
+        checkedImgArr.push(img)
+      } else {
+        checkedImgArr.push(noimage)
+      }
+    })
+    setInitialImages([...imagesForGallery(checkedImgArr)])
+  }
+
   useEffect(() => {
     if (successCreateReview) {
       setRating(0)
       setComment("")
     }
     if (!product || !product._id || product._id !== productId) {
-      console.log("if !product._id")
       dispatch(productDetailsAction(productId))
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     }
     if (product && product.inStock) {
-      console.log("if (product.inStock")
       const arr = product.inStock
         .split(",")
         .map(el => Number(el.trim()))
@@ -56,15 +65,12 @@ const ProductScreen = ({ history, match }) => {
     }
 
     if (!loading && product && Array.isArray(product.image) && product.image.length > 0) {
-      console.log("if image")
       let checkedImgArr = []
       product.image.map(img => checkImg(img, checkedImgArr))
-      // setInitialImages([...imagesForGallery(checkedImgArr)])
     } else {
-      console.log("if no image")
       setInitialImages([...imagesForGallery([noimage])])
     }
-  }, [dispatch, match, successCreateReview, product, productId])
+  }, [dispatch, match, successCreateReview, product, productId, loading])
 
   const addToCartHandler = () => {
     history.push(`/cart/${productId}?qty=${qty}`)
@@ -76,7 +82,6 @@ const ProductScreen = ({ history, match }) => {
   }
 
   const showOptions = min => {
-    console.log("showOptions")
     let values = []
     let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
     let maxVal = inStockArr[inStockArr.length - 1] - minLeftover
@@ -86,24 +91,6 @@ const ProductScreen = ({ history, match }) => {
     return values
   }
 
-  const checkImg = async (img, checkedImgArr) => {
-    console.log("checkImg")
-    await fetch(img).then(res => {
-      if (res.ok) {
-        console.log("checkImg: ok")
-
-        checkedImgArr.push(img)
-      } else {
-        console.log("checkImg: else")
-
-        checkedImgArr.push(noimage)
-      }
-      console.log("checkedImgArr: ", checkedImgArr)
-    })
-    setInitialImages([...imagesForGallery(checkedImgArr)])
-  }
-
-  console.log("initialImages: ", initialImages)
   return (
     <>
       {loading ? (
