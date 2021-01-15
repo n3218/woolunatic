@@ -12,98 +12,106 @@
   margin-top: 0.6em;
 }
 
-.label-comment {
+.filter .label-comment {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
 }
 
-.label-comment div {
+.filter .label-comment div {
   padding: 0;
   margin: 0;
 }
 
-ol.colors {
-  display: block;
-  list-style-type: decimal;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-  padding-inline-start: 0;
-}
-.colors li {
+.color div {
   display: inline-block;
   margin: 3px;
+  width: 25px;
+  height: 25px;
   vertical-align: top;
-}
-.colour-filter > li {
   position: relative;
 }
-.colors a {
-  position: relative;
+
+.color [type="checkbox"]:not(:checked),
+.color [type="checkbox"]:checked {
+  position: absolute;
+  left: 0;
+  opacity: 0.01;
+}
+
+.color label {
+  position: absolute;
+  left: 0;
   display: block;
   width: 25px;
   height: 25px;
   font-size: 0;
   line-height: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 100;
 }
-.colors li:before {
-  width: 25px;
-  height: 25px;
-}
-.colour-filter > li:before {
+
+.color div label:before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
+  left: 0;
   width: 25px;
   height: 25px;
-  margin: auto;
   border-radius: 50%;
   box-sizing: border-box;
   border: 1px solid #d6d6d7;
+  opacity: 0.8;
 }
-.colour-filter > li.white:before {
+.color > div.white label:before {
   background: #fff;
 }
-.colour-filter > li.natural:before {
+.color > div.natural label:before {
   background: #fbf8e0;
   border: 1px solid #e6e3ca;
 }
-.colour-filter > li.beige:before {
+.color > div.beige label:before {
   background: #c7b299;
 }
-.colour-filter > li.yellow:before {
+.color > div.yellow label:before {
   background: #ffe168;
 }
-.colour-filter > li.orange:before {
+.color > div.orange label:before {
   background: #f2763d;
 }
-.colour-filter > li.red:before {
+.color > div.red label:before {
   background: #d92b31;
 }
-.colour-filter > li.pink:before {
+.color > div.pink label:before {
   background: #f06eaa;
 }
-.colour-filter > li.purple:before {
+.color > div.purple label:before {
   background: #8560a8;
 }
-.colour-filter > li.black:before {
+.color > div.black label:before {
   background: black;
 }
-.colour-filter > li.gray:before {
+.color > div.gray label:before {
   background: gray;
 }
-.colour-filter > li.green:before {
+.color > div.green label:before {
   background: green;
 }
-.colour-filter > li.blue:before {
+.color > div.blue label:before {
   background: #2780e3;
 }
-.colour-filter > li.brown:before {
+.color > div.brown label:before {
   background: brown;
 }
-.colour-filter > li.multicolor:before {
+.color > div.multicolor label:before {
   background: linear-gradient(45deg, #fffc00, red 60%, #2780e3);
+}
+
+.color [type="checkbox"]:checked + label:before,
+.color [type="checkbox"]:focus + label:before,
+.color [type="checkbox"]:hover + label:before {
+  border-radius: 50%;
+  opacity: 1;
+  border-color: #2780e3 !important;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 8px rgba(39, 128, 227, 0.5);
 }

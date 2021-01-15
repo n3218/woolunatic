@@ -64,7 +64,7 @@ const ProductListScreen = ({ history, match }) => {
             <thead>
               <tr>
                 {/* <th>art</th> */}
-                {/* <th className="product-list-min">image</th> */}
+                <th className="product-list-min">image</th>
                 <th>brand</th>
                 <th>name</th>
                 <th>color</th>
