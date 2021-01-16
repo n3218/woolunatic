@@ -17,7 +17,7 @@ const CartItems = ({ cartItems }) => {
         <ListGroup.Item key={`${item.product}-${item.qty}`}>
           <Row>
             <Col xl={2} xs={2}>
-              <Image src={item.image ? item.image : "/assets/noimage.webp"} alt={item.name} fluid thumbnail />
+              <Image src={item.image ? item.image : "/uploads/noimage/noimage.webp"} alt={item.name} fluid thumbnail />
             </Col>
             <Col>
               <div>

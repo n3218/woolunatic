@@ -6,7 +6,7 @@ import { productDeleteAction } from "../actions/productActions"
 import "./ProductListItem.css"
 
 const ProductListItem = ({ product, history }) => {
-  const noimage = "/assets/noimage.webp"
+  const noimage = "/uploads/noimage/noimage.webp"
   const dispatch = useDispatch()
   const [imgSrc, setImgSrc] = useState(noimage)
 

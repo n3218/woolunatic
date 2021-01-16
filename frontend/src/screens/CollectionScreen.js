@@ -26,10 +26,7 @@ const CollectionScreen = ({ match }) => {
     dispatch(listProducts(keyword, pageNumber))
   }, [dispatch, keyword, pageNumber])
 
-  // console.log("CollectionScreen:keyword: ", keyword)
-  // console.log("CollectionScreen:pageNumber: ", pageNumber)
-  // console.log("CollectionScreen:filteredProducts: ", filteredProducts)
-
+  console.log("CollectionScreen:filteredProducts: ", filteredProducts)
   return (
     <div>
       {error && <Message variant="danger">{error}</Message>}
@@ -38,12 +35,11 @@ const CollectionScreen = ({ match }) => {
         <Meta />
         <Row>
           <Col xs={2} xl={2}>
-            {success && filteredProducts && <Filter products={products} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />}
+            {filteredProducts && <Filter products={products} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />}
           </Col>
           <Col xs={10} xl={10}>
             <Row>
-              {success &&
-                filteredProducts &&
+              {filteredProducts &&
                 filteredProducts.map(product => (
                   <Col key={product._id} xs={6} sm={6} md={4} lg={3} xl={2} className="product-card-block">
                     <Product product={product} />

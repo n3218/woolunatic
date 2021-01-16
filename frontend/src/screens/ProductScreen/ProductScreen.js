@@ -27,7 +27,7 @@ const ProductScreen = ({ history, match }) => {
   const { loading, error, product } = productDetails
   const productCreateReview = useSelector(state => state.productCreateReview)
   const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview
-  const noimage = "/assets/noimage.webp"
+  const noimage = "/uploads/noimage/noimage.webp"
 
   const imagesForGallery = imageArray => {
     let currentImages = []
