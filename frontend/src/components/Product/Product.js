@@ -5,7 +5,9 @@ import "./Product.css"
 import Rating from "../Rating/Rating"
 
 const Product = ({ product }) => {
-  const [imgSrc, setImgSrc] = useState("/assets/noimage.webp")
+  const noimage = "/uploads/noimage/noimage.webp"
+
+  const [imgSrc, setImgSrc] = useState(noimage)
 
   const getImageOrFallback = (path, fallback) => {
     return new Promise(resolve => {
@@ -16,7 +18,7 @@ const Product = ({ product }) => {
     })
   }
 
-  getImageOrFallback(product.image[0], "/assets/noimage.webp").then(result => result)
+  getImageOrFallback(product.image[0], noimage).then(result => result)
 
   return (
     <Card className="product-card">
