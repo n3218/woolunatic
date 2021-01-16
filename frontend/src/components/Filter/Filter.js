@@ -19,9 +19,11 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
   const [initialProducts, setInitialProducts] = useState([])
 
   useEffect(() => {
-    if (!initialProducts.length) {
-      setInitialProducts([...products])
-    }
+    console.log("Filter:useEffect-1")
+
+    // if (!initialProducts.length) {
+    setInitialProducts([...products])
+    // }
     const brandMap = {}
     const brandArr = []
     const categoryMap = { cashmere: 0, "cashmere mix": 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, "camel hair": 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
@@ -43,7 +45,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
 
       checkIfExists(colorWayMap, product.colorWay.trim().toLowerCase())
       checkIfExists(brandMap, product.brand.trim())
-      product.category.split(",").map(cat => {
+      return product.category.split(",").map(cat => {
         return checkIfExists(categoryMap, cat.trim().toLowerCase())
       })
     })
@@ -64,27 +66,30 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
       lengthMax: lengthMaxVar,
       colorWay: [...colorWayArr]
     })
-  }, [products, initialProducts.length])
+    setFilterState({ ...filterState, price: priceMaxVar, length: lengthMaxVar })
+  }, [products])
 
   useEffect(() => {
-    if (filterState !== initialFilterData) {
-      const multiPropsFilter = (productsToFilter, filters) => {
-        const filterKeys = Object.keys(filters)
-        return productsToFilter.filter(product => {
-          return filterKeys.every(key => {
-            if (!filters[key].length) return true
-            // Loops again if product[key] contains "comma" (for category attribute).
-            if (product[key].includes(",")) {
-              return product[key].split(",").some(keyEle => filters[key].includes(keyEle))
-            }
-            return filters[key].includes(product[key])
-          })
+    console.log("Filter:useEffect-2")
+    const multiPropsFilter = (productsToFilter, filters) => {
+      const filterKeys = Object.keys(filters)
+      return productsToFilter.filter(product => {
+        return filterKeys.every(key => {
+          if (!filters[key].length) return true
+          if (key === "price") return product[key] <= filters[key]
+          if (key === "length") return product.meterage <= filters[key]
+          if (product[key].includes(",")) {
+            return product[key].split(",").some(keyEle => filters[key].includes(keyEle))
+          }
+          return filters[key].includes(product[key])
         })
-      }
-      let newProds = multiPropsFilter(initialProducts, filterState)
-      setFilteredProducts(newProds)
+      })
     }
+    let newProds = multiPropsFilter(initialProducts, filterState)
+    setFilteredProducts(newProds)
   }, [filterState])
+
+  useEffect(() => {}, [filteredProducts])
 
   const checkIfExists = (mapOfValues, value) => {
     if (mapOfValues[value]) {
@@ -96,18 +101,10 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
 
   const onChangeStateHandler = (e, field) => {
     setFilterState({ ...filterState, [field]: e.target.value })
-    console.log("onChangeStateHandler")
-    // handleFilters({ ...filterState, [field]: e.target.value }, field)
-    // setFilteredProducts(filteredProducts.filter(prod => prod.price <= e.target.value))
-  }
-
-  const onChangeLengthHandler = e => {
-    setFilterState({ ...filterState, length: e.target.value })
-    // setFilteredProducts(filteredProducts.filter(prod => prod.meterage <= e.target.value))
   }
 
   const clearFilterHandler = () => {
-    setFilterState(initialFilter)
+    setFilterState({ ...initialFilter, price: initialFilterData.priceMax, length: initialFilterData.lengthMax })
     setFilteredProducts(initialProducts)
   }
 
@@ -122,10 +119,10 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     setFilterState({
       ...filterState,
       [cat]: [...copyFilterState]
-      // frozen: filterState.frozen === "" ? cat : filterState.frozen
     })
   }
   console.log("filterState: ", filterState)
+
   return (
     <>
       <Card className="filter px-3">
@@ -165,7 +162,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
             </Form.Group>
             <Form.Group controlId="formBasicRange">
               <Form.Label className="text-primary">Length, m/100g</Form.Label>
-              <Form.Control min={initialFilterData.lengthMin} max={initialFilterData.lengthMax} step={10} type="range" onChange={onChangeLengthHandler} value={filterState.length} />
+              <Form.Control min={initialFilterData.lengthMin} max={initialFilterData.lengthMax} step={10} type="range" onChange={e => onChangeStateHandler(e, "length")} value={filterState.length} />
               <div className="label-comment">
                 <div>{initialFilterData.lengthMin}m</div>
                 <div>

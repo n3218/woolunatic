@@ -6,27 +6,32 @@ import Product from "../models/productModel.js"
 // @access Public
 export const getProducts = asyncHandler(async (req, res) => {
   let order = req.body.order ? req.body.order : "desc"
-  let sortBy = req.body.sortBy ? req.body.sortBy : "_id"
-  const page = Number(req.query.pageNumber) || 1
-  let pageSize = Number(500)
-  const keyword = req.query.keyword
-    ? {
-        $or: [
-          //
-          { name: { $regex: req.query.keyword, $options: "i" } },
-          { brand: { $regex: req.query.keyword, $options: "i" } },
-          { color: { $regex: req.query.keyword, $options: "i" } },
-          { colorWay: { $regex: req.query.keyword, $options: "i" } },
-          { category: { $regex: req.query.keyword, $options: "i" } }
-        ]
-      }
-    : {}
-  const count = await Product.countDocuments({ ...keyword })
-  const products = await Product.find({ ...keyword })
+  let sortBy = req.body.sortBy ? req.body.sortBy : "updatedAt"
+  let page = Number(req.query.pageNumber) || 1
+  let pageSize = 300
+  let parameters = {}
+
+  if (req.query.keyword) {
+    parameters = {
+      $or: [
+        //
+        { name: { $regex: req.query.keyword, $options: "i" } },
+        { brand: { $regex: req.query.keyword, $options: "i" } },
+        { color: { $regex: req.query.keyword, $options: "i" } },
+        { colorWay: { $regex: req.query.keyword, $options: "i" } },
+        { category: { $regex: req.query.keyword, $options: "i" } }
+      ]
+    }
+  }
+  if (req.query.category) {
+    parameters = { category: { $regex: req.query.category } }
+  }
+
+  const count = await Product.countDocuments({ ...parameters })
+  const products = await Product.find({ ...parameters })
     .sort([[sortBy, order]])
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-
   res.json({ products, page, pages: Math.ceil(count / pageSize), count })
 })
 

@@ -10,6 +10,7 @@ import Filter from "../components/Filter/Filter"
 
 const CollectionScreen = ({ match }) => {
   const keyword = match.params.keyword
+  const category = match.params.category
   const pageNumber = Number(match.params.pageNumber) || 1
   const dispatch = useDispatch()
   const productList = useSelector(state => state.productList)
@@ -17,21 +18,25 @@ const CollectionScreen = ({ match }) => {
   const [filteredProducts, setFilteredProducts] = useState([])
 
   useEffect(() => {
+    console.log("CollectionScreen:useEffect-1")
+
     if (success) {
       setFilteredProducts([...products])
     }
   }, [products, success])
 
   useEffect(() => {
-    dispatch(listProducts(keyword, pageNumber))
-  }, [dispatch, keyword, pageNumber])
+    console.log("CollectionScreen:useEffect-2")
+
+    dispatch(listProducts(keyword, pageNumber, category))
+  }, [dispatch, keyword, pageNumber, category])
 
   console.log("CollectionScreen:filteredProducts: ", filteredProducts)
   return (
     <div>
       {error && <Message variant="danger">{error}</Message>}
       <>
-        {keyword ? <h2>{keyword.split("|").join(" | ")}</h2> : <h2>MY YARN COLLECTION</h2>}
+        {keyword ? <h2>{keyword.split("|").join(" | ")}</h2> : <h2>OUR YARN COLLECTION</h2>}
         <Meta />
         <Row>
           <Col xs={2} xl={2}>
