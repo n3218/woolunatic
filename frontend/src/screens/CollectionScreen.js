@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, Button } from "react-bootstrap"
+import { Row, Col } from "react-bootstrap"
 import Product from "../components/Product/Product"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
@@ -32,20 +32,18 @@ const CollectionScreen = ({ match }) => {
 
   console.log("CollectionScreen:filteredProducts: ", filteredProducts)
   return (
-    <div>
+    <>
       {error && <Message variant="danger">{error}</Message>}
       <>
         <h2>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "CASHMERE MIXES" : match.params.category.split("-").join(" | ")) : "YARN COLLECTION"}</h2>
         <Meta />
-        <Row>
-          <Col xs={2} xl={2}>
-            {filteredProducts && <Filter products={products} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />}
-          </Col>
-          <Col xs={10} xl={10}>
+        <div className="display-flex">
+          <div className="filter-container">{filteredProducts && <Filter products={products} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />}</div>
+          <div className="filtered-products-container">
             <Row>
               {filteredProducts &&
                 filteredProducts.map(product => (
-                  <Col key={product._id} xs={6} sm={6} md={4} lg={3} xl={2} className="product-card-block">
+                  <Col key={product._id} xs={6} sm={4} md={4} lg={3} xl={2} className="product-card-block">
                     <Product product={product} />
                   </Col>
                 ))}
@@ -53,10 +51,10 @@ const CollectionScreen = ({ match }) => {
             {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} variant="primary" className="my-3 px-5">
                   Load More
                 </Button> */}</div>}
-          </Col>
-        </Row>
+          </div>
+        </div>
       </>
-    </div>
+    </>
   )
 }
 

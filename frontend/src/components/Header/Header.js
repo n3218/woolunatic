@@ -104,9 +104,9 @@ const Header = () => {
             <LinkContainer to="/yarns/mohair-camel-alpaca-yak">
               <Nav.Link className="underlink">Mohairs</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/angora">
+            {/* <LinkContainer to="/yarns/angora">
               <Nav.Link className="underlink">Angora</Nav.Link>
-            </LinkContainer>
+            </LinkContainer> */}
             <LinkContainer to="/yarns/cotton-linen">
               <Nav.Link className="underlink">Cotton/Linen</Nav.Link>
             </LinkContainer>
