@@ -15,7 +15,6 @@ import "./ProductScreen.css"
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
   const productId = match.params.id
-
   const [qty, setQty] = useState(1)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState("")
@@ -70,7 +69,7 @@ const ProductScreen = ({ history, match }) => {
     } else {
       setInitialImages([...imagesForGallery([noimage])])
     }
-  }, [dispatch, match, successCreateReview, product, productId, loading])
+  }, [dispatch, match, successCreateReview, productId])
 
   const addToCartHandler = () => {
     history.push(`/cart/${productId}?qty=${qty}`)
