@@ -23,8 +23,45 @@ export const getProducts = asyncHandler(async (req, res) => {
       ]
     }
   }
+
   if (req.query.category) {
-    parameters = { category: { $regex: req.query.category } }
+    let cat = req.query.category.split("-")
+
+    if (cat.length === 1) {
+      parameters = {
+        category: { $regex: cat[0], $options: "i" }
+      }
+    }
+    if (cat.length === 2) {
+      parameters = {
+        $or: [
+          //
+          { category: { $regex: cat[0], $options: "i" } },
+          { category: { $regex: cat[1], $options: "i" } }
+        ]
+      }
+    }
+    if (cat.length === 3) {
+      parameters = {
+        $or: [
+          //
+          { category: { $regex: cat[0], $options: "i" } },
+          { category: { $regex: cat[1], $options: "i" } },
+          { category: { $regex: cat[2], $options: "i" } }
+        ]
+      }
+    }
+    if (cat.length === 4) {
+      parameters = {
+        $or: [
+          //
+          { category: { $regex: cat[0], $options: "i" } },
+          { category: { $regex: cat[1], $options: "i" } },
+          { category: { $regex: cat[2], $options: "i" } },
+          { category: { $regex: cat[3], $options: "i" } }
+        ]
+      }
+    }
   }
 
   const count = await Product.countDocuments({ ...parameters })

@@ -39,7 +39,7 @@ const HomeScreen = () => {
               ))}
           </Row>
           <Row className="justify-content-center my-3">
-            <Link to="/collection" className="btn btn-danger px-5">
+            <Link to="/yarns" className="btn btn-danger px-5">
               SEE COLLECTION
             </Link>
           </Row>
