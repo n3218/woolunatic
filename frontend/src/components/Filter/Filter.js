@@ -89,9 +89,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     }
     let newProds = multiPropsFilter(initialProducts, filterState)
     setFilteredProducts(newProds)
-  }, [filterState.brand, initialProducts])
-
-  useEffect(() => {}, [filteredProducts])
+  }, [filterState])
 
   const checkIfExists = (mapOfValues, value) => {
     if (mapOfValues[value]) {
