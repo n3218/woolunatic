@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Card, Form, Button } from "react-bootstrap"
+import { Card, Form, Button, ListGroup } from "react-bootstrap"
 import "./Filter.css"
 //
 const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
@@ -17,6 +17,8 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
   const [initialFilterData, setInitialFilterData] = useState(initialFilter)
   const [filterState, setFilterState] = useState(initialFilter)
   const [initialProducts, setInitialProducts] = useState([])
+  const [showFibers, setShowFibers] = useState(false)
+  const [showBrands, setShowBrands] = useState(false)
 
   useEffect(() => {
     console.log("Filter:useEffect-1")
@@ -87,7 +89,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     }
     let newProds = multiPropsFilter(initialProducts, filterState)
     setFilteredProducts(newProds)
-  }, [filterState])
+  }, [filterState.brand, initialProducts])
 
   useEffect(() => {}, [filteredProducts])
 
@@ -125,100 +127,143 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
 
   return (
     <>
-      <Card className="filter px-3">
-        <Card.Body>
-          <Button onClick={clearFilterHandler} variant="primary" block className="my-3">
+      <div className="text-center">
+        <h6>total {products.length} yarns</h6>
+      </div>
+      <Card className="filter">
+        <Card.Header>
+          <Button onClick={clearFilterHandler} variant="primary" block>
             <nobr>Clear filter</nobr>
           </Button>
+          {/* <Card.Subtitle className="my-1 text-center">total ( {products.length} ) yarns</Card.Subtitle> */}
+          <Card.Title as="h4" className="text-center">
+            Filter Yarns
+          </Card.Title>
+        </Card.Header>
 
-          <Card.Subtitle className="my-1">total ( {products.length} ) yarns</Card.Subtitle>
-          <Card.Title as="h4">Filter Yarns by</Card.Title>
-          <Form>
-            <Form.Group controlId="formBasicRange">
-              <Form.Label className="text-primary">Price, €/100g</Form.Label>
-              <Form.Control min={initialFilterData.priceMin} max={initialFilterData.priceMax} step={0.5} type="range" onChange={e => onChangeStateHandler(e, "price")} value={filterState.price} />
-              <div className="label-comment">
-                <div>€{initialFilterData.priceMin}</div>
-                <div>
-                  {initialFilterData.priceMin} - {filterState.price}
+        <Form>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <Form.Group controlId="formBasicRange">
+                <Form.Label as="h6">Price, €/100g</Form.Label>
+                <Form.Control min={initialFilterData.priceMin} max={initialFilterData.priceMax} step={0.5} type="range" onChange={e => onChangeStateHandler(e, "price")} value={filterState.price} />
+                <div className="label-comment">
+                  <div>€{initialFilterData.priceMin}</div>
+                  <div>
+                    {initialFilterData.priceMin} - {filterState.price}
+                  </div>
+                  <div>€{initialFilterData.priceMax}</div>
                 </div>
-                <div>€{initialFilterData.priceMax}</div>
-              </div>
-            </Form.Group>
-            <Form.Group controlId="formBasicRange">
-              <Form.Label className="text-primary">Fiber Content</Form.Label>
-              {initialFilterData.category &&
-                initialFilterData.category.map(
-                  fib =>
-                    fib[1] > 0 && (
-                      <div key={fib[0]}>
-                        <Form.Check //
-                          type="checkbox"
-                          id={fib[0]}
-                          label={
-                            fib[0] === "cashmix" //
-                              ? `cashmere mix (${fib[1]})`
-                              : fib[0] === "camel"
-                              ? `camel hair (${fib[1]})`
-                              : `${fib[0]} (${fib[1]})`
-                          }
-                          onChange={() => handleToggle(fib[0], "category")}
-                          checked={filterState.category.includes(fib[0])}
-                        />
-                      </div>
-                    )
-                )}
-            </Form.Group>
-            <Form.Group controlId="formBasicRange">
-              <Form.Label className="text-primary">Length, m/100g</Form.Label>
-              <Form.Control min={initialFilterData.lengthMin} max={initialFilterData.lengthMax} step={10} type="range" onChange={e => onChangeStateHandler(e, "length")} value={filterState.length} />
-              <div className="label-comment">
-                <div>{initialFilterData.lengthMin}m</div>
-                <div>
-                  {initialFilterData.lengthMin} - {filterState.length}
-                </div>
-                <div>{initialFilterData.lengthMax}m</div>
-              </div>
-            </Form.Group>
-            <Form.Group controlId="formBasicRange">
-              <Form.Label className="text-primary">Color</Form.Label>
-              <div className="color">
-                {initialFilterData.colorWay &&
-                  initialFilterData.colorWay.map(
-                    col =>
-                      col[1] > 0 && (
-                        <Form.Check //
-                          key={col[0]}
-                          className={col[0]}
-                          type="checkbox"
-                          id={col[0]}
-                          title={`${col[0]} (${col[1]})`}
-                          label={`${col[0]} (${col[1]})`}
-                          disabled={col[1] === 0}
-                          onChange={() => handleToggle(col[0], "colorWay")}
-                          checked={filterState.colorWay.includes(col[0])}
-                        />
+              </Form.Group>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Form.Group controlId="formBasicRange">
+                <Form.Label as="h6">Fiber Content</Form.Label>
+                {initialFilterData.category &&
+                  initialFilterData.category.map(
+                    (fib, i) =>
+                      fib[1] > 0 && (
+                        <div key={fib[0]} className={i > 5 && !showFibers ? "display-none" : "display-block"}>
+                          <Form.Check //
+                            type="checkbox"
+                            id={fib[0]}
+                            label={
+                              fib[0] === "cashmix" //
+                                ? `cashmere mix (${fib[1]})`
+                                : fib[0] === "camel"
+                                ? `camel hair (${fib[1]})`
+                                : `${fib[0]} (${fib[1]})`
+                            }
+                            onChange={() => handleToggle(fib[0], "category")}
+                            checked={filterState.category.includes(fib[0])}
+                          />
+                        </div>
                       )
                   )}
-              </div>
-            </Form.Group>
-            <Form.Group controlId="formBasicRange">
-              <Form.Label className="text-primary">Brand</Form.Label>
-              {initialFilterData.brand &&
-                initialFilterData.brand.map(brand => (
-                  <div key={brand[0]}>
-                    <Form.Check //
-                      type="checkbox"
-                      id={brand[0]}
-                      label={`${brand[0]} (${brand[1]})`}
-                      onChange={() => handleToggle(brand[0], "brand")}
-                      checked={filterState.brand.includes(brand[0])}
-                    />
+                <div>
+                  <small>
+                    {!showFibers ? (
+                      <Button variant="link" onClick={() => setShowFibers(true)}>
+                        <small>Show more...</small>
+                      </Button>
+                    ) : (
+                      <Button variant="link" onClick={() => setShowFibers(false)}>
+                        <small>Show less...</small>
+                      </Button>
+                    )}
+                  </small>
+                </div>
+              </Form.Group>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Form.Group controlId="formBasicRange">
+                <Form.Label as="h6">Length, m/100g</Form.Label>
+                <Form.Control min={initialFilterData.lengthMin} max={initialFilterData.lengthMax} step={10} type="range" onChange={e => onChangeStateHandler(e, "length")} value={filterState.length} />
+                <div className="label-comment">
+                  <div>{initialFilterData.lengthMin}m</div>
+                  <div>
+                    {initialFilterData.lengthMin} - {filterState.length}
                   </div>
-                ))}
-            </Form.Group>
-          </Form>
-        </Card.Body>
+                  <div>{initialFilterData.lengthMax}m</div>
+                </div>
+              </Form.Group>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Form.Group controlId="formBasicRange">
+                <Form.Label as="h6">Color</Form.Label>
+                <div className="color">
+                  {initialFilterData.colorWay &&
+                    initialFilterData.colorWay.map(
+                      col =>
+                        col[1] > 0 && (
+                          <Form.Check //
+                            key={col[0]}
+                            className={col[0]}
+                            type="checkbox"
+                            id={col[0]}
+                            title={`${col[0]} (${col[1]})`}
+                            label={`${col[0]} (${col[1]})`}
+                            disabled={col[1] === 0}
+                            onChange={() => handleToggle(col[0], "colorWay")}
+                            checked={filterState.colorWay.includes(col[0])}
+                          />
+                        )
+                    )}
+                </div>
+              </Form.Group>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Form.Group controlId="formBasicRange">
+                <Form.Label as="h6">Brand</Form.Label>
+                {initialFilterData.brand &&
+                  initialFilterData.brand.map((brand, i) => (
+                    <div key={brand[0]} className={i > 5 && !showBrands ? "display-none" : "display-block"}>
+                      <Form.Check //
+                        type="checkbox"
+                        id={brand[0]}
+                        label={`${brand[0]} (${brand[1]})`}
+                        onChange={() => handleToggle(brand[0], "brand")}
+                        checked={filterState.brand.includes(brand[0])}
+                      />
+                    </div>
+                  ))}
+                <div>
+                  <small>
+                    {!showBrands ? (
+                      <Button variant="link" onClick={() => setShowBrands(true)}>
+                        <small>Show more...</small>
+                      </Button>
+                    ) : (
+                      <Button variant="link" onClick={() => setShowBrands(false)}>
+                        <small>Show less...</small>
+                      </Button>
+                    )}
+                  </small>
+                </div>
+              </Form.Group>
+            </ListGroup.Item>
+          </ListGroup>
+        </Form>
       </Card>
     </>
   )

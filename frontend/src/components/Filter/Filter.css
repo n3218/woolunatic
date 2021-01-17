@@ -1,12 +1,43 @@
 @import "../../_cosmo.min.css";
 
+.display-none,
+.display-block {
+  transition: all 1s ease;
+}
+.display-flex {
+  display: flex;
+  justify-content: space-evenly;
+}
+.display-none {
+  display: none;
+}
+.display-block {
+  display: block;
+}
+
+.filtered-products-container {
+  width: 100%;
+}
+
+.filter-container {
+  min-width: 174px;
+  max-width: 12%;
+}
+@media (max-width: 766px) {
+  .filter-container {
+    display: none;
+  }
+}
+
 .filter {
-  min-width: 170px;
+  min-width: 166px;
+  margin: 0 2px 0 5px;
 }
 
 .filter label {
-  margin-top: 0.3rem;
-  font-size: 0.9rem;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
 }
 .filter .form-check-input {
   margin-top: 0.6em;
@@ -23,25 +54,33 @@
   margin: 0;
 }
 
+.color {
+  margin: 0px -16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
 .color div {
-  display: inline-block;
+  box-sizing: content-box;
   margin: 3px;
   width: 25px;
   height: 25px;
-  vertical-align: top;
   position: relative;
+  padding: 0;
 }
 
 .color [type="checkbox"]:not(:checked),
 .color [type="checkbox"]:checked {
+  box-sizing: content-box;
   position: absolute;
-  left: 0;
+
   opacity: 0.01;
 }
 
 .color label {
+  box-sizing: content-box;
   position: absolute;
-  left: 0;
+
   display: block;
   width: 25px;
   height: 25px;
@@ -53,9 +92,10 @@
 }
 
 .color div label:before {
+  box-sizing: content-box;
   content: "";
   position: absolute;
-  left: 0;
+
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -101,7 +141,7 @@
   background: #2780e3;
 }
 .color > div.brown label:before {
-  background: brown;
+  background: rgb(158, 63, 19);
 }
 .color > div.multicolor label:before {
   background: linear-gradient(45deg, #fffc00, red 60%, #2780e3);
@@ -109,9 +149,23 @@
 
 .color [type="checkbox"]:checked + label:before,
 .color [type="checkbox"]:hover + label:before {
+  box-sizing: content-box;
   border-radius: 50%;
   opacity: 1;
-  border: 2px solid rgba(39, 128, 227, 0.9);
-  box-shadow: 2px 2px 2px rgba(39, 128, 227, 0.5);
+  /* border: 2px solid rgba(39, 128, 227, 0.9);
+  box-shadow: 2px 2px 2px rgba(39, 128, 227, 0.5); */
   /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2) inset, 3px 3px 3px rgba(39, 128, 227, 0.5); */
+}
+
+.color [type="checkbox"]:checked + label::after,
+.color [type="checkbox"]:hover + label::after {
+  box-sizing: content-box;
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 25px;
+  height: 25px;
+  border: 3px solid rgba(39, 128, 227, 0.6);
+  border-radius: 50%;
 }
