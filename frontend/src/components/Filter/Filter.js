@@ -26,7 +26,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     // }
     const brandMap = {}
     const brandArr = []
-    const categoryMap = { cashmere: 0, "cashmere mix": 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, "camel hair": 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
+    const categoryMap = { cashmere: 0, cashmix: 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, camel: 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
     const categoryArr = []
     const colorWayMap = { white: 0, natural: 0, beige: 0, yellow: 0, orange: 0, red: 0, pink: 0, purple: 0, blue: 0, green: 0, gray: 0, brown: 0, black: 0, multicolor: 0 }
     const colorWayArr = []
@@ -148,17 +148,26 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
             <Form.Group controlId="formBasicRange">
               <Form.Label className="text-primary">Fiber Content</Form.Label>
               {initialFilterData.category &&
-                initialFilterData.category.map(fib => (
-                  <div key={fib[0]}>
-                    <Form.Check //
-                      type="checkbox"
-                      id={fib[0]}
-                      label={`${fib[0]} (${fib[1]})`}
-                      onChange={() => handleToggle(fib[0], "category")}
-                      checked={filterState.category.includes(fib[0])}
-                    />
-                  </div>
-                ))}
+                initialFilterData.category.map(
+                  fib =>
+                    fib[1] > 0 && (
+                      <div key={fib[0]}>
+                        <Form.Check //
+                          type="checkbox"
+                          id={fib[0]}
+                          label={
+                            fib[0] === "cashmix" //
+                              ? `cashmere mix (${fib[1]})`
+                              : fib[0] === "camel"
+                              ? `camel hair (${fib[1]})`
+                              : `${fib[0]} (${fib[1]})`
+                          }
+                          onChange={() => handleToggle(fib[0], "category")}
+                          checked={filterState.category.includes(fib[0])}
+                        />
+                      </div>
+                    )
+                )}
             </Form.Group>
             <Form.Group controlId="formBasicRange">
               <Form.Label className="text-primary">Length, m/100g</Form.Label>
@@ -175,19 +184,22 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
               <Form.Label className="text-primary">Color</Form.Label>
               <div className="color">
                 {initialFilterData.colorWay &&
-                  initialFilterData.colorWay.map(col => (
-                    <Form.Check //
-                      key={col[0]}
-                      className={col[0]}
-                      type="checkbox"
-                      id={col[0]}
-                      title={`${col[0]} (${col[1]})`}
-                      label={`${col[0]} (${col[1]})`}
-                      disabled={col[1] === 0}
-                      onChange={() => handleToggle(col[0], "colorWay")}
-                      checked={filterState.colorWay.includes(col[0])}
-                    />
-                  ))}
+                  initialFilterData.colorWay.map(
+                    col =>
+                      col[1] > 0 && (
+                        <Form.Check //
+                          key={col[0]}
+                          className={col[0]}
+                          type="checkbox"
+                          id={col[0]}
+                          title={`${col[0]} (${col[1]})`}
+                          label={`${col[0]} (${col[1]})`}
+                          disabled={col[1] === 0}
+                          onChange={() => handleToggle(col[0], "colorWay")}
+                          checked={filterState.colorWay.includes(col[0])}
+                        />
+                      )
+                  )}
               </div>
             </Form.Group>
             <Form.Group controlId="formBasicRange">

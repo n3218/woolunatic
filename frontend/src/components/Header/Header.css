@@ -63,7 +63,8 @@ header {
   transform: scaleX(0);
   transition: all 0.3s ease-in-out 0s;
 }
-.underlink:hover::before {
+.underlink:hover::before,
+.underlink.active::before {
   visibility: visible;
   transform: scaleX(1);
 }

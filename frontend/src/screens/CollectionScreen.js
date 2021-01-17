@@ -9,6 +9,7 @@ import Meta from "../components/Meta"
 import Filter from "../components/Filter/Filter"
 
 const CollectionScreen = ({ match }) => {
+  console.log(match.params)
   const keyword = match.params.keyword
   const category = match.params.category
   const pageNumber = Number(match.params.pageNumber) || 1
@@ -19,7 +20,6 @@ const CollectionScreen = ({ match }) => {
 
   useEffect(() => {
     console.log("CollectionScreen:useEffect-1")
-
     if (success) {
       setFilteredProducts([...products])
     }
@@ -27,7 +27,6 @@ const CollectionScreen = ({ match }) => {
 
   useEffect(() => {
     console.log("CollectionScreen:useEffect-2")
-
     dispatch(listProducts(keyword, pageNumber, category))
   }, [dispatch, keyword, pageNumber, category])
 
@@ -36,7 +35,7 @@ const CollectionScreen = ({ match }) => {
     <div>
       {error && <Message variant="danger">{error}</Message>}
       <>
-        {keyword ? <h2>{keyword.split("|").join(" | ")}</h2> : <h2>OUR YARN COLLECTION</h2>}
+        <h2>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "CASHMERE MIXES" : match.params.category.split("-").join(" | ")) : "YARN COLLECTION"}</h2>
         <Meta />
         <Row>
           <Col xs={2} xl={2}>

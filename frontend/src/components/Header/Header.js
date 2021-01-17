@@ -89,19 +89,19 @@ const Header = () => {
       <Row>
         <Col>
           <Nav className="ml-auto navbar-light bg-light justify-content-center">
-            <LinkContainer to="/yarns">
+            <LinkContainer to="/yarns" exact>
               <Nav.Link className="underlink">All Yarns</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/cashmere">
               <Nav.Link className="underlink">Cashmere</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/cashmeremix">
+            <LinkContainer to="/yarns/cashmix">
               <Nav.Link className="underlink">Cashmere mix</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/merino-wool-lambswool">
               <Nav.Link className="underlink">Merino/Wool</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/mohair-camelhair-alpaka-yak">
+            <LinkContainer to="/yarns/mohair-camel-alpaca-yak">
               <Nav.Link className="underlink">Mohairs</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/angora">
@@ -110,7 +110,7 @@ const Header = () => {
             <LinkContainer to="/yarns/cotton-linen">
               <Nav.Link className="underlink">Cotton/Linen</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/silk">
+            <LinkContainer to="/yarns/silk-viscose">
               <Nav.Link className="underlink">Silk</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/fantasy-pailettes">
