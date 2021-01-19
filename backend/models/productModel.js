@@ -41,6 +41,9 @@ const productSchema = mongoose.Schema(
     minimum: { type: Number, required: true, default: 0 },
     inStock: { type: String, required: false, default: "" },
     outOfStock: { type: Boolean, required: true, default: false },
+    novelty: { type: Boolean, required: true, default: false },
+    inSale: { type: Boolean, required: true, default: false },
+    regular: { type: Boolean, required: true, default: false },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
