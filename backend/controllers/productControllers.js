@@ -128,7 +128,10 @@ export const createProduct = asyncHandler(async (req, res) => {
     color: "",
     colorWay: "",
     art: "",
-    nm: ""
+    nm: "",
+    novelty: false,
+    inSale: false,
+    regular: false
   })
 
   const createdProduct = await product.save()
@@ -139,7 +142,7 @@ export const createProduct = asyncHandler(async (req, res) => {
 // @route  PUT /api/products/:id
 // @access Private/+Admin
 export const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, inStock, outOfStock, fibers, meterage, minimum, color, colorWay, art, nm } = req.body
+  const { name, price, description, image, brand, category, inStock, outOfStock, fibers, meterage, minimum, color, colorWay, art, nm, novelty, inSale, regular } = req.body
   const product = await Product.findById(req.params.id)
 
   if (product) {
@@ -158,6 +161,9 @@ export const updateProduct = asyncHandler(async (req, res) => {
     product.colorWay = colorWay
     product.art = art
     product.nm = nm
+    product.novelty = novelty
+    product.inSale() = inSale
+    product.regular = regular
 
     const updatedProduct = await product.save()
     res.json(updatedProduct)

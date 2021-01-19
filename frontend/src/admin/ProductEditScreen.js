@@ -32,6 +32,9 @@ const ProductEditScreen = ({ history, match }) => {
   const [inStock, setInStock] = useState("") //here is string
   const [art, setArt] = useState("")
   const [nm, setNm] = useState("")
+  const [novelty, setNovelty] = useState(false)
+  const [inSale, setInSale] = useState(false)
+  const [regular, setRegular] = useState(false)
 
   const productDetails = useSelector(state => state.productDetails)
   const { loading, error, product } = productDetails
@@ -62,6 +65,9 @@ const ProductEditScreen = ({ history, match }) => {
         setColorWay(product.colorWay)
         setArt(product.art)
         setNm(product.nm)
+        setNovelty(product.novelty)
+        setInSale(product.inSale)
+        setRegular(product.regular)
       }
     }
   }, [product, dispatch, productId, history, successUpdate])
@@ -85,7 +91,10 @@ const ProductEditScreen = ({ history, match }) => {
         color,
         colorWay,
         art,
-        nm
+        nm,
+        novelty,
+        inSale,
+        regular
       })
     )
   }
@@ -124,9 +133,10 @@ const ProductEditScreen = ({ history, match }) => {
               <FormFieldAsRow value={meterage} label="Meterage" onChange={setMeterage} />
               <FormFieldAsRow value={price} comment="Whole number or separated by dot" label="Price" onChange={setPrice} />
               <FormFieldAsRow value={minimum} comment="'0' if no winding" label="Minimum" onChange={setMinimum} />
-              {console.log("inStock: ", inStock)}
               <FormFieldAsRow value={inStock} comment="Cones weights, separated by commas" label="In Stock" onChange={setInStock} />
-
+              <FormFieldAsRowCheckbox value={regular} label="Regular" onChange={setRegular} />
+              <FormFieldAsRowCheckbox value={novelty} label="Novelty" onChange={setNovelty} />
+              <FormFieldAsRowCheckbox value={inSale} label="in Sale" onChange={setInSale} />
               <FormFieldAsRowCheckbox value={outOfStock} label="Out Of Stock" onChange={setOutOfStock} />
 
               <ImageUpload color={color} setColor={setColor} image={image} setUploading={setUploading} setImage={setImage} uploading={uploading} />

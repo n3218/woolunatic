@@ -23,9 +23,9 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
   useEffect(() => {
     console.log("Filter:useEffect-1")
 
-    // if (!initialProducts.length) {
-    setInitialProducts([...products])
-    // }
+    if (!initialProducts.length) {
+      setInitialProducts([...products])
+    }
     const brandMap = {}
     const brandArr = []
     const categoryMap = { cashmere: 0, cashmix: 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, camel: 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
@@ -125,9 +125,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
 
   return (
     <>
-      <div className="text-center">
-        <h6>total {products.length} yarns</h6>
-      </div>
+      <div className="text-center">{products && <h6>total {products.length} yarns</h6>}</div>
       <Card className="filter">
         <Card.Header>
           <Button onClick={clearFilterHandler} variant="primary" block>

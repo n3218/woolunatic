@@ -59,6 +59,9 @@ router.post("/", upload.single("csv-file"), (req, res) => {
         fibers: row.fibers,
         price: Number(row.price.replace(/[ €]+/g, "")),
         nm: row.nm,
+        novelty: row.novelty,
+        inSale: row.inSale,
+        regular: row.regular,
         // image: row.image
         //   .replace(/[\'\[\]\"]+?/g, "")
         //   .split(",")
