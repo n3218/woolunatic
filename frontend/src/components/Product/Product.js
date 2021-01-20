@@ -6,7 +6,6 @@ import Rating from "../Rating/Rating"
 
 const Product = ({ product }) => {
   const noimage = "/uploads/noimage/noimage.webp"
-
   const [imgSrc, setImgSrc] = useState(noimage)
 
   const getImageOrFallback = (path, fallback) => {
@@ -18,10 +17,17 @@ const Product = ({ product }) => {
     })
   }
 
-  getImageOrFallback(product.image[0], noimage).then(result => result)
+  if (product.image && product.image[0]) {
+    return getImageOrFallback(product.image[0], noimage).then(result => result)
+  }
 
   return (
     <Card className="product-card">
+      <div className="product-card_badges">
+        {product.regular && <div className="badge badge-pill badge-success">regular</div>}
+        {product.novelty && <div className="badge badge-pill badge-primary">new</div>}
+        {product.inSale && <div className="badge badge-pill badge-danger">sale</div>}
+      </div>
       <div className="product-card_img-container">
         <Link to={`/products/${product._id}`}>
           <Card.Img src={imgSrc} variant="top" alt={product.name} className="product-card_img" />

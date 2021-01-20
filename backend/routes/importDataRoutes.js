@@ -71,6 +71,9 @@ router.post("/", upload.single("csv-file"), (req, res) => {
         // numReviews: Number(row.numReviews),
         // minimum: Number(row.minimum),
         inStock: row.inStock,
+        novelty: Boolean(row.novelty) | false,
+        regular: Boolean(row.regular) | false,
+        inSale: Boolean(row.inSale) | false,
         // outOfStock: row.outOfStock === "FALSE" ? false : true,
         // user: row.user
         user: `5fc6e1458fa9f7a30eaf05ec`

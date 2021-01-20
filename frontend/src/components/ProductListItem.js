@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { useDispatch } from "react-redux"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button, Image } from "react-bootstrap"
@@ -8,7 +8,6 @@ import "./ProductListItem.css"
 const ProductListItem = ({ product, history }) => {
   const noimage = "/uploads/noimage/noimage.webp"
   const dispatch = useDispatch()
-  const [imgSrc, setImgSrc] = useState(noimage)
 
   const deleteHandler = id => {
     if (window.confirm("Are you sure?")) {
@@ -16,20 +15,12 @@ const ProductListItem = ({ product, history }) => {
     }
   }
 
-  fetch(product.image[0]).then(res => {
-    if (res.ok) {
-      setImgSrc(product.image[0])
-    } else {
-      setImgSrc(noimage)
-    }
-  })
-
   const detailsHandler = () => history.push(`/products/${product._id}`)
 
   return (
     <tr key={product._id} className={`product-list-item ${product.outOfStock && "font-weight-light"}`}>
       <td onClick={detailsHandler} className="product-list-min">
-        {Array.isArray(product.image) && product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={imgSrc} alt={product.name} fluid className="product-list-image" />}
+        {Array.isArray(product.image) && product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={product.image[0]} alt={product.name} fluid className="product-list-image" />}
       </td>
       <td onClick={detailsHandler}>{product.brand}</td>
       <td onClick={detailsHandler}>{product.name}</td>
@@ -45,6 +36,15 @@ const ProductListItem = ({ product, history }) => {
       </td>
       <td onClick={detailsHandler} className="product-list-min">
         {product.minimum > 0 && product.minimum}
+      </td>
+      <td onClick={detailsHandler} className="product-list-min">
+        {product.regular && <span className="badge badge-pill badge-success">regular</span>}
+      </td>
+      <td onClick={detailsHandler} className="product-list-min">
+        {product.novelty && <span className="badge badge-pill badge-primary">new</span>}
+      </td>
+      <td onClick={detailsHandler} className="product-list-min">
+        {product.inSale && <span className="badge badge-pill badge-danger">sale</span>}
       </td>
       <td className="product-list-min">{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
       <td className="product-list-min">
