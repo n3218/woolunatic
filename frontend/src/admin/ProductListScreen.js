@@ -63,7 +63,6 @@ const ProductListScreen = ({ history, match }) => {
           <Table striped hover responsive className="table-sm product-list">
             <thead>
               <tr>
-                {/* <th>art</th> */}
                 <th className="product-list-min">image</th>
                 <th>brand</th>
                 <th>name</th>
@@ -76,16 +75,17 @@ const ProductListScreen = ({ history, match }) => {
                 <th>price</th>
                 <th className="product-list-max">inStock</th>
                 <th className="product-list-min">minimum</th>
-                <th className="product-list-min">gone</th>
+                <th className="product-list-min">regular</th>
+                <th className="product-list-min">novelty</th>
+                <th className="product-list-min">inSale</th>
+                <th className="product-list-min">outOfStock</th>
                 <th className="product-list-min">edit</th>
                 <th className="product-list-min">delete</th>
               </tr>
             </thead>
             <tbody>
               {products.map(product => (
-                // <Route render={({ history }) => <SearchBox history={history} />} />
                 <Route key={product._id} render={({ history }) => <ProductListItem history={history} key={product._id} product={product} />} />
-                // <ProductListItem key={product._id} product={product} />
               ))}
             </tbody>
           </Table>

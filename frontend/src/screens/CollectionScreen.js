@@ -18,12 +18,12 @@ const CollectionScreen = ({ match }) => {
   const { loading, error, success, products } = productList
   const [filteredProducts, setFilteredProducts] = useState([])
 
-  useEffect(() => {
-    console.log("CollectionScreen:useEffect-1")
-    if (success) {
-      setFilteredProducts([...products])
-    }
-  }, [products, success])
+  // useEffect(() => {
+  //   console.log("CollectionScreen:useEffect-1")
+  //   if (success) {
+  //     setFilteredProducts([...products])
+  //   }
+  // }, [products, success])
 
   useEffect(() => {
     console.log("CollectionScreen:useEffect-2")
@@ -38,15 +38,16 @@ const CollectionScreen = ({ match }) => {
         <h2>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "CASHMERE MIXES" : match.params.category.split("-").join(" | ")) : "YARN COLLECTION"}</h2>
         <Meta />
         <div className="display-flex">
-          <div className="filter-container">{filteredProducts && <Filter products={products} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />}</div>
+          <div className="filter-container">
+            <Filter products={products} setFilteredProducts={setFilteredProducts} />
+          </div>
           <div className="filtered-products-container">
             <Row>
-              {filteredProducts &&
-                filteredProducts.map(product => (
-                  <Col key={product._id} xs={6} sm={4} md={4} lg={3} xl={2} className="product-card-block">
-                    <Product product={product} />
-                  </Col>
-                ))}
+              {filteredProducts.map(product => (
+                <Col key={product._id} xs={6} sm={4} md={4} lg={3} xl={2} className="product-card-block">
+                  <Product product={product} />
+                </Col>
+              ))}
             </Row>
             {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} variant="primary" className="my-3 px-5">
                   Load More

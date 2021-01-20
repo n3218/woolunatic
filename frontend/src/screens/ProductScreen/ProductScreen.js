@@ -55,12 +55,15 @@ const ProductScreen = ({ history, match }) => {
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     }
     if (product && product.inStock) {
+      console.log("product.inStock: ", product.inStock)
       const arr = product.inStock
         .split(",")
         .map(el => Number(el.trim()))
         .sort((a, b) => a - b)
       setInStockArr([...arr])
-      if (arr.length === 1) setQty(arr[0])
+      if (arr.length === 1) {
+        setQty(arr[0])
+      }
     }
 
     if (!loading && product && Array.isArray(product.image) && product.image.length > 0) {
@@ -69,7 +72,7 @@ const ProductScreen = ({ history, match }) => {
     } else {
       setInitialImages([...imagesForGallery([noimage])])
     }
-  }, [dispatch, match, successCreateReview, productId])
+  }, [dispatch, match, successCreateReview, productId, product])
 
   const addToCartHandler = () => {
     history.push(`/cart/${productId}?qty=${qty}`)
@@ -119,6 +122,9 @@ const ProductScreen = ({ history, match }) => {
             <div id="product-title">
               <h5 className="product-brand">{product.brand}</h5>
               <h2>{product.name}</h2>
+              {product.regular && <div className="badge badge-pill badge-success">regular</div>}
+              {product.novelty && <div className="badge badge-pill badge-primary">new</div>}
+              {product.inSale && <div className="badge badge-pill badge-danger">sale</div>}
               <div className="text-right mr-3">
                 <a href="#review-section">
                   <Rating value={product.rating} text={`${product.numReviews} reviews`} />
@@ -182,11 +188,12 @@ const ProductScreen = ({ history, match }) => {
                           <Col>
                             <Form.Group controlId="qty">
                               <Form.Control as="select" className="order-select" value={qty} onChange={e => setQty(e.target.value)} required>
-                                {inStockArr.length > 1 && (
-                                  <option key="0" value="">
-                                    Select...
-                                  </option>
-                                )}
+                                {/* {inStockArr.length > 1 && ( */}
+                                <option key="0" value="">
+                                  Select...
+                                </option>
+                                {/* )} */}
+                                {console.log("inStockArr: ", inStockArr)}
                                 {product.inStock &&
                                   inStockArr.map((el, i) => (
                                     <option key={i} value={el}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Card, Form, Button, ListGroup } from "react-bootstrap"
 import "./Filter.css"
 //
-const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
+const Filter = ({ products, setFilteredProducts }) => {
   const initialFilter = {
     category: [],
     brand: [],
@@ -12,20 +12,16 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     length: 0,
     lengthMin: 0,
     lengthMax: 0,
-    colorWay: []
+    colorWay: [],
+    regular: false
   }
   const [initialFilterData, setInitialFilterData] = useState(initialFilter)
   const [filterState, setFilterState] = useState(initialFilter)
-  const [initialProducts, setInitialProducts] = useState([])
   const [showFibers, setShowFibers] = useState(false)
   const [showBrands, setShowBrands] = useState(false)
 
   useEffect(() => {
     console.log("Filter:useEffect-1")
-
-    if (!initialProducts.length) {
-      setInitialProducts([...products])
-    }
     const brandMap = {}
     const brandArr = []
     const categoryMap = { cashmere: 0, cashmix: 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, camel: 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
@@ -66,30 +62,45 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
       length: lengthMaxVar,
       lengthMin: lengthMinVar,
       lengthMax: lengthMaxVar,
-      colorWay: [...colorWayArr]
+      colorWay: [...colorWayArr],
+      regular: false
     })
-    setFilterState({ ...filterState, price: priceMaxVar, length: lengthMaxVar })
+    setFilterState({ ...initialFilter, price: priceMaxVar, length: lengthMaxVar })
+    setFilteredProducts(products)
   }, [products])
 
   useEffect(() => {
     console.log("Filter:useEffect-2")
-    const multiPropsFilter = (productsToFilter, filters) => {
-      const filterKeys = Object.keys(filters)
-      return productsToFilter.filter(product => {
-        return filterKeys.every(key => {
-          if (!filters[key].length) return true
-          if (key === "price") return product[key] <= filters[key]
-          if (key === "length") return product.meterage <= filters[key]
-          if (product[key].includes(",")) {
-            return product[key].split(",").some(keyEle => filters[key].includes(keyEle))
-          }
-          return filters[key].includes(product[key])
-        })
-      })
-    }
-    let newProds = multiPropsFilter(initialProducts, filterState)
+    let newProds = multiPropsFilter(products, filterState)
     setFilteredProducts(newProds)
-  }, [filterState])
+  }, [products, filterState])
+
+  const multiPropsFilter = (productsToFilter, filters) => {
+    const filterKeys = Object.keys(filters)
+    return productsToFilter.filter(product => {
+      return filterKeys.every(key => {
+        if (typeof filters[key] === "boolean") {
+          console.log("key: ", key)
+          if (filters[key] === true) {
+            return product[key] === true
+          } else {
+            return true
+          }
+        }
+        if (!filters[key].length) {
+          console.log("!filters[key].length")
+          return true
+        }
+        if (key === "price") return product[key] <= filters[key]
+        if (key === "length") return product.meterage <= filters[key]
+        if (typeof product[key] === "string" && product[key].includes(",")) {
+          return product[key].split(",").some(keyEle => filters[key].includes(keyEle))
+        }
+
+        return filters[key].includes(product[key])
+      })
+    })
+  }
 
   const checkIfExists = (mapOfValues, value) => {
     if (mapOfValues[value]) {
@@ -103,9 +114,13 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
     setFilterState({ ...filterState, [field]: e.target.value })
   }
 
+  const handleBoolean = (e, field) => {
+    setFilterState({ ...filterState, [field]: e.target.checked })
+  }
+
   const clearFilterHandler = () => {
     setFilterState({ ...initialFilter, price: initialFilterData.priceMax, length: initialFilterData.lengthMax })
-    setFilteredProducts(initialProducts)
+    setFilteredProducts(products)
   }
 
   const handleToggle = (value, cat) => {
@@ -121,6 +136,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
       [cat]: [...copyFilterState]
     })
   }
+
   console.log("filterState: ", filterState)
 
   return (
@@ -131,7 +147,6 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
           <Button onClick={clearFilterHandler} variant="primary" block>
             <nobr>Clear filter</nobr>
           </Button>
-          {/* <Card.Subtitle className="my-1 text-center">total ( {products.length} ) yarns</Card.Subtitle> */}
           <Card.Title as="h4" className="text-center">
             Filter Yarns
           </Card.Title>
@@ -140,72 +155,83 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
         <Form>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <Form.Group controlId="formBasicRange">
+              <Form.Group controlId="priceRange">
                 <Form.Label as="h6">Price, €/100g</Form.Label>
                 <Form.Control min={initialFilterData.priceMin} max={initialFilterData.priceMax} step={0.5} type="range" onChange={e => onChangeStateHandler(e, "price")} value={filterState.price} />
                 <div className="label-comment">
-                  <div>€{initialFilterData.priceMin}</div>
                   <div>
-                    {initialFilterData.priceMin} - {filterState.price}
+                    <small>€{initialFilterData.priceMin}</small>
                   </div>
-                  <div>€{initialFilterData.priceMax}</div>
+                  <div>
+                    {initialFilterData.priceMin}-{filterState.price}
+                  </div>
+                  <div>
+                    <small>€{initialFilterData.priceMax}</small>
+                  </div>
                 </div>
               </Form.Group>
             </ListGroup.Item>
             <ListGroup.Item>
-              <Form.Group controlId="formBasicRange">
+              <Form.Group controlId="fibersRange">
                 <Form.Label as="h6">Fiber Content</Form.Label>
                 {initialFilterData.category &&
-                  initialFilterData.category.map(
-                    (fib, i) =>
-                      fib[1] > 0 && (
-                        <div key={fib[0]} className={i > 5 && !showFibers ? "display-none" : "display-block"}>
-                          <Form.Check //
-                            type="checkbox"
-                            id={fib[0]}
-                            label={
-                              fib[0] === "cashmix" //
-                                ? `cashmere mix (${fib[1]})`
-                                : fib[0] === "camel"
-                                ? `camel hair (${fib[1]})`
-                                : `${fib[0]} (${fib[1]})`
-                            }
-                            onChange={() => handleToggle(fib[0], "category")}
-                            checked={filterState.category.includes(fib[0])}
-                          />
-                        </div>
-                      )
-                  )}
-                <div>
-                  <small>
-                    {!showFibers ? (
-                      <Button variant="link" onClick={() => setShowFibers(true)}>
-                        <small>Show more...</small>
-                      </Button>
-                    ) : (
-                      <Button variant="link" onClick={() => setShowFibers(false)}>
-                        <small>Show less...</small>
-                      </Button>
-                    )}
-                  </small>
-                </div>
+                  initialFilterData.category
+                    .filter(fib => fib[1] > 0)
+                    .map((fib, i) => (
+                      <div key={fib[0]} className={i > 5 && !showFibers ? "display-none" : "display-block"}>
+                        <Form.Check //
+                          type="checkbox"
+                          id={fib[0]}
+                          label={
+                            fib[0] === "cashmix" //
+                              ? `cashmere mix (${fib[1]})`
+                              : fib[0] === "camel"
+                              ? `camel hair (${fib[1]})`
+                              : `${fib[0]} (${fib[1]})`
+                          }
+                          onChange={() => handleToggle(fib[0], "category")}
+                          checked={filterState.category.includes(fib[0])}
+                        />
+                      </div>
+                    ))}
+                {initialFilterData.category.filter(fib => fib[1] > 0).length > 5 && (
+                  <div>
+                    <small>
+                      {!showFibers ? (
+                        <Button variant="link" onClick={() => setShowFibers(true)}>
+                          <small>Show more...</small>
+                        </Button>
+                      ) : (
+                        <Button variant="link" onClick={() => setShowFibers(false)}>
+                          <small>Show less...</small>
+                        </Button>
+                      )}
+                    </small>
+                  </div>
+                )}
               </Form.Group>
             </ListGroup.Item>
             <ListGroup.Item>
-              <Form.Group controlId="formBasicRange">
+              <Form.Group controlId="lengthRange">
                 <Form.Label as="h6">Length, m/100g</Form.Label>
                 <Form.Control min={initialFilterData.lengthMin} max={initialFilterData.lengthMax} step={10} type="range" onChange={e => onChangeStateHandler(e, "length")} value={filterState.length} />
                 <div className="label-comment">
-                  <div>{initialFilterData.lengthMin}m</div>
                   <div>
-                    {initialFilterData.lengthMin} - {filterState.length}
+                    <small>{initialFilterData.lengthMin}m</small>
                   </div>
-                  <div>{initialFilterData.lengthMax}m</div>
+                  <div className="mx-2">
+                    <nobr>
+                      {initialFilterData.lengthMin}-{filterState.length}
+                    </nobr>
+                  </div>
+                  <div>
+                    <small>{initialFilterData.lengthMax}m</small>
+                  </div>
                 </div>
               </Form.Group>
             </ListGroup.Item>
             <ListGroup.Item>
-              <Form.Group controlId="formBasicRange">
+              <Form.Group controlId="colorRange">
                 <Form.Label as="h6">Color</Form.Label>
                 <div className="color">
                   {initialFilterData.colorWay &&
@@ -229,7 +255,7 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
               </Form.Group>
             </ListGroup.Item>
             <ListGroup.Item>
-              <Form.Group controlId="formBasicRange">
+              <Form.Group controlId="brandsRange">
                 <Form.Label as="h6">Brand</Form.Label>
                 {initialFilterData.brand &&
                   initialFilterData.brand.map((brand, i) => (
@@ -243,19 +269,32 @@ const Filter = ({ products, filteredProducts, setFilteredProducts }) => {
                       />
                     </div>
                   ))}
-                <div>
-                  <small>
-                    {!showBrands ? (
-                      <Button variant="link" onClick={() => setShowBrands(true)}>
-                        <small>Show more...</small>
-                      </Button>
-                    ) : (
-                      <Button variant="link" onClick={() => setShowBrands(false)}>
-                        <small>Show less...</small>
-                      </Button>
-                    )}
-                  </small>
-                </div>
+                {initialFilterData.brand.filter(fib => fib[1] > 0).length > 5 && (
+                  <div>
+                    <small>
+                      {!showBrands ? (
+                        <Button variant="link" onClick={() => setShowBrands(true)}>
+                          <small>Show more...</small>
+                        </Button>
+                      ) : (
+                        <Button variant="link" onClick={() => setShowBrands(false)}>
+                          <small>Show less...</small>
+                        </Button>
+                      )}
+                    </small>
+                  </div>
+                )}
+              </Form.Group>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Form.Group controlId="regularRange">
+                <Form.Check //
+                  type="checkbox"
+                  id="regular"
+                  label="Regular"
+                  onChange={e => handleBoolean(e, "regular")}
+                  checked={filterState.regular}
+                />
               </Form.Group>
             </ListGroup.Item>
           </ListGroup>
