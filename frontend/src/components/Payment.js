@@ -109,7 +109,9 @@ const Payment = ({ order, userInfo }) => {
 
       {order.isPaid && (
         <>
-          <Message variant="success">Paid on {order.paidAt.substring(0, 10)}</Message>
+          <Message variant="success">
+            Paid on {order.paidAt.substring(0, 10)} at {new Date(order.paidAt).toLocaleTimeString()}
+          </Message>
           <div>{order.paymentMethod}</div>
           <div>ID: {order.paymentResult.id}</div>
           <div>Status: {order.paymentResult.status}</div>
