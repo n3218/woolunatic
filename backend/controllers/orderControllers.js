@@ -141,6 +141,8 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieHook = asyncHandler(async (req, res) => {
   console.log("mollieHook ")
+  console.log("mollieHook:req.body.id: ", req.body.id)
+
   const paymentResult = {
     id: req.body.id,
     status,
