@@ -141,7 +141,7 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @desc get Order status from Mollie
 // @route POST /api/orders/molliewebhook
 // @access Public
-export const mollieWebHook = asyncHandler(async (req, res) => {
+export const mollieWebHook = async (req, res) => {
   console.log("mollieHook:req.body: ", req.body)
   console.log("mollieHook:req.body: ", req.body.id)
   // console.log("mollieHook:req.id: ", req.id)
@@ -195,7 +195,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 
   // res.send(paymentData.status)
   res.status(200)
-})
+}
 
 // https://www.mollie.com/dashboard/org_11322007/payments
 
