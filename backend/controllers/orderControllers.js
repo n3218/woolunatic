@@ -141,48 +141,55 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieHook = asyncHandler(async (req, res) => {
   console.log("mollieHook:req.body: ", req.body)
-  console.log("mollieHook:req.id: ", req.id)
+  console.log("mollieHook:req.body: ", req.body.id)
+  // console.log("mollieHook:req.id: ", req.id)
 
-  const paymentResult = {
-    id: req.body.id,
-    status,
-    update_time: Date.now(),
-    email_address
-  }
-  const orderData = {
-    id,
-    paymentMethod,
-    isPaid: false,
-    paidAt
-  }
+  // const paymentResult = {
+  //   id: req.body.id,
+  //   status,
+  //   update_time: Date.now(),
+  //   email_address
+  // }
+  // const orderData = {
+  //   id,
+  //   paymentMethod,
+  //   isPaid: false,
+  //   paidAt
+  // }
 
-  await mollieClient.payments.get(req.body.id).then(payment => {
-    consile.log("payment: ", payment)
+  await mollieClient.payments
+    .get(String(req.body.id))
+    .then(payment => {
+      consile.log("payment: ", payment)
 
-    orderData.id = payment.metadata.order_id
-    orderData.paymentMethod = payment.method
-    orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
+      // orderData.id = payment.metadata.order_id
+      // orderData.paymentMethod = payment.method
+      // orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
 
-    paymentResult.status = payment.status
-    paymentResult.email_address = payment.billingEmail || payment.description
+      // paymentResult.status = payment.status
+      // paymentResult.email_address = payment.billingEmail || payment.description
 
-    if (payment.isPaid()) {
-      orderData.isPaid = true
-      consile.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-    } else if (!payment.isOpen()) {
-      console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-    }
-    console.log("payment.status: ", payment.status)
-  })
+      // if (payment.isPaid()) {
+      //   orderData.isPaid = true
+      //   consile.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
+      // } else if (!payment.isOpen()) {
+      //   console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
+      // }
+      // console.log("payment.status: ", payment.status)
+      // res.status(200)
+    })
+    .catch(error => {
+      res.send(error)
+    })
 
-  const order = await Order.findById(orderData.id)
-  if (order) {
-    order.paymentMethod = orderData.paymentMethod
-    order.isPaid = orderData.isPaid
-    order.paidAt = orderData.paidAt
-    order.paymentResult = paymentResult
-    const updatedOrder = await order.save()
-  }
+  // const order = await Order.findById(orderData.id)
+  // if (order) {
+  //   order.paymentMethod = orderData.paymentMethod
+  //   order.isPaid = orderData.isPaid
+  //   order.paidAt = orderData.paidAt
+  //   order.paymentResult = paymentResult
+  //   const updatedOrder = await order.save()
+  // }
 
   // res.send(paymentData.status)
   res.status(200)
