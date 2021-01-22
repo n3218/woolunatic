@@ -19,6 +19,6 @@ router.route("/:id").get(protect, getOrderById)
 router.route("/:id/pay").put(protect, updateOrderToPaid)
 router.route("/:id/deliver").put(protect, updateOrderToDelivered)
 router.route("/:id/molliepay").put(protect, molliePay)
-router.route("/webhook").put(protect, mollieHook)
+router.route("/webhook").post(protect, mollieHook)
 
 export default router
