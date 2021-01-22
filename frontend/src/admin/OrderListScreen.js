@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
-import { LinkContainer } from "react-router-bootstrap"
 import { Link } from "react-router-dom"
-import { Table, Button } from "react-bootstrap"
+import { Table } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
@@ -66,18 +65,6 @@ const OrderListScreen = ({ history, match }) => {
                   <td>
                     {order.shippingAddress.city}, {order.shippingAddress.country}
                   </td>
-                  <td>
-                    <LinkContainer to={`/admin/order/${order._id}/edit`}>
-                      <Button variant="link" title="Edit">
-                        <i className="fas fa-edit text-success"></i>
-                      </Button>
-                    </LinkContainer>
-                  </td>
-                  {/* <td>
-                  <Button variant="link" title="Delete" onClick={() => deleteHandler(order._id)}>
-                    <i className="fas fa-trash text-danger"></i>
-                  </Button>
-                </td> */}
                 </tr>
               ))}
             </tbody>

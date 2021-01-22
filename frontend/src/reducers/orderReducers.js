@@ -20,7 +20,11 @@ import {
   ORDER_DELIVER_SUCCESS,
   ORDER_DELIVER_FAIL,
   ORDER_DELIVER_RESET,
-  ORDER_CREATE_RESET
+  ORDER_CREATE_RESET,
+  ORDER_MOLLIE_PAY_REQUEST,
+  ORDER_MOLLIE_PAY_SUCCESS,
+  ORDER_MOLLIE_PAY_FAIL,
+  ORDER_MOLLIE_PAY_RESET
 } from "../constants/orderConstants"
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -158,6 +162,31 @@ export const orderDeliverReducer = (state = {}, action) => {
         error: action.payload
       }
     case ORDER_DELIVER_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const orderMolliePayReducer = (state = {}, action) => {
+  console.log("orderMolliePayReducer")
+  switch (action.type) {
+    case ORDER_MOLLIE_PAY_REQUEST:
+      return {
+        loading: true,
+        data: {}
+      }
+    case ORDER_MOLLIE_PAY_SUCCESS:
+      return {
+        loading: false,
+        data: action.payload
+      }
+    case ORDER_MOLLIE_PAY_FAIL:
+      return {
+        loading: false,
+        error: action.payload
+      }
+    case ORDER_MOLLIE_PAY_RESET:
       return {}
     default:
       return state

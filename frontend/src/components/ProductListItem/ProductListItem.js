@@ -2,7 +2,7 @@ import React from "react"
 import { useDispatch } from "react-redux"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button, Image } from "react-bootstrap"
-import { productDeleteAction } from "../actions/productActions"
+import { productDeleteAction } from "../../actions/productActions"
 import "./ProductListItem.css"
 
 const ProductListItem = ({ product, history }) => {

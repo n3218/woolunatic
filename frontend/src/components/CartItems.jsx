@@ -68,4 +68,4 @@ const CartItems = ({ cartItems }) => {
   )
 }
 
-export default CartItems
+export default CartItems // used in CartScreen and PlaceOrderScreen

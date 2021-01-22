@@ -28,7 +28,7 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
             )}
           </Nav.Item>
         </li>
-        <li className="breadcrumb-item active">
+        {/* <li className="breadcrumb-item active">
           <Nav.Item>
             {step3 ? (
               <LinkContainer to="/payment">
@@ -38,7 +38,7 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
               <Nav.Link disabled>Payment Type</Nav.Link>
             )}
           </Nav.Item>
-        </li>
+        </li> */}
         <li className="breadcrumb-item active">
           <Nav.Item>
             {step4 ? (
