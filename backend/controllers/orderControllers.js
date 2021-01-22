@@ -159,32 +159,28 @@ export const mollieHook = asyncHandler(async (req, res) => {
 
     orderData.id = payment.metadata.order_id
     orderData.paymentMethod = payment.method
-    orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
+    // orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
 
-    paymentResult.status = payment.status
-    paymentResult.email_address = payment.billingEmail || payment.description
+    // paymentResult.status = payment.status
+    // paymentResult.email_address = payment.billingEmail || payment.description
 
-    if (payment.isPaid()) {
-      orderData.isPaid = true
-      consile.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-    } else if (!payment.isOpen()) {
-      console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-    }
+    // if (payment.isPaid()) {
+    //   orderData.isPaid = true
+    //   consile.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
+    // } else if (!payment.isOpen()) {
+    //   console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
+    // }
     console.log("payment.status: ", payment.status)
   })
 
-  const order = await Order.findById(orderData.id)
-
-  if (order) {
-    order.paymentMethod = orderData.paymentMethod
-    order.isPaid = orderData.isPaid
-    order.paidAt = orderData.paidAt
-    order.paymentResult = paymentResult
-
-    const updatedOrder = await order.save()
-
-    // res.json(updatedOrder)
-  }
+  // const order = await Order.findById(orderData.id)
+  // if (order) {
+  //   order.paymentMethod = orderData.paymentMethod
+  //   order.isPaid = orderData.isPaid
+  //   order.paidAt = orderData.paidAt
+  //   order.paymentResult = paymentResult
+  //   const updatedOrder = await order.save()
+  // }
 
   // res.send(paymentData.status)
   res.status(200)
