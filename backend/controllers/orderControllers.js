@@ -57,7 +57,6 @@ export const getOrderById = asyncHandler(async (req, res) => {
 // @access Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id)
-
   if (order) {
     order.isPaid = true
     order.paidAt = Date.now()
@@ -124,7 +123,7 @@ export const molliePay = asyncHandler(async (req, res) => {
     amount: { value: String(totalPrice), currency: currency },
     description: description,
     redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
-    webhookUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
+    webhookUrl: `https://woolunatic.herokuapp.com/orders/webhook`,
     metadata: orderId
   }
   await mollieClient.payments
@@ -138,16 +137,32 @@ export const molliePay = asyncHandler(async (req, res) => {
 })
 
 // @desc get Order status from Mollie
-// @route GET /api/orders/webhook
+// @route POST /api/orders/webhook
 // @access Private
 export const mollieHook = asyncHandler(async (req, res) => {
-  await mollieClient.payments.get(req.body.id).then(payment => {
+  await mollieClient.payments.post(req.body.id).then(payment => {
+    consile.log("payment: ", payment)
     if (payment.isPaid()) {
+      consile.log("payment.isPaid(): ")
+      // const order = await Order.findById(req.body.id)
+      // if (order) {
+      //   order.isPaid = true
+      //   order.paidAt = Date.now()
+      //   order.paymentResult = {
+      //     id: req.body.id,
+      //     status: req.body.status,
+      //     update_time: req.body.update_time,
+      //     email_address: req.body.payer.email_address
+      //   }
+      //   const updatedOrder = await order.save()
+      //   res.json(updatedOrder)
+      // }
       // Hooray, you've received a payment! You can start shipping to the consumer.
     } else if (!payment.isOpen()) {
+      console.log("!payment.isOpen()")
       // The payment isn't paid and has expired. We can assume it was aborted.
     }
-    consile.log("payment: ", payment)
+    console.log("payment.status: ", payment.status)
     res.send(payment.status)
   })
 })
