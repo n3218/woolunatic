@@ -123,8 +123,8 @@ export const molliePay = asyncHandler(async (req, res) => {
     amount: { value: String(totalPrice), currency: currency },
     description: description,
     redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
-    // webhookUrl: `https://woolunatic.herokuapp.com/api/orders/webhook`,
-    webhookUrl: ` https://enms90aq4pjv4i5.m.pipedream.net`,
+    webhookUrl: `https://woolunatic.herokuapp.com/api/orders/webhook`,
+    // webhookUrl: ` https://enms90aq4pjv4i5.m.pipedream.net`,
 
     metadata: { order_id: orderId }
   }
