@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, ListGroup, Button, Table } from "react-bootstrap"
-import { PayPalButton } from "react-paypal-button-v2"
-import axios from "axios"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
-import { getOrderDetailsAction, payOrderAction, deliverOrderAction } from "../actions/orderActions"
+import { getOrderDetailsAction, deliverOrderAction } from "../actions/orderActions"
 import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from "../constants/orderConstants"
 import Meta from "../components/Meta"
 import OrderSummary from "../components/OrderSummary"
+import Payment from "../components/Payment"
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
-  const [sdkReady, setSdkReady] = useState(false)
   const dispatch = useDispatch()
+
   const orderDetails = useSelector(state => state.orderDetails)
   const { order, loading, error } = orderDetails
   const orderPay = useSelector(state => state.orderPay)
@@ -23,6 +22,7 @@ const OrderScreen = ({ match, history }) => {
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
+
   if (!loading) {
     // Calculate prices
     const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
@@ -33,34 +33,12 @@ const OrderScreen = ({ match, history }) => {
     if (!userInfo) {
       history.pushState("/login")
     }
-    const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get("/api/config/paypal")
-      const script = document.createElement("script")
-      script.type = "text/javascript"
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
-      script.async = true
-      script.onload = () => {
-        setSdkReady(true)
-      }
-      document.body.appendChild(script)
-    }
-
     if (!order || order._id !== orderId || successPay || successDeliver) {
       dispatch({ type: ORDER_PAY_RESET })
       dispatch({ type: ORDER_DELIVER_RESET })
       dispatch(getOrderDetailsAction(orderId))
-    } else if (!order.isPaid) {
-      if (!window.paypal) {
-        addPayPalScript()
-      } else {
-        setSdkReady(true)
-      }
     }
   }, [dispatch, order, orderId, successPay, successDeliver, history, userInfo])
-
-  const successPaymentHandler = paymentResult => {
-    dispatch(payOrderAction(orderId, paymentResult))
-  }
 
   const deliverHandler = () => {
     dispatch(deliverOrderAction(order))
@@ -69,7 +47,7 @@ const OrderScreen = ({ match, history }) => {
   return loading ? (
     <Loader />
   ) : error ? (
-    <Message>{error}</Message>
+    <Message variant="danger">{error}</Message>
   ) : (
     <>
       <Meta title={`Order #${order._id} | Woolunatics`} />
@@ -101,20 +79,10 @@ const OrderScreen = ({ match, history }) => {
             <ListGroup.Item>
               <Row>
                 <Col lg={4} md={5} sm={6}>
-                  <h4>
-                    <nobr>PAYMENT METHOD</nobr>
-                  </h4>
+                  <h4>{!order.isPaid && "SELECT "}PAYMENT METHOD</h4>
                 </Col>
                 <Col>
-                  {order.isPaid && (
-                    <>
-                      <div>{order.paymentMethod}</div>
-                      <div>ID: {order.paymentResult.id}</div>
-                      <div>Status: {order.paymentResult.status}</div>
-                      <div>email: {order.paymentResult.email_address}</div>{" "}
-                    </>
-                  )}
-                  {order.isPaid ? <Message variant="success">Paid on {order.paidAt.substring(0, 10)}</Message> : <Message variant="warning">Not Paid</Message>}
+                  <Payment order={order} userInfo={userInfo} />
                 </Col>
               </Row>
             </ListGroup.Item>
@@ -143,11 +111,11 @@ const OrderScreen = ({ match, history }) => {
                         <tr key={i}>
                           <td>{item.brand}</td>
                           <td>
-                            <Link target="_blank" to={`/products/${item.product}`}>
+                            <Link target="_blank" to={`/products/${item.product}`} className="text-capitalize">
                               {item.name}
                             </Link>
                           </td>
-                          <td>{item.color.replace(/_+/g, " ")}</td>
+                          <td className="text-capitalize">{item.color.replace(/_+/g, " ")}</td>
                           <td>{item.fibers}</td>
                           <td>{item.qty}</td>
                           <td>{item.meterage}</td>
@@ -168,13 +136,6 @@ const OrderScreen = ({ match, history }) => {
         </Col>
 
         <OrderSummary cart={order} items={order.orderItems} error={error}>
-          {!order.isPaid && (
-            <>
-              {loadingPay && <Loader />}
-              {!sdkReady ? <Loader /> : <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />}
-            </>
-          )}
-
           {loadingDeliver && <Loader />}
           {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
             <Button type="button" className="btn btn-block" onClick={deliverHandler}>

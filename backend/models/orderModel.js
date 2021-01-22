@@ -15,7 +15,7 @@ const orderSchema = mongoose.Schema(
         meterage: { type: String, required: true },
         color: { type: String, required: true },
         qty: { type: Number, required: true },
-        image: { type: String, required: true },
+        image: { type: String, required: false },
         price: { type: Number, required: true },
         product: {
           type: mongoose.Schema.Types.ObjectId,
@@ -32,7 +32,7 @@ const orderSchema = mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      required: true
+      required: false
     },
     paymentResult: {
       id: { type: String },

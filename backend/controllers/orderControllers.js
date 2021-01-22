@@ -1,5 +1,10 @@
+import dotenv from "dotenv"
 import asyncHandler from "express-async-handler"
 import Order from "../models/orderModel.js"
+
+import { createMollieClient } from "@mollie/api-client"
+dotenv.config()
+const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
 
 // @desc Create new order
 // @route GET /api/orders
@@ -29,7 +34,6 @@ export const createNewOrder = asyncHandler(async (req, res) => {
       shippingPrice,
       totalPrice
     })
-
     const createdOrder = await order.save()
     res.status(201).json(createdOrder)
   }
@@ -40,7 +44,6 @@ export const createNewOrder = asyncHandler(async (req, res) => {
 // @access Private
 export const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate("user", "name email")
-
   if (order) {
     res.json(order)
   } else {
@@ -64,7 +67,6 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
       update_time: req.body.update_time,
       email_address: req.body.payer.email_address
     }
-
     const updatedOrder = await order.save()
     res.json(updatedOrder)
   } else {
@@ -87,7 +89,6 @@ export const getMyOrders = asyncHandler(async (req, res) => {
 export const getOrders = asyncHandler(async (req, res) => {
   const pageSize = 10
   const page = Number(req.query.pageNumber) || 1
-
   const count = await Order.countDocuments({})
   const orders = await Order.find({})
     .sort({ updatedAt: -1 })
@@ -103,7 +104,6 @@ export const getOrders = asyncHandler(async (req, res) => {
 // @access Private/Admin
 export const updateOrderToDelivered = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id)
-
   if (order) {
     order.isDelivered = true
     order.deliveredAt = Date.now()
@@ -114,3 +114,42 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
     throw new Error("Order not found")
   }
 })
+
+// @desc get PaymentURL from Mollie
+// @route PUT /api/orders/:id/molliepay
+// @access Private
+export const molliePay = asyncHandler(async (req, res) => {
+  const { totalPrice, currency, description, orderId } = req.body
+  const params = {
+    amount: { value: String(totalPrice), currency: currency },
+    description: description,
+    redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
+    webhookUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
+    metadata: orderId
+  }
+  await mollieClient.payments
+    .create(params)
+    .then(payment => {
+      res.send(payment.getPaymentUrl())
+    })
+    .catch(error => {
+      res.send(error)
+    })
+})
+
+// @desc get Order status from Mollie
+// @route GET /api/orders/webhook
+// @access Private
+export const mollieHook = asyncHandler(async (req, res) => {
+  await mollieClient.payments.get(req.body.id).then(payment => {
+    if (payment.isPaid()) {
+      // Hooray, you've received a payment! You can start shipping to the consumer.
+    } else if (!payment.isOpen()) {
+      // The payment isn't paid and has expired. We can assume it was aborted.
+    }
+    consile.log("payment: ", payment)
+    res.send(payment.status)
+  })
+})
+
+// https://www.mollie.com/dashboard/org_11322007/payments

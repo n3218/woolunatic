@@ -7,7 +7,7 @@ import { listProducts, productCreateAction } from "../actions/productActions"
 import { PRODUCT_CREATE_RESET } from "../constants/productConstants"
 import Paginate from "../components/Paginate"
 import Meta from "../components/Meta"
-import ProductListItem from "../components/ProductListItem"
+import ProductListItem from "../components/ProductListItem/ProductListItem"
 import { Route } from "react-router-dom"
 
 const ProductListScreen = ({ history, match }) => {

@@ -12,9 +12,9 @@ import { USER_DETAILS_RESET } from "../constants/userConstants"
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch()
-
   const cart = useSelector(state => state.cart)
   const { shippingAddress } = cart
+
   if (!shippingAddress.address) {
     history.push("/shipping")
   }
@@ -43,7 +43,7 @@ const PlaceOrderScreen = ({ history }) => {
       createOrderAction({
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
-        paymentMethod: cart.paymentMethod,
+        // paymentMethod: cart.paymentMethod,
         itemsPrice: cart.itemsPrice,
         shippingPrice: cart.shippingPrice,
         taxPrice: cart.taxPrice,
@@ -75,7 +75,7 @@ const PlaceOrderScreen = ({ history }) => {
               </Row>
             </ListGroup.Item>
 
-            <ListGroup.Item>
+            {/* <ListGroup.Item>
               <Row>
                 <Col lg={4} md={5} sm={6}>
                   <nobr>
@@ -86,7 +86,7 @@ const PlaceOrderScreen = ({ history }) => {
                   <div>{cart.paymentMethod && cart.paymentMethod}</div>
                 </Col>
               </Row>
-            </ListGroup.Item>
+            </ListGroup.Item> */}
 
             <ListGroup.Item>
               <h4>ORDER ITEMS</h4>

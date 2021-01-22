@@ -1,0 +1,6 @@
+<svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="88" height="88" rx="44" fill="#222222"/>
+<circle cx="32.5" cy="44.5" r="17.5" fill="#E7001A"/>
+<circle cx="55.5" cy="44.5" r="17.5" fill="#F49B1C"/>
+<path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M44 57.6909C47.6758 54.4829 50 49.7627 50 44.5C50 39.2373 47.6758 34.5171 44 31.3091C40.3242 34.5171 38 39.2373 38 44.5C38 49.7627 40.3242 54.4829 44 57.6909Z" fill="#F06D1B"/>
+</svg>

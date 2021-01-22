@@ -62,4 +62,4 @@ const OrderSummary = ({ cart, items, children, error }) => {
   )
 }
 
-export default OrderSummary
+export default OrderSummary // used in OrderScreen and PlaceOrderScreen
