@@ -140,31 +140,50 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @route POST /api/orders/webhook
 // @access Private
 export const mollieHook = asyncHandler(async (req, res) => {
-  await mollieClient.payments.post(req.body.id).then(payment => {
+  const paymentData = {
+    paymentId: req.body.id,
+    orderId
+  }
+
+  await mollieClient.payments.get(req.body.id).then(payment => {
     consile.log("payment: ", payment)
+
+    paymentData.orderId = payment.metadata.order_id
+    paymentData.paymentMethod = payment.method
+    paymentData.paymentStatus = payment.status
+    paymentData.createdAt = payment.createdAt
+    paymentData.authorizedAt = payment.authorizedAt
+    paymentData.paidAt = payment.paidAt
+
     if (payment.isPaid()) {
       consile.log("payment.isPaid(): ")
-      // const order = await Order.findById(req.body.id)
-      // if (order) {
-      //   order.isPaid = true
-      //   order.paidAt = Date.now()
-      //   order.paymentResult = {
-      //     id: req.body.id,
-      //     status: req.body.status,
-      //     update_time: req.body.update_time,
-      //     email_address: req.body.payer.email_address
-      //   }
-      //   const updatedOrder = await order.save()
-      //   res.json(updatedOrder)
-      // }
       // Hooray, you've received a payment! You can start shipping to the consumer.
     } else if (!payment.isOpen()) {
       console.log("!payment.isOpen()")
       // The payment isn't paid and has expired. We can assume it was aborted.
     }
     console.log("payment.status: ", payment.status)
-    res.send(payment.status)
+    // res.send(payment.status)
   })
+
+  const order = await Order.findById(paymentData.orderId)
+  if (order) {
+    order.isPaid = true
+    order.paidAt = Date.now()
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address
+    }
+    const updatedOrder = await order.save()
+    // res.json(updatedOrder)
+  }
+
+  // res.send(paymentData.status)
+  res.status(200)
 })
 
 // https://www.mollie.com/dashboard/org_11322007/payments
+
+// const order = await Order.findById(req.body.id)
