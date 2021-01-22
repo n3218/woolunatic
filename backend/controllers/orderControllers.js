@@ -140,43 +140,48 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @route POST /api/orders/webhook
 // @access Private
 export const mollieHook = asyncHandler(async (req, res) => {
-  const paymentData = {
-    paymentId: req.body.id,
-    orderId
+  const paymentResult = {
+    id: req.body.id,
+    status,
+    update_time: Date.now(),
+    email_address
+  }
+  const orderData = {
+    id,
+    paymentMethod,
+    isPaid: false,
+    paidAt
   }
 
   await mollieClient.payments.get(req.body.id).then(payment => {
     consile.log("payment: ", payment)
 
-    paymentData.orderId = payment.metadata.order_id
-    paymentData.paymentMethod = payment.method
-    paymentData.paymentStatus = payment.status
-    paymentData.createdAt = payment.createdAt
-    paymentData.authorizedAt = payment.authorizedAt
-    paymentData.paidAt = payment.paidAt
+    orderData.id = payment.metadata.order_id
+    orderData.paymentMethod = payment.method
+    orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
+
+    paymentResult.status = payment.status
+    paymentResult.email_address = payment.billingEmail || payment.description
 
     if (payment.isPaid()) {
-      consile.log("payment.isPaid(): ")
-      // Hooray, you've received a payment! You can start shipping to the consumer.
+      orderData.isPaid = true
+      consile.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
     } else if (!payment.isOpen()) {
-      console.log("!payment.isOpen()")
-      // The payment isn't paid and has expired. We can assume it was aborted.
+      console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
     }
     console.log("payment.status: ", payment.status)
-    // res.send(payment.status)
   })
 
-  const order = await Order.findById(paymentData.orderId)
+  const order = await Order.findById(orderData.id)
+
   if (order) {
-    order.isPaid = true
-    order.paidAt = Date.now()
-    order.paymentResult = {
-      id: req.body.id,
-      status: req.body.status,
-      update_time: req.body.update_time,
-      email_address: req.body.payer.email_address
-    }
+    order.paymentMethod = orderData.paymentMethod
+    order.isPaid = orderData.isPaid
+    order.paidAt = orderData.paidAt
+    order.paymentResult = paymentResult
+
     const updatedOrder = await order.save()
+
     // res.json(updatedOrder)
   }
 
