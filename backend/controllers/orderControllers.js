@@ -123,7 +123,7 @@ export const molliePay = asyncHandler(async (req, res) => {
     amount: { value: String(totalPrice), currency: currency },
     description: description,
     redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
-    webhookUrl: `https://woolunatic.herokuapp.com/api/orders/webhook`,
+    webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
     // webhookUrl: ` https://enms90aq4pjv4i5.m.pipedream.net`,
 
     metadata: { order_id: orderId }
@@ -139,9 +139,9 @@ export const molliePay = asyncHandler(async (req, res) => {
 })
 
 // @desc get Order status from Mollie
-// @route POST /api/orders/webhook
+// @route POST /api/orders/molliewebhook
 // @access Public
-export const mollieHook = asyncHandler(async (req, res) => {
+export const mollieWebHook = asyncHandler(async (req, res) => {
   console.log("mollieHook:req.body: ", req.body)
   console.log("mollieHook:req.body: ", req.body.id)
   // console.log("mollieHook:req.id: ", req.id)
