@@ -124,7 +124,7 @@ export const molliePay = asyncHandler(async (req, res) => {
     description: description,
     redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
     webhookUrl: `https://woolunatic.herokuapp.com/api/orders/webhook`,
-    metadata: orderId
+    metadata: { order_id: orderId }
   }
   await mollieClient.payments
     .create(params)
@@ -140,8 +140,8 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @route POST /api/orders/webhook
 // @access Public
 export const mollieHook = asyncHandler(async (req, res) => {
-  console.log("mollieHook ")
-  console.log("mollieHook:req.body.id: ", req.body.id)
+  console.log("mollieHook:req ", req)
+  console.log("mollieHook:req.body: ", req.body)
 
   const paymentResult = {
     id: req.body.id,
