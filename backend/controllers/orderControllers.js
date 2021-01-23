@@ -185,7 +185,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     throw new Error("Order not found")
   }
 
-  res.status(200).send()
+  res.status(200).send("200 OK")
 })
 
 // https://www.mollie.com/dashboard/org_11322007/payments
