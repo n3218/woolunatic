@@ -9,6 +9,7 @@ import connectDB from "./config/db.js"
 import productRoutes from "./routes/productRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 import orderRoutes from "./routes/orderRoutes.js"
+import molliWebhook from "./routes/molliWebhook.js"
 import uploadRoutes from "./routes/uploadRoutes.js"
 import importDataRoutes from "./routes/importDataRoutes.js"
 
@@ -24,6 +25,7 @@ app.use(express.json())
 app.use("/api/products", productRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
+app.use("/api/molliewebhook", molliWebhook)
 app.use("/api/upload", uploadRoutes)
 app.use("/api/importdata", importDataRoutes)
 app.get("/api/config/paypal", (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
