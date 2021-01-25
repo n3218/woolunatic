@@ -54,28 +54,6 @@ export const getOrderById = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc update Oreder to Paid
-// @route GET /api/orders/:id/pay
-// @access Private
-export const updateOrderToPaid = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id)
-  if (order) {
-    order.isPaid = true
-    order.paidAt = Date.now()
-    order.paymentResult = {
-      id: req.body.id,
-      status: req.body.status,
-      update_time: req.body.update_time,
-      email_address: req.body.payer.email_address
-    }
-    const updatedOrder = await order.save()
-    res.json(updatedOrder)
-  } else {
-    res.status(404)
-    throw new Error("Order not found")
-  }
-})
-
 // @desc   Get Logged in User Orders
 // @route  GET /api/orders/myorders
 // @access Private
@@ -116,12 +94,34 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
   }
 })
 
+// @desc update Oreder to Paid
+// @route GET /api/orders/:id/pay
+// @access Private
+export const updateOrderToPaid = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id)
+  if (order) {
+    order.isPaid = true
+    order.paidAt = Date.now()
+    order.paymentMethod = "PayPal"
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address
+    }
+    const updatedOrder = await order.save()
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error("Order not found")
+  }
+})
+
 // @desc get PaymentURL from Mollie
 // @route PUT /api/orders/:id/molliepay
 // @access Private
 export const molliePay = asyncHandler(async (req, res) => {
   const { totalPrice, currency, description, orderId } = req.body
-
   const params = {
     amount: { value: Number(totalPrice).toFixed(2), currency: String(currency) },
     description: description,
@@ -129,7 +129,6 @@ export const molliePay = asyncHandler(async (req, res) => {
     webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
     metadata: { order_id: String(orderId) }
   }
-
   await mollieClient.payments
     .create(params)
     .then(payment => {
@@ -146,19 +145,21 @@ export const molliePay = asyncHandler(async (req, res) => {
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let body = ""
   let id = ""
+
   await req.on("data", chunk => {
     body += chunk.toString()
   })
 
-  console.log("body: ", body) // BODY
-
   // .on("end", () => {
   //   id = querystring.parse(body).id
-  //   getPayment(id)
+  //   // getPayment(id)
   // })
+
+  console.log("body: ", body) // BODY
+
   id = querystring.parse(body).id
 
-  console.log("body.id: ", id) // BODY.ID
+  console.log("id: ", id) // BODY.ID
 
   const paymentResult = {
     id: id,
@@ -173,9 +174,9 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       orderData.id = payment.metadata.order_id
       let details = ""
       if (payment.details) {
-        details = Object.keys(payment.details).map(key => ", " + key + ":" + payment.details[key].replace(/[,]/g, "") + " \n")
+        details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " \n")
       }
-      orderData.paymentMethod = payment.method + details
+      orderData.paymentMethod = payment.method + ", " + details
       orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
       paymentResult.status = payment.status
       paymentResult.email_address = payment.billingEmail || payment.description
@@ -205,7 +206,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 
     res.status(200).send("200 OK")
   } else {
-    res.status(404)
+    res.status(404).send(error)
     throw new Error("Order not found")
   }
 })

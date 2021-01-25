@@ -112,10 +112,22 @@ const Payment = ({ order, userInfo }) => {
           <Message variant="success">
             Paid on {order.paidAt.substring(0, 10)} at {new Date(order.paidAt).toLocaleTimeString()}
           </Message>
-          <div>{order.paymentMethod}</div>
-          <div>ID: {order.paymentResult.id}</div>
-          <div>Status: {order.paymentResult.status}</div>
-          <div>email: {order.paymentResult.email_address}</div>{" "}
+          <div>
+            <strong>Method:</strong>
+            {order.paymentMethod}
+            {/* {order.paymentMethod.split(",").map(el => (
+              <div>{el}</div>
+            ))} */}
+          </div>
+          <div>
+            <strong>ID:</strong> {order.paymentResult.id}
+          </div>
+          <div>
+            <strong>Status:</strong> {order.paymentResult.status}
+          </div>
+          <div>
+            <strong>email:</strong> {order.paymentResult.email_address}
+          </div>{" "}
         </>
       )}
       {!order.isPaid && !paymentMethod && <Message variant="warning">Not Paid</Message>}
