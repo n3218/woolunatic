@@ -124,7 +124,7 @@ export const molliePay = asyncHandler(async (req, res) => {
     amount: { value: String(totalPrice), currency: currency },
     description: description,
     redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
-    webhookUrl: `https://woolunatic.herokuapp.com/api/molliewebhook/id`,
+    webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
     // webhookUrl: ` https://enms90aq4pjv4i5.m.pipedream.net`,
 
     metadata: { order_id: orderId }
@@ -148,45 +148,44 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 
   let body = ""
   let id = ""
-  req.on("data", chunk => {
-    body += chunk.toString()
-    // console.log(`Data chunk available: ${chunk}`)
-  })
-  req.on("end", () => {
-    // console.log(querystring.parse(body))
-    id = querystring.parse(body).id
-    getPayment(id)
-    // console.log(id)
-  })
+  await req
+    .on("data", chunk => {
+      body += chunk.toString()
+    })
+    .on("end", () => {
+      id = querystring.parse(body).id
+      getPayment(id)
+    })
 
-  // const paymentResult = {
-  //   id: id,
-  //  update_time: Date.now()
-  // }
-  // const orderData = {}
+  const paymentResult = {
+    id: id,
+    update_time: Date.now()
+  }
+  const orderData = {}
 
   const getPayment = id =>
     mollieClient.payments
       .get(id)
       .then(payment => {
         console.log("mollieHook:payment: ", payment)
-        // orderData.id = payment.metadata.order_id
-        // orderData.paymentMethod = payment.method
-        // orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
-        // paymentResult.status = payment.status
-        // paymentResult.email_address = payment.billingEmail || payment.description
+        orderData.id = payment.metadata.order_id
+        orderData.paymentMethod = payment.method
+        orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
+        paymentResult.status = payment.status
+        paymentResult.email_address = payment.billingEmail || payment.description
 
-        // if (payment.isPaid()) {
-        //   orderData.isPaid = true
-        //   console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-        // } else if (!payment.isOpen()) {
-        //   console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-        // }
+        if (payment.isPaid()) {
+          orderData.isPaid = true
+          console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
+        } else if (!payment.isOpen()) {
+          console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
+        }
         console.log("payment.status: ", payment.status)
         // res.status(200)
       })
       .catch(error => {
-        res.send(error)
+        res.status(404).send(error)
+        throw new Error("Payment not found")
       })
 
   // const order = await Order.findById(orderData.id)
