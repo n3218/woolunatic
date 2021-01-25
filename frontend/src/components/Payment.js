@@ -105,7 +105,7 @@ const Payment = ({ order, userInfo }) => {
         </>
       )}
       {!order.isPaid && paymentMethod === "PayPal" && <Col md={6}>{!sdkReady ? <Loader /> : <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />}</Col>}
-      {!order.isPaid && paymentMethod === "Mollie" && <Col md={6}>{<Button onClick={() => proceedMollyPayment()}>Mollie Pay</Button>}</Col>}
+      {!order.isPaid && paymentMethod === "Mollie" && <Col md={6}>{<Button onClick={proceedMollyPayment}>Mollie Pay</Button>}</Col>}
 
       {order.isPaid && (
         <>

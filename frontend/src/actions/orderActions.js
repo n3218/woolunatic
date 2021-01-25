@@ -165,6 +165,7 @@ export const listOrdersAction = (pageNumber = "") => async (dispatch, getState) 
 }
 
 export const molliePayAction = orderData => async (dispatch, getState) => {
+  console.log("orderData:", orderData)
   try {
     dispatch({ type: ORDER_MOLLIE_PAY_REQUEST })
     const {
@@ -176,12 +177,14 @@ export const molliePayAction = orderData => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
+
+    console.log("orderData.orderId: ", orderData.orderId)
+
     const { data } = await axios.put(`/api/orders/${orderData.orderId}/molliepay`, orderData, config)
 
     console.log("data: ", data)
     dispatch({ type: ORDER_MOLLIE_PAY_SUCCESS, payload: data })
     window.location.href = data
-    // dispatch({ type: ORDER_MOLLIE_PAY_RESET })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     if (message === "Not authorized, token failed") {

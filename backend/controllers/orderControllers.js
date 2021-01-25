@@ -121,6 +121,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @access Private
 export const molliePay = asyncHandler(async (req, res) => {
   const { totalPrice, currency, description, orderId } = req.body
+  console.log("req.body: ", req.body)
   const params = {
     amount: { value: String(totalPrice), currency: currency },
     description: description,
@@ -130,6 +131,9 @@ export const molliePay = asyncHandler(async (req, res) => {
 
     metadata: { order_id: orderId }
   }
+
+  console.log("params: ", params)
+
   await mollieClient.payments
     .create(params)
     .then(payment => {
