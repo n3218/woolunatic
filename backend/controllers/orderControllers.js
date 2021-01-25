@@ -123,7 +123,7 @@ export const molliePay = asyncHandler(async (req, res) => {
   const { totalPrice, currency, description, orderId } = req.body
 
   const params = {
-    amount: { value: String(Number(totalPrice).toFixed(2)), currency: String(currency) },
+    amount: { value: Number(totalPrice).toFixed(2), currency: String(currency) },
     description: description,
     redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(orderId)}`,
     webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
@@ -146,20 +146,19 @@ export const molliePay = asyncHandler(async (req, res) => {
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let body = ""
   let id = ""
-  await req
-    .on("data", chunk => {
-      body += chunk.toString()
-    })
-    .then((id = querystring.parse(body).id))
+  await req.on("data", chunk => {
+    body += chunk.toString()
+  })
 
-  console.log("body: ", body.red.bold)
+  console.log("body: ", body) // BODY
 
   // .on("end", () => {
   //   id = querystring.parse(body).id
   //   getPayment(id)
   // })
+  id = querystring.parse(body).id
 
-  console.log("body.id: ", id.orange.bold)
+  console.log("body.id: ", id) // BODY.ID
 
   const paymentResult = {
     id: id,
@@ -167,13 +166,16 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   }
   const orderData = {}
 
-  // const getPayment = id =>
   await mollieClient.payments
     .get(id)
     .then(payment => {
-      console.log("mollieHook:payment: ", payment)
+      console.log("mollieHook:payment: ", payment) // mollieHook:payment
       orderData.id = payment.metadata.order_id
-      orderData.paymentMethod = payment.method
+      let details = ""
+      if (payment.details) {
+        details = Object.keys(payment.details).map(key => ", " + key + ":" + payment.details[key].replace(/[,]/g, "") + " \n")
+      }
+      orderData.paymentMethod = payment.method + details
       orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
       paymentResult.status = payment.status
       paymentResult.email_address = payment.billingEmail || payment.description
@@ -183,7 +185,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       } else if (!payment.isOpen()) {
         console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
       }
-      console.log("payment.status: ", payment.status.blue.bold)
+      console.log("payment.status: ", payment.status) // PAYMENT STATUS
       // res.status(200)
     })
     .catch(error => {
@@ -198,7 +200,9 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     order.paidAt = orderData.paidAt
     order.paymentResult = paymentResult
     const updatedOrder = await order.save()
-    console.log("updatedOrder: ", updatedOrder.pink.bold)
+
+    console.log("updatedOrder: ", updatedOrder) //UPDATED ORDER
+
     res.status(200).send("200 OK")
   } else {
     res.status(404)
