@@ -121,18 +121,14 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @access Private
 export const molliePay = asyncHandler(async (req, res) => {
   const { totalPrice, currency, description, orderId } = req.body
-  console.log("req.body: ", req.body)
+
   const params = {
-    amount: { value: String(totalPrice), currency: currency },
+    amount: { value: String(Number(totalPrice).toFixed(2)), currency: String(currency) },
     description: description,
-    redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
+    redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(orderId)}`,
     webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
-    // webhookUrl: ` https://enms90aq4pjv4i5.m.pipedream.net`,
-
-    metadata: { order_id: orderId }
+    metadata: { order_id: String(orderId) }
   }
-
-  console.log("params: ", params)
 
   await mollieClient.payments
     .create(params)
@@ -150,16 +146,20 @@ export const molliePay = asyncHandler(async (req, res) => {
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let body = ""
   let id = ""
-  await req.on("data", chunk => {
-    body += chunk.toString()
-  })
-  console.log("body: ", body)
+  await req
+    .on("data", chunk => {
+      body += chunk.toString()
+    })
+    .then((id = querystring.parse(body).id))
+
+  console.log("body: ", body.red.bold)
+
   // .on("end", () => {
   //   id = querystring.parse(body).id
   //   getPayment(id)
   // })
-  id = querystring.parse(body).id
-  console.log("body.id: ", id)
+
+  console.log("body.id: ", id.orange.bold)
 
   const paymentResult = {
     id: id,
@@ -198,6 +198,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     order.paidAt = orderData.paidAt
     order.paymentResult = paymentResult
     const updatedOrder = await order.save()
+    console.log("updatedOrder: ", updatedOrder.pink.bold)
     res.status(200).send("200 OK")
   } else {
     res.status(404)
