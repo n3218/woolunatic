@@ -2,6 +2,7 @@ import dotenv from "dotenv"
 import asyncHandler from "express-async-handler"
 import Order from "../models/orderModel.js"
 import querystring from "querystring"
+import colors from "colors"
 
 import { createMollieClient } from "@mollie/api-client"
 dotenv.config()
@@ -143,19 +144,18 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @route POST /api/orders/molliewebhook
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
-  // console.log("mollieHook:req.body.id: ", req.body)
-  // console.log("Body:" + req.body)
-
   let body = ""
   let id = ""
-  await req
-    .on("data", chunk => {
-      body += chunk.toString()
-    })
-    .on("end", () => {
-      id = querystring.parse(body).id
-      getPayment(id)
-    })
+  await req.on("data", chunk => {
+    body += chunk.toString()
+  })
+  console.log("body: ", body)
+  // .on("end", () => {
+  //   id = querystring.parse(body).id
+  //   getPayment(id)
+  // })
+  id = querystring.parse(body).id
+  console.log("body.id: ", id)
 
   const paymentResult = {
     id: id,
@@ -163,44 +163,42 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   }
   const orderData = {}
 
-  const getPayment = id =>
-    mollieClient.payments
-      .get(id)
-      .then(payment => {
-        console.log("mollieHook:payment: ", payment)
-        orderData.id = payment.metadata.order_id
-        orderData.paymentMethod = payment.method
-        orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
-        paymentResult.status = payment.status
-        paymentResult.email_address = payment.billingEmail || payment.description
+  // const getPayment = id =>
+  await mollieClient.payments
+    .get(id)
+    .then(payment => {
+      console.log("mollieHook:payment: ", payment)
+      orderData.id = payment.metadata.order_id
+      orderData.paymentMethod = payment.method
+      orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
+      paymentResult.status = payment.status
+      paymentResult.email_address = payment.billingEmail || payment.description
+      if (payment.isPaid()) {
+        orderData.isPaid = true
+        console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
+      } else if (!payment.isOpen()) {
+        console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
+      }
+      console.log("payment.status: ", payment.status.blue.bold)
+      // res.status(200)
+    })
+    .catch(error => {
+      res.status(404).send(error)
+      throw new Error("Payment not found")
+    })
 
-        if (payment.isPaid()) {
-          orderData.isPaid = true
-          console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-        } else if (!payment.isOpen()) {
-          console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-        }
-        console.log("payment.status: ", payment.status)
-        // res.status(200)
-      })
-      .catch(error => {
-        res.status(404).send(error)
-        throw new Error("Payment not found")
-      })
-
-  // const order = await Order.findById(orderData.id)
-  // if (order) {
-  //   order.paymentMethod = orderData.paymentMethod
-  //   order.isPaid = orderData.isPaid
-  //   order.paidAt = orderData.paidAt
-  //   order.paymentResult = paymentResult
-  //   const updatedOrder = await order.save()
-  // } else {
-  //   res.status(404)
-  //   throw new Error("Order not found")
-  // }
-
-  res.status(200).send("200 OK")
+  const order = await Order.findById(orderData.id)
+  if (order) {
+    order.paymentMethod = orderData.paymentMethod
+    order.isPaid = orderData.isPaid
+    order.paidAt = orderData.paidAt
+    order.paymentResult = paymentResult
+    const updatedOrder = await order.save()
+    res.status(200).send("200 OK")
+  } else {
+    res.status(404)
+    throw new Error("Order not found")
+  }
 })
 
 // https://www.mollie.com/dashboard/org_11322007/payments
