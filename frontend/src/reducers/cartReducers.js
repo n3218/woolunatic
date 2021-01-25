@@ -35,8 +35,6 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
       }
 
     case CART_REMOVE_ITEM:
-      console.log("cartReducer:")
-      console.log("action.payload.id: ", action.payload.id)
       return {
         ...state,
         cartItems: state.cartItems.filter(item => !(item.qty === action.payload.qty && item.product === action.payload.id))
