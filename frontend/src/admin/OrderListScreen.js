@@ -44,6 +44,7 @@ const OrderListScreen = ({ history, match }) => {
                 <th>ID</th>
                 <th>FROM DATE</th>
                 <th>TOTAL</th>
+                <th>Method</th>
                 <th>PAID</th>
                 <th>DELIVERED</th>
                 <th>USER</th>
@@ -58,6 +59,7 @@ const OrderListScreen = ({ history, match }) => {
                   </td>
                   <td>{order.createdAt.substring(0, 10)}</td>
                   <td>€{order.totalPrice}</td>
+                  <td>{order.paymentMethod && order.paymentMethod.split(",")[0]}</td>
                   <td>{order.isPaid ? <span className="text-success">{order.paidAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
                   <td>{order.isDelivered ? <span className="text-success">{order.deliveredAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
 

@@ -114,8 +114,8 @@ const Payment = ({ order, userInfo }) => {
           </Message>
           {order.paymentMethod && (
             <PaymentRow val1="Payment Method">
-              {order.paymentMethod.split(",").map(el => (
-                <div>{el}</div>
+              {order.paymentMethod.split(",").map((el, i) => (
+                <div key={i}>{el}</div>
               ))}
             </PaymentRow>
           )}

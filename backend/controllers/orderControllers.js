@@ -66,7 +66,7 @@ export const getMyOrders = asyncHandler(async (req, res) => {
 // @route GET /api/orders
 // @access Private/Admin
 export const getOrders = asyncHandler(async (req, res) => {
-  const pageSize = 10
+  const pageSize = 50
   const page = Number(req.query.pageNumber) || 1
   const count = await Order.countDocuments({})
   const orders = await Order.find({})
@@ -94,7 +94,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc update Oreder to Paid
+// @desc update Order to Paid
 // @route GET /api/orders/:id/pay
 // @access Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
@@ -109,6 +109,7 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
       update_time: req.body.update_time,
       email_address: req.body.payer.email_address
     }
+    console.log("req.body: ", req.body)
     const updatedOrder = await order.save()
     res.json(updatedOrder)
   } else {
@@ -145,69 +146,65 @@ export const molliePay = asyncHandler(async (req, res) => {
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let body = ""
   let id = ""
-
   await req.on("data", chunk => {
     body += chunk.toString()
   })
-
   // .on("end", () => {
   //   id = querystring.parse(body).id
   //   // getPayment(id)
   // })
-
   console.log("body: ", body) // BODY
-
   id = querystring.parse(body).id
-
   console.log("id: ", id) // BODY.ID
-
-  const paymentResult = {
-    id: id,
-    update_time: Date.now()
-  }
+  const paymentResult = { id: id, update_time: Date.now() }
   const orderData = {}
 
-  await mollieClient.payments
-    .get(id)
-    .then(payment => {
-      console.log("mollieHook:payment: ", payment) // mollieHook:payment
-      orderData.id = payment.metadata.order_id
-      let details = ""
-      if (payment.details) {
-        details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " \n")
-      }
-      orderData.paymentMethod = payment.method + ", " + details
-      orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
-      paymentResult.status = payment.status
-      paymentResult.email_address = payment.billingEmail || payment.description
-      if (payment.isPaid()) {
-        orderData.isPaid = true
-        console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-      } else if (!payment.isOpen()) {
-        console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-      }
-      console.log("payment.status: ", payment.status) // PAYMENT STATUS
-      // res.status(200)
-    })
-    .catch(error => {
+  try {
+    await mollieClient.payments
+      .get(id)
+      .then(payment => {
+        console.log("mollieHook:payment: ", payment) // mollieHook:payment
+        orderData.id = payment.metadata.order_id
+        let details = ""
+        if (payment.details) {
+          details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " \n")
+        }
+        orderData.paymentMethod = payment.method + ", " + details
+        orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
+        paymentResult.status = payment.status
+        paymentResult.email_address = payment.billingEmail || payment.description
+        if (payment.isPaid()) {
+          orderData.isPaid = true
+          console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
+        } else if (!payment.isOpen()) {
+          console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
+        }
+        console.log("payment.status: ", payment.status) // PAYMENT STATUS
+        // res.status(200)
+      })
+      .catch(error => {
+        res.status(404).send(error)
+        throw new Error("Payment not found")
+      })
+
+    const order = await Order.findById(orderData.id)
+    if (order) {
+      order.paymentMethod = orderData.paymentMethod
+      order.isPaid = orderData.isPaid
+      order.paidAt = orderData.paidAt
+      order.paymentResult = paymentResult
+      const updatedOrder = await order.save()
+
+      console.log("updatedOrder: ", updatedOrder) //UPDATED ORDER
+
+      res.status(200).send("200 OK")
+    } else {
       res.status(404).send(error)
-      throw new Error("Payment not found")
-    })
-
-  const order = await Order.findById(orderData.id)
-  if (order) {
-    order.paymentMethod = orderData.paymentMethod
-    order.isPaid = orderData.isPaid
-    order.paidAt = orderData.paidAt
-    order.paymentResult = paymentResult
-    const updatedOrder = await order.save()
-
-    console.log("updatedOrder: ", updatedOrder) //UPDATED ORDER
-
-    res.status(200).send("200 OK")
-  } else {
+      throw new Error("Order not found")
+    }
+  } catch (error) {
     res.status(404).send(error)
-    throw new Error("Order not found")
+    throw new Error("No Payment ID received")
   }
 })
 
