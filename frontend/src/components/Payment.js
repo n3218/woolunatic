@@ -120,7 +120,9 @@ const Payment = ({ order, userInfo }) => {
             </PaymentRow>
           )}
           <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
-          <PaymentRow val1="Status">{order.paymentResult.status}</PaymentRow>
+          <PaymentRow val1="Status">
+            <div className="badge badge-success text-uppercase">{order.paymentResult.status}</div>
+          </PaymentRow>
           <PaymentRow val1="email">{order.paymentResult.email_address}</PaymentRow>
         </>
       )}

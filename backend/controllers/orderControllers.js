@@ -157,10 +157,11 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   // try {
   await mollieClient.payments.get(id).then(payment => {
     console.log("mollieHook:payment: ", payment) // mollieHook:payment
+
     orderData.id = payment.metadata.order_id
     let details = ""
     if (payment.details) {
-      details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " \n")
+      details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " ")
     }
     orderData.paymentMethod = payment.method + ", " + details
     orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
