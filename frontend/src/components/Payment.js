@@ -112,26 +112,31 @@ const Payment = ({ order, userInfo }) => {
           <Message variant="success">
             Paid on {order.paidAt.substring(0, 10)} at {new Date(order.paidAt).toLocaleTimeString()}
           </Message>
-          <div>
-            <strong>Method:</strong>
-            {order.paymentMethod}
-            {/* {order.paymentMethod.split(",").map(el => (
-              <div>{el}</div>
-            ))} */}
-          </div>
-          <div>
-            <strong>ID:</strong> {order.paymentResult.id}
-          </div>
-          <div>
-            <strong>Status:</strong> {order.paymentResult.status}
-          </div>
-          <div>
-            <strong>email:</strong> {order.paymentResult.email_address}
-          </div>{" "}
+          {order.paymentMethod && (
+            <PaymentRow val1="Payment Method">
+              {order.paymentMethod.split(",").map(el => (
+                <div>{el}</div>
+              ))}
+            </PaymentRow>
+          )}
+          <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
+          <PaymentRow val1="Status">{order.paymentResult.status}</PaymentRow>
+          <PaymentRow val1="email">{order.paymentResult.email_address}</PaymentRow>
         </>
       )}
       {!order.isPaid && !paymentMethod && <Message variant="warning">Not Paid</Message>}
     </>
+  )
+}
+
+const PaymentRow = ({ val1, children }) => {
+  return (
+    <Row>
+      <Col xl={2} xs={3} className="mr-2 h6 mb-0">
+        {val1}
+      </Col>
+      <Col>{children}</Col>
+    </Row>
   )
 }
 
