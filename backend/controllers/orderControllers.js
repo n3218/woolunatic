@@ -129,14 +129,12 @@ export const molliePay = asyncHandler(async (req, res) => {
     webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
     metadata: { order_id: String(orderId) }
   }
-  await mollieClient.payments
-    .create(params)
-    .then(payment => {
-      res.send(payment.getPaymentUrl())
-    })
-    .catch(error => {
-      res.send(error)
-    })
+  await mollieClient.payments.create(params).then(payment => {
+    res.send(payment.getPaymentUrl())
+  })
+  // .catch(error => {
+  //   res.send(error)
+  // })
 })
 
 // @desc get Order status from Mollie
@@ -144,62 +142,61 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let body = ""
-  await req.on("data", chunk => {
-    body += chunk.toString()
-  })
-
-  const id = querystring.parse(body).id
-  const paymentResult = { id: id, update_time: Date.now() }
+  let id = ""
+  const paymentResult = { update_time: Date.now() }
   const orderData = {}
 
-  console.log("body: ", body) // BODY
-  console.log("id: ", id) // BODY.ID
-  // try {
-  await mollieClient.payments.get(id).then(payment => {
-    console.log("mollieHook:payment: ", payment) // mollieHook:payment
+  const getPayment = async id =>
+    await mollieClient.payments.get(id).then(payment => {
+      console.log("mollieHook:payment: ", payment) ////// mollieHook:payment
+      orderData.id = payment.metadata.order_id
+      let details = ""
+      if (payment.details) {
+        details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " ")
+      }
+      orderData.paymentMethod = payment.method + ", " + details
+      orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
+      paymentResult.id = id
+      paymentResult.status = payment.status
+      paymentResult.email_address = payment.billingEmail || payment.description
+      if (payment.isPaid()) {
+        orderData.isPaid = true
+        console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
+      } else if (!payment.isOpen()) {
+        console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
+      }
+      console.log("payment.status: ", payment.status) // PAYMENT STATUS
+      getUpdateOrder(orderData.id)
+    })
 
-    orderData.id = payment.metadata.order_id
-    let details = ""
-    if (payment.details) {
-      details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " ")
+  const getUpdateOrder = async orderId => {
+    console.log("getUpdateOrder") /////////////////////// getUpdateOrder
+    console.log("orderId: ", orderId) //////////////////// orderId
+    const order = await Order.findById(orderId)
+    if (order) {
+      order.paymentMethod = orderData.paymentMethod
+      order.isPaid = orderData.isPaid
+      order.paidAt = orderData.paidAt
+      order.paymentResult = paymentResult
+      order.paymentResult = paymentResult
+      const updatedOrder = await order.save()
+      console.log("updatedOrder: ", updatedOrder) ////////// UPDATED ORDER
+      res.status(200).send("200 OK")
+    } else {
+      res.status(404)
+      throw new Error("Order not found")
     }
-    orderData.paymentMethod = payment.method + ", " + details
-    orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
-    paymentResult.status = payment.status
-    paymentResult.email_address = payment.billingEmail || payment.description
-    if (payment.isPaid()) {
-      orderData.isPaid = true
-      console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-    } else if (!payment.isOpen()) {
-      console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-    }
-    console.log("payment.status: ", payment.status) // PAYMENT STATUS
-    // res.status(200)
-  })
-  // .catch(error => {
-  //   res.status(404).send(error)
-  //   throw new Error("Payment not found")
-  // })
-
-  const order = await Order.findById(orderData.id)
-  if (order) {
-    order.paymentMethod = orderData.paymentMethod
-    order.isPaid = orderData.isPaid
-    order.paidAt = orderData.paidAt
-    order.paymentResult = paymentResult
-    const updatedOrder = await order.save()
-
-    console.log("updatedOrder: ", updatedOrder) //UPDATED ORDER
-
-    res.status(200).send("200 OK")
-  } else {
-    res.status(404).send(error)
-    throw new Error("Order not found")
   }
-  // } catch (error) {
-  //   res.status(404).send(error)
-  //   throw new Error("No Payment ID received")
-  // }
+
+  await req
+    .on("data", chunk => {
+      body += chunk.toString()
+    })
+    .on("end", () => {
+      id = querystring.parse(body).id
+      console.log("id: ", id) /////////////////////////////// ID
+      getPayment(id)
+    })
 })
 
 // https://www.mollie.com/dashboard/org_11322007/payments
