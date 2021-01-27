@@ -141,8 +141,8 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @route POST /api/orders/molliewebhook
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
-  const orderToUpdate = {}
-  const paymentResult = {}
+  let orderToUpdate = {}
+  let paymentResult = {}
 
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
@@ -182,7 +182,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     if (order) {
       order.paymentMethod = orderToUpdate.paymentMethod
       order.paidAt = orderToUpdate.paidAt
-      order.paymentResult = paymentResult
+      order.paymentResult = orderToUpdate.paymentResult
       order.isPaid = orderToUpdate.isPaid
 
       const updatedOrder = await order.save()
@@ -194,8 +194,8 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     }
   }
 
-  await req
   let body = ""
+  await req
     .on("data", chunk => {
       body += chunk.toString()
     })

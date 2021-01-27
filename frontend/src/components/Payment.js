@@ -9,6 +9,7 @@ import Loader from "./Loader"
 import { molliePayAction, payOrderAction } from "../actions/orderActions"
 import MolliePayment from "./PaymentMollie"
 import "./Payment.css"
+import PaymentStatus from "./PaymentStatus"
 
 const Payment = ({ order, userInfo }) => {
   const dispatch = useDispatch()
@@ -120,9 +121,7 @@ const Payment = ({ order, userInfo }) => {
             </PaymentRow>
           )}
           <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
-          <PaymentRow val1="Status">
-            <div className="badge badge-success text-uppercase">{order.paymentResult.status}</div>
-          </PaymentRow>
+          <PaymentRow val1="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus status={order.paymentResult.status} />}</PaymentRow>
           <PaymentRow val1="email">{order.paymentResult.email_address}</PaymentRow>
         </>
       )}
