@@ -20,7 +20,7 @@ Rating.propTypes = {
   text: PropTypes.string.isRequired
 }
 Rating.defaultProps = {
-  value: 0,
+  value: 1,
   text: ""
 }
 
