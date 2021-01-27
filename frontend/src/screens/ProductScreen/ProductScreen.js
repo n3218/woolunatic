@@ -16,7 +16,7 @@ const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
   const productId = match.params.id
   const [qty, setQty] = useState(1)
-  const [rating, setRating] = useState(0)
+  const [rating, setRating] = useState(5)
   const [comment, setComment] = useState("")
   const [initialImages, setInitialImages] = useState([])
   const [inStockArr, setInStockArr] = useState([])
@@ -50,7 +50,7 @@ const ProductScreen = ({ history, match }) => {
       setRating(0)
       setComment("")
     }
-    if (!product || !product._id || product._id !== productId) {
+    if (!product || !product._id || product._id !== productId || successCreateReview) {
       dispatch(productDetailsAction(productId))
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     }
@@ -243,9 +243,11 @@ const ProductScreen = ({ history, match }) => {
               <ListGroup variant="flush">
                 {product.reviews.map(review => (
                   <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>
+                    <div className="h6">
+                      {review.name} | <small>{review.createdAt.substring(0, 10)}</small>
+                    </div>
+
                     <Rating value={review.rating} />
-                    <p>{review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
@@ -278,7 +280,7 @@ const ProductScreen = ({ history, match }) => {
                         </div>
                       </Form.Group>
                       <Form.Group>
-                        <Form.Control as="textarea" row="5" value={comment} onChange={e => setComment(e.target.value)} placeholder="Write your review here..."></Form.Control>
+                        <Form.Control as="textarea" row="5" value={comment} onChange={e => setComment(e.target.value)} placeholder="Write your review here..." required></Form.Control>
                       </Form.Group>
                       <Button type="submit" className="btn-block" disabled={loadingCreateReview}>
                         Submit a review

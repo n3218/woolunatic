@@ -141,44 +141,50 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @route POST /api/orders/molliewebhook
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
-  let body = ""
-  let id = ""
-  const paymentResult = { update_time: Date.now() }
-  const orderData = {}
+  const orderToUpdate = {}
+  const paymentResult = {}
 
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
       console.log("mollieHook:payment: ", payment) ////// mollieHook:payment
-      orderData.id = payment.metadata.order_id
       let details = ""
       if (payment.details) {
         details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " ")
       }
-      orderData.paymentMethod = payment.method + ", " + details
-      orderData.paidAt = payment.paidAt || payment.authorizedAt || payment.createdAt
-      paymentResult.id = id
-      paymentResult.status = payment.status
-      paymentResult.email_address = payment.billingEmail || payment.description
+
+      orderToUpdate = {
+        id: payment.metadata.order_id,
+        paymentMethod: payment.method + ", " + details,
+        paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
+        paymentResult: {
+          id: id,
+          update_time: Date.now(),
+          status: payment.status,
+          email_address: payment.billingEmail || payment.description
+        }
+      }
+
       if (payment.isPaid()) {
-        orderData.isPaid = true
+        orderToUpdate.isPaid = true
         console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
       } else if (!payment.isOpen()) {
         console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
       }
       console.log("payment.status: ", payment.status) // PAYMENT STATUS
-      getUpdateOrder(orderData.id)
+
+      getOrderToUpdate(orderToUpdate.id)
     })
 
-  const getUpdateOrder = async orderId => {
-    console.log("getUpdateOrder") /////////////////////// getUpdateOrder
+  const getOrderToUpdate = async orderId => {
+    console.log("getOrderToUpdate") /////////////////////// getOrderToUpdate
     console.log("orderId: ", orderId) //////////////////// orderId
     const order = await Order.findById(orderId)
     if (order) {
-      order.paymentMethod = orderData.paymentMethod
-      order.isPaid = orderData.isPaid
-      order.paidAt = orderData.paidAt
+      order.paymentMethod = orderToUpdate.paymentMethod
+      order.paidAt = orderToUpdate.paidAt
       order.paymentResult = paymentResult
-      order.paymentResult = paymentResult
+      order.isPaid = orderToUpdate.isPaid
+
       const updatedOrder = await order.save()
       console.log("updatedOrder: ", updatedOrder) ////////// UPDATED ORDER
       res.status(200).send("200 OK")
@@ -189,11 +195,12 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   }
 
   await req
+  let body = ""
     .on("data", chunk => {
       body += chunk.toString()
     })
     .on("end", () => {
-      id = querystring.parse(body).id
+      const id = querystring.parse(body).id
       console.log("id: ", id) /////////////////////////////// ID
       getPayment(id)
     })
