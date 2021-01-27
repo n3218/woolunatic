@@ -70,6 +70,21 @@ const Payment = ({ order, userInfo }) => {
     ></Form.Check>
   )
 
+  const showLinks = links => {
+    const arr = JSON.parse(links)
+    console.log("arr: ", arr)
+    return Object.keys(arr).map(key => (
+      <div key={key}>
+        <small>
+          <i>{key}: </i>
+        </small>
+        <a href={arr[key].href} target="_blank">
+          {arr[key].href.substring(0, 30)}...
+        </a>
+      </div>
+    ))
+  }
+
   return (
     <>
       {!order.isPaid && (
@@ -115,14 +130,27 @@ const Payment = ({ order, userInfo }) => {
           </Message>
           {order.paymentMethod && (
             <PaymentRow val1="Payment Method">
-              {order.paymentMethod.split(",").map((el, i) => (
-                <div key={i}>{el}</div>
-              ))}
+              {order.paymentMethod.split(",").map((el, i) => {
+                let arr = el.split(":")
+                return (
+                  <div key={i}>
+                    {
+                      <>
+                        <small>
+                          <i>{arr[0]}: </i>
+                        </small>
+                        {arr[1]}
+                      </>
+                    }
+                  </div>
+                )
+              })}
             </PaymentRow>
           )}
           <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
           <PaymentRow val1="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</PaymentRow>
-          <PaymentRow val1="email">{order.paymentResult.email_address}</PaymentRow>
+          <PaymentRow val1="Email">{order.paymentResult.email_address}</PaymentRow>
+          <PaymentRow val1="Links">{order.paymentResult.links && showLinks(order.paymentResult.links)}</PaymentRow>
         </>
       )}
       {!order.isPaid && !paymentMethod && <Message variant="warning">Not Paid</Message>}
