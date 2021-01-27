@@ -5,6 +5,7 @@ import querystring from "querystring"
 import colors from "colors"
 
 import { createMollieClient } from "@mollie/api-client"
+import { json } from "express"
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
 
@@ -160,7 +161,8 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
           id: id,
           update_time: Date.now(),
           status: payment.status,
-          email_address: payment.billingEmail || payment.description
+          email_address: payment.billingEmail || payment.description,
+          links: JSON.stringify(payment._links)
         }
       }
 
