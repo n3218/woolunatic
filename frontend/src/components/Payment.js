@@ -90,6 +90,7 @@ const Payment = ({ order, userInfo }) => {
                   <img src="/assets/payments/amex.svg" className="payment-icon" alt="amex" />
                 </Col>
               </Row>
+              {!order.isPaid && paymentMethod === "Mollie" && <Col md={6}>{<Button onClick={proceedMollyPayment}>Mollie Pay</Button>}</Col>}
               <Row>
                 <Col xs={3} lg={2} xl={2}>
                   {radioButton("PayPal", "PayPal")}
@@ -106,7 +107,6 @@ const Payment = ({ order, userInfo }) => {
         </>
       )}
       {!order.isPaid && paymentMethod === "PayPal" && <Col md={6}>{!sdkReady ? <Loader /> : <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />}</Col>}
-      {!order.isPaid && paymentMethod === "Mollie" && <Col md={6}>{<Button onClick={proceedMollyPayment}>Mollie Pay</Button>}</Col>}
 
       {order.isPaid && (
         <>
@@ -121,7 +121,7 @@ const Payment = ({ order, userInfo }) => {
             </PaymentRow>
           )}
           <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
-          <PaymentRow val1="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus status={order.paymentResult.status} />}</PaymentRow>
+          <PaymentRow val1="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</PaymentRow>
           <PaymentRow val1="email">{order.paymentResult.email_address}</PaymentRow>
         </>
       )}
