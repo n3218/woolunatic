@@ -142,7 +142,6 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let orderToUpdate = {}
-  let paymentResult = {}
 
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
@@ -156,6 +155,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
         id: payment.metadata.order_id,
         paymentMethod: payment.method + ", " + details,
         paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
+        isPaid: false,
         paymentResult: {
           id: id,
           update_time: Date.now(),
