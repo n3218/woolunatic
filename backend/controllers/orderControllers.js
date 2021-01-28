@@ -146,7 +146,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
-      console.log("mollieHook:payment: ", payment) ////// mollieHook:payment
+      console.log("=============================mollieHook:payment: ", payment) ////// mollieHook:payment
       let details = ""
       if (payment.details) {
         details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " ")
@@ -172,7 +172,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       } else if (!payment.isOpen()) {
         console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
       }
-      console.log("payment.status: ", payment.status) // PAYMENT STATUS
+      console.log("=============================payment.status: ", payment.status) // PAYMENT STATUS
 
       getOrderToUpdate(orderToUpdate.id)
     })
@@ -203,7 +203,8 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     })
     .on("end", () => {
       const id = querystring.parse(body).id
-      console.log("id: ", id) /////////////////////////////// ID
+      console.log("=============================req.body: ", body) /////////////////////////////// ID
+      console.log("=============================req.body.id: ", id) /////////////////////////////// ID
       getPayment(id)
     })
 })
