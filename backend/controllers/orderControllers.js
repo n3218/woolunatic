@@ -98,6 +98,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @route GET /api/orders/:id/pay
 // @access Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
+  console.log("=========================updateOrderToPaid:req.body: ", req.body)
   const order = await Order.findById(req.params.id)
   if (order) {
     order.isPaid = true
@@ -107,9 +108,10 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
       id: req.body.id,
       status: req.body.status,
       update_time: req.body.update_time,
-      email_address: req.body.payer.email_address
+      email_address: req.body.payer.email_address,
+      links: JSON.stringify(payment.links),
+      details: JSON.stringify(payment.payer)
     }
-    console.log("req.body: ", req.body)
     const updatedOrder = await order.save()
     res.json(updatedOrder)
   } else {
@@ -133,9 +135,6 @@ export const molliePay = asyncHandler(async (req, res) => {
   await mollieClient.payments.create(params).then(payment => {
     res.send(payment.getPaymentUrl())
   })
-  // .catch(error => {
-  //   res.send(error)
-  // })
 })
 
 // @desc get Order status from Mollie
@@ -147,22 +146,18 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
       console.log("=============================mollieHook:payment: ", payment) ////// mollieHook:payment
-      let details = ""
-      if (payment.details) {
-        details = Object.keys(payment.details).map(key => " " + key + ": " + payment.details[key] + " ")
-      }
-
       orderToUpdate = {
         id: payment.metadata.order_id,
-        paymentMethod: payment.method + ", " + details,
+        paymentMethod: payment.method,
         paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
         isPaid: false,
         paymentResult: {
           id: id,
           update_time: Date.now(),
           status: payment.status,
-          email_address: payment.billingEmail || payment.description,
-          links: JSON.stringify(payment._links)
+          email_address: payment.billingEmail || "",
+          links: JSON.stringify(payment._links),
+          details: JSON.stringify(payment.details)
         }
       }
 
