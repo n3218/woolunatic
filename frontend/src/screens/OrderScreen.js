@@ -57,7 +57,7 @@ const OrderScreen = ({ match, history }) => {
           <ListGroup variant="flush">
             <ListGroup.Item>
               <Row>
-                <Col lg={4} md={5} sm={6}>
+                <Col lg={4} md={4} sm={5}>
                   <h4>
                     <nobr>SHIPPING ADDRESS</nobr>
                   </h4>
@@ -78,7 +78,7 @@ const OrderScreen = ({ match, history }) => {
 
             <ListGroup.Item>
               <Row>
-                <Col lg={4} md={5} sm={6}>
+                <Col lg={4} md={4} sm={5}>
                   <h4>{!order.isPaid && "SELECT "}PAYMENT METHOD</h4>
                 </Col>
                 <Col>

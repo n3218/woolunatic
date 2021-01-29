@@ -22,7 +22,6 @@ export const createNewOrder = asyncHandler(async (req, res) => {
     shippingPrice,
     totalPrice
   } = req.body
-
   if (orderItems && orderItems.length === 0) {
     res / status(400)
     throw new Error("No items in the order")
@@ -101,6 +100,8 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
   console.log("=========================updateOrderToPaid:req.body: ", req.body)
   const order = await Order.findById(req.params.id)
   if (order) {
+    console.log("=========================updateOrderToPaid:if(order):order: ", order)
+
     order.isPaid = true
     order.paidAt = Date.now()
     order.paymentMethod = "PayPal"
@@ -108,11 +109,11 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
       id: req.body.id,
       status: req.body.status,
       update_time: req.body.update_time,
-      email_address: req.body.payer.email_address,
-      links: JSON.stringify(payment.links),
-      details: JSON.stringify(payment.payer)
+      email_address: req.body.payer.email_addresss
     }
+
     const updatedOrder = await order.save()
+    console.log("=========================updateOrderToPaid:updatedOrder: ", updatedOrder)
     res.json(updatedOrder)
   } else {
     res.status(404)
@@ -156,8 +157,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
           update_time: Date.now(),
           status: payment.status,
           email_address: payment.billingEmail || "",
-          links: JSON.stringify(payment._links),
-          details: JSON.stringify(payment.details)
+          links: JSON.stringify(payment._links)
         }
       }
 
