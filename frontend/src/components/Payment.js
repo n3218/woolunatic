@@ -74,14 +74,41 @@ const Payment = ({ order, userInfo }) => {
     const arr = JSON.parse(links)
     console.log("arr: ", arr)
     return Object.keys(arr).map(key => (
-      <div key={key}>
-        <small>
-          <i>{key}: </i>
-        </small>
-        <a href={arr[key].href} target="_blank">
-          {arr[key].href.substring(0, 30)}...
-        </a>
-      </div>
+      <Row key={key}>
+        <Col xs={4} sm={6} lg={4} className="p-0">
+          <small>
+            <i>{key}: </i>
+          </small>
+        </Col>
+        <Col>
+          <a href={arr[key].href} target="_blank">
+            {arr[key].href.substring(0, 20)}...
+          </a>
+        </Col>
+      </Row>
+    ))
+  }
+
+  const showDetails = details => {
+    const arr = JSON.parse(details)
+    console.log("arr: ", arr)
+    return Object.keys(arr).map(key => (
+      <Row key={key}>
+        <Col xs={4} sm={6} lg={4} className="p-0">
+          <small>
+            <i>{key}: </i>
+          </small>
+        </Col>
+        <Col className="p-0">
+          {typeof arr[key] === "object"
+            ? Object.keys(arr[key]).map(el => (
+                <div>
+                  {el} : {arr[key][el]}
+                </div>
+              ))
+            : arr[key]}
+        </Col>
+      </Row>
     ))
   }
 
@@ -125,31 +152,15 @@ const Payment = ({ order, userInfo }) => {
 
       {order.isPaid && (
         <>
-          <Message variant="success">
-            Paid on {order.paidAt.substring(0, 10)} at {new Date(order.paidAt).toLocaleTimeString()}
-          </Message>
+          <Message variant="success">Paid on {new Date(order.paidAt).toString()}</Message>
           {order.paymentMethod && (
             <PaymentRow val1="Payment Method">
-              {order.paymentMethod.split(",").map((el, i) => {
-                let arr = el.split(":")
-                return (
-                  <div key={i}>
-                    {
-                      <>
-                        <small>
-                          <i>{arr[0]}: </i>
-                        </small>
-                        {arr[1]}
-                      </>
-                    }
-                  </div>
-                )
-              })}
+              <span className="text-capitalize">{order.paymentMethod}</span>
             </PaymentRow>
           )}
           <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
           <PaymentRow val1="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</PaymentRow>
-          <PaymentRow val1="Email">{order.paymentResult.email_address}</PaymentRow>
+          <PaymentRow val1="Details">{order.paymentResult.details && showDetails(order.paymentResult.details)}</PaymentRow>
           <PaymentRow val1="Links">{order.paymentResult.links && showLinks(order.paymentResult.links)}</PaymentRow>
         </>
       )}
@@ -161,7 +172,7 @@ const Payment = ({ order, userInfo }) => {
 const PaymentRow = ({ val1, children }) => {
   return (
     <Row>
-      <Col xl={2} xs={3} className="mr-2 h6 mb-0">
+      <Col xl={2} xs={2} className="mr-2 h6 mb-0">
         {val1}
       </Col>
       <Col>{children}</Col>
