@@ -1,6 +1,6 @@
 .product-list {
   width: 100%;
-  table-layout: fixed;
+  /* table-layout: fixed; */
 }
 
 .product-list th {
@@ -15,7 +15,7 @@
 
 .product-list th,
 .product-list td {
-  height: 30px;
+  /* height: 30px; */
   padding-right: 0 1rem;
 }
 
