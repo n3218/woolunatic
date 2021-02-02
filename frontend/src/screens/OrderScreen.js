@@ -71,7 +71,7 @@ const OrderScreen = ({ match, history }) => {
                   <div className="mb-3">
                     {order.shippingAddress.city}, {order.shippingAddress.zipCode}, {order.shippingAddress.country}
                   </div>
-                  {order.isDelivered ? <Message variant="success">Delivered on {order.deliveredAt.substring(0, 10)}</Message> : <Message variant="warning">Not Delivered</Message>}
+                  {order.isDelivered ? <Message variant="success">Shipped on {order.deliveredAt.substring(0, 10)}</Message> : <Message variant="warning">Not Shipped</Message>}
                 </Col>
               </Row>
             </ListGroup.Item>
@@ -139,7 +139,7 @@ const OrderScreen = ({ match, history }) => {
           {loadingDeliver && <Loader />}
           {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
             <Button type="button" className="btn btn-block" onClick={deliverHandler}>
-              Mark as delivered
+              Mark as send
             </Button>
           )}
         </OrderSummary>

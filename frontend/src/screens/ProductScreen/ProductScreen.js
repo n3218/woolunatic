@@ -173,7 +173,7 @@ const ProductScreen = ({ history, match }) => {
             {/* ---------------------------Add--------------------------- */}
 
             <div id="product-add" className="mx-3">
-              <Card>
+              <Card border="light">
                 <Form onSubmit={addToCartHandler}>
                   <ListGroup variant="flush">
                     <ListGroup.Item>

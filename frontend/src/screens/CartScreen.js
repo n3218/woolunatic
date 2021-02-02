@@ -46,7 +46,7 @@ const CartScreen = ({ match, location, history }) => {
           )}
         </Col>
         <Col md={3}>
-          <Card>
+          <Card border="light">
             <Card.Header className="card-header text-center">
               <h4>Subtotal ({cartItems.length}) items</h4>
             </Card.Header>
@@ -66,7 +66,7 @@ const CartScreen = ({ match, location, history }) => {
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Button type="button" className="btn-block" disabled={cartItems.length === 0} onClick={checkoutHandler}>
+                <Button type="button" className="btn-block btn-primary" disabled={cartItems.length === 0} onClick={checkoutHandler}>
                   Checkout
                 </Button>
               </ListGroup.Item>
