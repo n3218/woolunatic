@@ -5,7 +5,7 @@ import Message from "../components/Message"
 const OrderSummary = ({ cart, items, children, error }) => {
   return (
     <Col md={3}>
-      <Card>
+      <Card border="light">
         <Card.Header className="card-header text-center">
           <h3>Order Summary</h3>
         </Card.Header>

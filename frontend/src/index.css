@@ -6,6 +6,33 @@
 --breakpoint-md: 768px;
 --breakpoint-lg: 992px;
 --breakpoint-xl: 1200px; */
+:root {
+  --primary: #81869c;
+  --secondary: #777372;
+  --danger: #ccf111;
+  --dark: #43444a;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #757a8f;
+  border-color: #d5dae5;
+}
+.btn-primary:hover {
+  background-color: #81869c;
+  border-color: #757a8f;
+}
+
+a {
+  color: #757a8f;
+}
+a:hover {
+  color: #81869c;
+}
+
+.jumbotron {
+  background-color: #f0f3f7;
+}
 
 html,
 body,
