@@ -51,7 +51,7 @@ const PaymentScreen = ({ history }) => {
             {radioButton("Paysend", "Paysend")}
             {radioButton("Stripe", "Stripe")}
 
-            <Button type="submit" variant="primary">
+            <Button type="submit" className="btn-success">
               Continue
             </Button>
           </Form.Group>

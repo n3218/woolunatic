@@ -170,7 +170,7 @@ const Filter = ({ products, setFilteredProducts }) => {
       <div className="text-center">{products && <h6>total {products.length} yarns</h6>}</div>
       <Card className="filter">
         <Card.Header>
-          <Button onClick={clearFilterHandler} variant="primary" block>
+          <Button onClick={clearFilterHandler} className="btn-success" block>
             <nobr>Clear filter</nobr>
           </Button>
           <Card.Title as="h4" className="text-center">

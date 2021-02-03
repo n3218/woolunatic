@@ -104,7 +104,7 @@ const ProductScreen = ({ history, match }) => {
           <Meta title={product.name} description={product.description} />
           <div className="submenu">
             {userInfo && userInfo.isAdmin && (
-              <Link to={`/admin/product/${productId}/edit`} className="btn btn-primary submenu">
+              <Link to={`/admin/product/${productId}/edit`} className="btn btn-success my-3 px-5 submenu">
                 Edit
               </Link>
             )}
@@ -214,7 +214,7 @@ const ProductScreen = ({ history, match }) => {
                       )}
                       <Row>
                         <Col xl={12} xs={12}>
-                          <Button className="btn-block btn-dark" type="submit" disabled={product.outOfStock}>
+                          <Button className="btn-block btn-success my-3" type="submit" disabled={product.outOfStock}>
                             {!product.outOfStock ? "Add to Cart" : "Out of Stock"}
                           </Button>
                         </Col>
@@ -280,9 +280,9 @@ const ProductScreen = ({ history, match }) => {
                         </div>
                       </Form.Group>
                       <Form.Group>
-                        <Form.Control as="textarea" row="5" value={comment} onChange={e => setComment(e.target.value)} placeholder="Write your review here..." required></Form.Control>
+                        <Form.Control as="textarea" rows="5" value={comment} onChange={e => setComment(e.target.value)} placeholder="Write your review here..." required></Form.Control>
                       </Form.Group>
-                      <Button type="submit" className="btn-block" disabled={loadingCreateReview}>
+                      <Button type="submit" className="btn-block btn-success my-3" disabled={loadingCreateReview}>
                         Submit a review
                       </Button>
                     </Form>

@@ -28,13 +28,13 @@ export const FormFieldAsRow = ({ comment, value, label, onChange, as, rows }) =>
 
 export const FormFieldAsRowCheckbox = ({ value, label, onChange }) => {
   return (
-    <Form.Group controlId="isAdmin">
+    <Form.Group controlId={label}>
       <Row>
         <Col sm="2">
           <Form.Label>{label}</Form.Label>
         </Col>
         <Col>
-          <Form.Check type="checkbox" label={label} checked={value} onChange={e => onChange(e.target.checked)}></Form.Check>
+          <Form.Check type="checkbox" className="custom-checkbox" label={label} checked={value} onChange={e => onChange(e.target.checked)}></Form.Check>
         </Col>
       </Row>
     </Form.Group>
