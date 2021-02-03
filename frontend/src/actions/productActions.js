@@ -110,6 +110,7 @@ export const productCreateAction = () => async (dispatch, getState) => {
 }
 
 export const productUpdateAction = product => async (dispatch, getState) => {
+  console.log("productUpdateAction")
   try {
     dispatch({ type: PRODUCT_UPDATE_REQUEST })
     const {

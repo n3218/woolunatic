@@ -43,7 +43,7 @@ const LoginScreen = ({ history, location }) => {
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Enter Password" value={password} autoComplete="password" onChange={e => setPassword(e.target.value)}></Form.Control>
         </Form.Group>
-        <Button type="submit" variant="primary">
+        <Button type="submit" className="btn-success my-3 px-5">
           Sign In
         </Button>
       </Form>

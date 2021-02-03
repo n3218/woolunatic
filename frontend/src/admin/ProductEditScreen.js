@@ -99,11 +99,15 @@ const ProductEditScreen = ({ history, match }) => {
     )
   }
 
+  console.log("===================inSale: ", inSale)
+  console.log("===================novelty: ", novelty)
+  console.log("===================regular: ", regular)
+  console.log("===================outOfStock: ", outOfStock)
   return (
     <>
       <Meta title="Admin | Edit Product | Woolunatics" />
       <div className="submenu">
-        <Link to={`/products/${productId}`} className="btn btn-success">
+        <Link to={`/products/${productId}`} className="btn btn-success my-3 px-5">
           Preview
         </Link>
       </div>
@@ -136,8 +140,8 @@ const ProductEditScreen = ({ history, match }) => {
               <FormFieldAsRow value={inStock} comment="Cones weights, separated by commas" label="In Stock" onChange={setInStock} />
               <FormFieldAsRowCheckbox value={regular} label="Regular" onChange={setRegular} />
               <FormFieldAsRowCheckbox value={novelty} label="Novelty" onChange={setNovelty} />
-              <FormFieldAsRowCheckbox value={inSale} label="in Sale" onChange={setInSale} />
-              <FormFieldAsRowCheckbox value={outOfStock} label="Out Of Stock" onChange={setOutOfStock} />
+              <FormFieldAsRowCheckbox value={inSale} label="inSale" onChange={setInSale} />
+              <FormFieldAsRowCheckbox value={outOfStock} label="OutOfStock" onChange={setOutOfStock} />
 
               <ImageUpload color={color} setColor={setColor} image={image} setUploading={setUploading} setImage={setImage} uploading={uploading} />
 
@@ -155,7 +159,7 @@ const ProductEditScreen = ({ history, match }) => {
               <Row>
                 <Col sm="2"></Col>
                 <Col>
-                  <Button type="submit" variant="dark" className="my-4">
+                  <Button type="submit" className="btn-success my-3 px-5">
                     Save Changes
                   </Button>
                 </Col>

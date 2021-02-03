@@ -49,7 +49,7 @@ const CollectionScreen = ({ match }) => {
                 </Col>
               ))}
             </Row>
-            {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} variant="primary" className="my-3 px-5">
+            {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} className="my-3 px-5 btn-success>
                   Load More
                 </Button> */}</div>}
           </div>

@@ -98,7 +98,7 @@ const PlaceOrderScreen = ({ history }) => {
         <OrderSummary cart={cart} items={cart.cartItems} error={error}>
           <Button //
             type="button"
-            className="btn-block"
+            className="btn-block btn-success my-3"
             disabled={cart.cartItems.length === 0}
             onClick={placeOrderHandler}
           >

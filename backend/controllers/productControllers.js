@@ -162,7 +162,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     product.art = art
     product.nm = nm
     product.novelty = novelty
-    product.inSale() = inSale
+    product.inSale = inSale
     product.regular = regular
 
     const updatedProduct = await product.save()
