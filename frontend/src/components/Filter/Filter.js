@@ -207,6 +207,7 @@ const Filter = ({ products, setFilteredProducts }) => {
                       <div key={fib[0]} className={i > 5 && !showFibers ? "display-none" : "display-block"}>
                         <Form.Check //
                           type="checkbox"
+                          className="custom-checkbox"
                           id={fib[0]}
                           label={
                             fib[0] === "cashmix" //
@@ -224,13 +225,13 @@ const Filter = ({ products, setFilteredProducts }) => {
                   <div>
                     <small>
                       {!showFibers ? (
-                        <Button variant="link" onClick={() => setShowFibers(true)}>
-                          <small>Show more...</small>
-                        </Button>
+                        <div className="link-primary" onClick={() => setShowFibers(true)}>
+                          Show more...
+                        </div>
                       ) : (
-                        <Button variant="link" onClick={() => setShowFibers(false)}>
-                          <small>Show less...</small>
-                        </Button>
+                        <div className="link-primary" onClick={() => setShowFibers(false)}>
+                          Show less...
+                        </div>
                       )}
                     </small>
                   </div>
@@ -302,6 +303,7 @@ const Filter = ({ products, setFilteredProducts }) => {
                     <div key={brand[0]} className={i > 5 && !showBrands ? "display-none" : "display-block"}>
                       <Form.Check //
                         type="checkbox"
+                        className="custom-checkbox"
                         id={brand[0]}
                         label={`${brand[0]} (${brand[1]})`}
                         onChange={() => handleToggle(brand[0], "brand")}
@@ -313,13 +315,13 @@ const Filter = ({ products, setFilteredProducts }) => {
                   <div>
                     <small>
                       {!showBrands ? (
-                        <Button variant="link" onClick={() => setShowBrands(true)}>
-                          <small>Show more...</small>
-                        </Button>
+                        <div className="link-primary" onClick={() => setShowBrands(true)}>
+                          Show more...
+                        </div>
                       ) : (
-                        <Button variant="link" onClick={() => setShowBrands(false)}>
-                          <small>Show less...</small>
-                        </Button>
+                        <div className="link-primary" onClick={() => setShowBrands(false)}>
+                          Show less...
+                        </div>
                       )}
                     </small>
                   </div>
@@ -330,6 +332,7 @@ const Filter = ({ products, setFilteredProducts }) => {
               <Form.Group controlId="regularRange">
                 <Form.Check //
                   type="checkbox"
+                  className="custom-checkbox"
                   id="regular"
                   label="Regular"
                   onChange={e => handleBoolean(e, "regular")}

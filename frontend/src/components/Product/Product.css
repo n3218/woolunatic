@@ -40,6 +40,7 @@
   font-size: 1.1em;
   color: var(--gray);
   line-height: 1.2;
+  font-weight: 300;
   margin-top: 0rem;
 }
 
@@ -47,10 +48,11 @@
   color: var(--gray);
   line-height: 1.2;
   font-size: 0.9em;
+  font-weight: 300;
 }
 
 .product-card_price {
-  color: var(--primary);
+  color: var(--medium-gray);
   font-size: 1.2em;
   font-weight: bold;
   text-align: right;

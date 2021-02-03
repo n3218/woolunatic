@@ -20,47 +20,49 @@ const Header = () => {
 
   return (
     <header>
-      {userInfo && userInfo.isAdmin && (
-        <Navbar id="admin-menu">
-          <LinkContainer to="/admin">
-            <Nav.Link>Admin</Nav.Link>
-          </LinkContainer>
-          <LinkContainer to="/admin/userlist">
-            <Nav.Link>Users</Nav.Link>
-          </LinkContainer>
-          <LinkContainer to="/admin/productlist">
-            <Nav.Link>Products</Nav.Link>
-          </LinkContainer>
-          <LinkContainer to="/admin/orderlist">
-            <Nav.Link>Orders</Nav.Link>
-          </LinkContainer>
-        </Navbar>
-      )}
-
       <Row>
         <Col>
-          <Navbar bg="white" expand="lg" collapseOnSelect>
-            <Container>
-              <LinkContainer to="/">
-                <Navbar.Brand>
-                  <img className="logo" alt="Logo" src="/assets/wool.svg" />
-                </Navbar.Brand>
+          <LinkContainer to="/">
+            <Navbar.Brand>
+              <img className="logo" alt="Logo" src="/assets/logo.png" />
+            </Navbar.Brand>
+          </LinkContainer>
+        </Col>
+        <Col className="admin-menu-container">
+          {/* ---------------------- Admin Menu ---------------------- */}
+          {userInfo && userInfo.isAdmin && (
+            <Navbar className="admin-menu">
+              <LinkContainer to="/admin">
+                <Nav.Link>Admin</Nav.Link>
               </LinkContainer>
-              <Link to="/" className="text-decoration-none">
-                <h1 className="text-dark">Woolunatics</h1>
-              </Link>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <LinkContainer to="/admin/userlist">
+                <Nav.Link>Users</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/admin/productlist">
+                <Nav.Link>Products</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/admin/orderlist">
+                <Nav.Link>Orders</Nav.Link>
+              </LinkContainer>
+            </Navbar>
+          )}
+          {/* ---------------------- /Admin Menu ---------------------- */}
 
+          <Navbar expand="md" collapseOnSelect className="info-menu-container">
+            <Container>
+              <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ml-auto">
                   <LinkContainer to="/about">
-                    <Nav.Link className="underlink">About</Nav.Link>
+                    <Nav.Link>About</Nav.Link>
                   </LinkContainer>
                   <LinkContainer to="/how-to">
-                    <Nav.Link className="underlink">How To Order</Nav.Link>
+                    <Nav.Link>
+                      <nobr>How To Order</nobr>
+                    </Nav.Link>
                   </LinkContainer>
                   <LinkContainer to="/cart" className="text-nowrap">
-                    <Nav.Link className="underlink">
+                    <Nav.Link>
                       <i className="fas fa-shopping-cart"></i>({cartItems && cartItems.length})
                     </Nav.Link>
                   </LinkContainer>
@@ -88,33 +90,56 @@ const Header = () => {
       </Row>
       <Row>
         <Col>
-          <Nav className="ml-auto navbar-light bg-light justify-content-center">
+          <Nav className="ml-auto navbar-light bg-light py-3 justify-content-center">
             <LinkContainer to="/yarns" exact>
-              <Nav.Link className="underlink">All Yarns</Nav.Link>
+              <Nav.Link className="underlink">
+                <span className="underlink-content">All Yarns</span>
+              </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/cashmere">
-              <Nav.Link className="underlink">Cashmere</Nav.Link>
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Cashmere</span>
+              </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/cashmix">
-              <Nav.Link className="underlink">Cashmere mix</Nav.Link>
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Cashmere mix</span>
+              </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/merino-wool-lambswool">
-              <Nav.Link className="underlink">Merino/Wool</Nav.Link>
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Merino/Wool</span>
+              </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/mohair-camel-alpaca-yak">
-              <Nav.Link className="underlink">Mohairs</Nav.Link>
+            <LinkContainer to="/yarns/angora">
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Angora</span>
+              </Nav.Link>
             </LinkContainer>
-            {/* <LinkContainer to="/yarns/angora">
-              <Nav.Link className="underlink">Angora</Nav.Link>
-            </LinkContainer> */}
-            <LinkContainer to="/yarns/cotton-linen">
-              <Nav.Link className="underlink">Cotton/Linen</Nav.Link>
+            <LinkContainer to="/yarns/mohair-alpaca">
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Mohair/Alpaca</span>
+              </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/yarns/camel-yak">
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Camel/Yak</span>
+              </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/silk-viscose">
-              <Nav.Link className="underlink">Silk</Nav.Link>
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Silk</span>
+              </Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/yarns/cotton-linen">
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Linen/Cotton</span>
+              </Nav.Link>
             </LinkContainer>
             <LinkContainer to="/yarns/fantasy-pailettes">
-              <Nav.Link className="underlink">Fantasy Yarns</Nav.Link>
+              <Nav.Link className="underlink">
+                <span className="underlink-content">Fantasy Yarns</span>
+              </Nav.Link>
             </LinkContainer>
           </Nav>
         </Col>
