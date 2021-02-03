@@ -6,6 +6,7 @@ import Loader from "../components/Loader"
 import Meta from "../components/Meta"
 import "react-quill/dist/quill.snow.css"
 import Message from "../components/Message"
+import "./AdminScreen.css"
 
 const AdminScreen = ({ history }) => {
   const [uploading, setUploading] = useState(false)
@@ -52,7 +53,28 @@ const AdminScreen = ({ history }) => {
     <>
       <Meta title="Admin | Woolunatics" />
       <Row>
-        <Col md={4} sm={12}></Col>
+        <Col md={4} sm={12}>
+          <div className="color-example bg-super-dark-gray">super-dark-gray</div>
+          <div className="color-example bg-dark-gray">dark-gray</div>
+          <div className="color-example bg-gray">gray</div>
+          <div className="color-example bg-medium-gray">medium-gray</div>
+          <div className="color-example bg-light-gray">light-gray</div>
+          <div className="color-example bg-super-light-gray">super-light-gray</div>
+
+          <div className="color-example bg-super-dark-green">super-dark-green</div>
+          <div className="color-example bg-dark-green">dark-green</div>
+          <div className="color-example bg-green">green</div>
+          <div className="color-example bg-light-green">light-green</div>
+          <div className="color-example bg-super-light-green">super-light-green</div>
+
+          {/* <div className="color-example bg-super-dark-green">super-dark-green</div>
+          <div className="color-example bg-dark-green">dark-green</div> */}
+          <div className="color-example bg-red">red</div>
+          <div className="color-example bg-blue">blue</div>
+          {/* <div className="color-example bg-light-green">light-green</div>
+          <div className="color-example bg-super-light-green">super-light-green</div>
+         */}
+        </Col>
         <Col md={8}>
           <h2>Admin Interface</h2>
           <Form onSubmit={submitHandler} id="UploadCsvData">

@@ -38,8 +38,8 @@ const HomeScreen = () => {
                 </Col>
               ))}
           </Row>
-          <Row className="justify-content-center my-3">
-            <Link to="/yarns" className="btn btn-primary px-5">
+          <Row className="justify-content-center my-5">
+            <Link to="/yarns" className="btn btn-primary px-5 py-2">
               SEE COLLECTION
             </Link>
           </Row>
