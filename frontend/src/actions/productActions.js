@@ -167,6 +167,7 @@ export const productTopAction = () => async dispatch => {
   try {
     dispatch({ type: PRODUCT_TOP_REQUEST })
     const { data } = await axios.get(`/api/products/top`)
+    console.log("productTopAction: data: ", data)
     dispatch({
       type: PRODUCT_TOP_SUCCESS,
       payload: data

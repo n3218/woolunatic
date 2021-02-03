@@ -55,7 +55,6 @@ const ProductScreen = ({ history, match }) => {
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     }
     if (product && product.inStock) {
-      console.log("product.inStock: ", product.inStock)
       const arr = product.inStock
         .split(",")
         .map(el => Number(el.trim()))
@@ -188,12 +187,9 @@ const ProductScreen = ({ history, match }) => {
                           <Col>
                             <Form.Group controlId="qty">
                               <Form.Control as="select" className="order-select" value={qty} onChange={e => setQty(e.target.value)} required>
-                                {/* {inStockArr.length > 1 && ( */}
                                 <option key="0" value="">
                                   Select...
                                 </option>
-                                {/* )} */}
-                                {console.log("inStockArr: ", inStockArr)}
                                 {product.inStock &&
                                   inStockArr.map((el, i) => (
                                     <option key={i} value={el}>
@@ -233,8 +229,8 @@ const ProductScreen = ({ history, match }) => {
                 </ListGroup.Item>
               </ListGroup>
             </div>
-            {/* ---------------------------Reviews-------------------------------- */}
 
+            {/* ---------------------------Reviews-------------------------------- */}
             <div id="product-reviews">
               <h2 className="my-3" id="review-section">
                 Reviews
@@ -255,7 +251,6 @@ const ProductScreen = ({ history, match }) => {
             </div>
 
             {/* ---------------------------Write a customer Review--------------------------- */}
-
             <div id="product-write-review" className="mx-3 my-3">
               <ListGroup>
                 <ListGroup.Item>

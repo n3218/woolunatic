@@ -26,7 +26,7 @@
   --blue: #417d97;
 
   --primary: var(--blue);
-  --secondary: #777372;
+  --secondary: var(--gray);
   --danger: var(--red);
 }
 
@@ -87,17 +87,17 @@
   background-color: var(--blue);
 }
 
-.btn-primary {
+.btn-success {
   color: #fff;
   background-color: var(--medium-gray);
   border-color: #d5dae5;
   outline: none !important;
 }
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary.focus,
-.btn-primary:active,
-.btn-primary.active {
+.btn-success:hover,
+.btn-success:focus,
+.btn-success.focus,
+.btn-success:active,
+.btn-success.active {
   background-color: #757a8f;
   border-color: #757a8f;
   outline: none !important;
