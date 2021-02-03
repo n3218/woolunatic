@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Card } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import "./Product.css"
@@ -8,18 +8,33 @@ const Product = ({ product }) => {
   const noimage = "/uploads/noimage/noimage.webp"
   const [imgSrc, setImgSrc] = useState(noimage)
 
-  const getImageOrFallback = (path, fallback) => {
-    return new Promise(resolve => {
-      const img = new Image()
-      img.src = path
-      img.onload = () => resolve(setImgSrc(path))
-      img.onerror = () => resolve(setImgSrc(fallback))
+  // const getImageOrFallback = (path, fallback) => {
+  //   return new Promise(resolve => {
+  //     const img = new Image()
+  //     img.src = path
+  //     img.onload = () => resolve(setImgSrc(path))
+  //     img.onerror = () => resolve(setImgSrc(fallback))
+  //   })
+  // }
+  // if (product.image && product.image[0]) {
+  //   return getImageOrFallback(product.image[0], noimage).then(result => result)
+  // }
+
+  const checkImg = async img => {
+    await fetch(img).then(res => {
+      if (res.ok) {
+        setImgSrc(img)
+      } else {
+        setImgSrc(noimage)
+      }
     })
   }
 
-  if (product.image && product.image[0]) {
-    return getImageOrFallback(product.image[0], noimage).then(result => result)
-  }
+  useEffect(() => {
+    if (product.image && product.image[0]) {
+      return checkImg(product.image[0])
+    }
+  }, [product])
 
   return (
     <Card className="product-card">
