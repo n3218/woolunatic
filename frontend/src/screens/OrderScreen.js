@@ -8,7 +8,7 @@ import { getOrderDetailsAction, deliverOrderAction } from "../actions/orderActio
 import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from "../constants/orderConstants"
 import Meta from "../components/Meta"
 import OrderSummary from "../components/OrderSummary"
-import Payment from "../components/Payment"
+import Payment from "../components/Payment/Payment"
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
@@ -71,7 +71,7 @@ const OrderScreen = ({ match, history }) => {
                   <div className="mb-3">
                     {order.shippingAddress.city}, {order.shippingAddress.zipCode}, {order.shippingAddress.country}
                   </div>
-                  {order.isDelivered ? <Message variant="success">Shipped on {order.deliveredAt.substring(0, 10)}</Message> : <Message variant="warning">Not Shipped</Message>}
+                  {order.isDelivered ? <Message variant="success">Shipped on {order.deliveredAt.substring(0, 10)}</Message> : <Message variant="warning">Not shipped</Message>}
                 </Col>
               </Row>
             </ListGroup.Item>
@@ -138,8 +138,8 @@ const OrderScreen = ({ match, history }) => {
         <OrderSummary cart={order} items={order.orderItems} error={error}>
           {loadingDeliver && <Loader />}
           {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-            <Button type="button" className="btn btn-block" onClick={deliverHandler}>
-              Mark as send
+            <Button type="button" className="btn-success btn-block " onClick={deliverHandler}>
+              Mark as shipped
             </Button>
           )}
         </OrderSummary>

@@ -61,7 +61,7 @@
 }
 
 .color {
-  margin: 0px -16px;
+  margin: 0px -5px;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -96,6 +96,7 @@
   z-index: 100;
 }
 
+/* ----------------- Colors Section ------------------- */
 .color div label:before {
   box-sizing: content-box;
   content: "";

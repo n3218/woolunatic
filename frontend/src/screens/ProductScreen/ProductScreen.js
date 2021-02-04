@@ -10,6 +10,7 @@ import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import { PRODUCT_CREATE_REVIEW_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
+import TranslateToWeight from "../../components/TranslateToWeight"
 import "./ProductScreen.css"
 
 const ProductScreen = ({ history, match }) => {
@@ -103,7 +104,7 @@ const ProductScreen = ({ history, match }) => {
           <Meta title={product.name} description={product.description} />
           <div className="submenu">
             {userInfo && userInfo.isAdmin && (
-              <Link to={`/admin/product/${productId}/edit`} className="btn btn-success my-3 px-5 submenu">
+              <Link to={`/admin/product/${productId}/edit`} className="btn btn-success bg-blue my-3 px-5">
                 Edit
               </Link>
             )}
@@ -158,6 +159,12 @@ const ProductScreen = ({ history, match }) => {
                   <Row>
                     <Col>NM:</Col>
                     <Col>{product.nm}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Yarn weight:</Col>
+                    <Col>{TranslateToWeight(product.meterage)} weight</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>

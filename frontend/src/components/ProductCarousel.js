@@ -26,7 +26,6 @@ const ProductCarousel = () => {
           <Carousel.Item key={product._id} className="text-center">
             <Link to={`/products/${product._id}`}>
               <Image src={product.image[0]} title={product.name} alt={product.name} fluid />
-
               <Carousel.Caption className="carousel-caption">
                 <h2 className="text-dark">
                   {product.name} €{product.price} / 100г

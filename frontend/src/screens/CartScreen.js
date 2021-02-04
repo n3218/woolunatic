@@ -39,7 +39,7 @@ const CartScreen = ({ match, location, history }) => {
           {cartItems.length === 0 ? (
             <Message variant="success">
               {" "}
-              Your cart is empty <br /> <Link to="/">Go Back</Link>
+              Your cart is empty <br /> <Link to="/">Go Shopping</Link>
             </Message>
           ) : (
             <CartItems cartItems={cartItems} />
@@ -68,6 +68,9 @@ const CartScreen = ({ match, location, history }) => {
               <ListGroup.Item>
                 <Button type="button" className="btn-block btn-success my-3" disabled={cartItems.length === 0} onClick={checkoutHandler}>
                   Checkout
+                </Button>
+                <Button type="button" className="btn-block btn-success bg-blue my-3" onClick={() => history.push("/yarns")}>
+                  Continue shopping
                 </Button>
               </ListGroup.Item>
             </ListGroup>
