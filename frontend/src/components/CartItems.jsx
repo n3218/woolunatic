@@ -54,8 +54,8 @@ const CartItems = ({ cartItems }) => {
                   </div>
 
                   <div>
-                    <Button variant="link" className="text-danger m-0 p-0" onClick={() => removeFromCartHandler(item.product, item.qty)}>
-                      <small>delete</small>
+                    <Button variant="link" className="text-danger py-2 px-0" onClick={() => removeFromCartHandler(item.product, item.qty)}>
+                      <small>delete...</small>
                     </Button>
                   </div>
                 </Col>

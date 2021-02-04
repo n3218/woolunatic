@@ -17,12 +17,12 @@ import ProductScreen from "./screens/ProductScreen/ProductScreen"
 import Switch from "react-bootstrap/esm/Switch"
 import CartScreen from "./screens/CartScreen"
 import OrderScreen from "./screens/OrderScreen"
-import UserListScreen from "./admin/UserListScreen"
-import UserEditScreen from "./admin/UserEditScreen"
-import ProductListScreen from "./admin/ProductListScreen"
-import ProductEditScreen from "./admin/ProductEditScreen"
-import OrderListScreen from "./admin/OrderListScreen"
-import AdminScreen from "./admin/AdminScreen"
+import UserListScreen from "./screens/admin/UserListScreen"
+import UserEditScreen from "./screens/admin/UserEditScreen"
+import ProductListScreen from "./screens/admin/ProductListScreen"
+import ProductEditScreen from "./screens/admin/ProductEditScreen"
+import OrderListScreen from "./screens/admin/OrderListScreen"
+import AdminScreen from "./screens/admin/AdminScreen"
 
 const App = () => {
   return (

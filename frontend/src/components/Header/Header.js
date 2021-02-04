@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <header>
       <Row>
-        <Col>
+        <Col className="p-0">
           <LinkContainer to="/">
             <Navbar.Brand>
               <img className="logo" alt="Logo" src="/assets/logo.png" />
@@ -88,8 +88,9 @@ const Header = () => {
           </Navbar>
         </Col>
       </Row>
+
       <Row>
-        <Col>
+        <Col className="p-0">
           <Nav className="ml-auto navbar-light bg-light py-3 justify-content-center">
             <LinkContainer to="/yarns" exact>
               <Nav.Link className="underlink">
