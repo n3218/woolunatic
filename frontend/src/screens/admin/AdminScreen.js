@@ -97,7 +97,7 @@ const AdminScreen = ({ history }) => {
             </p>
             <p>
               File example here:{" "}
-              <a target="_blank" href="https://docs.google.com/spreadsheets/d/1YpUqced7qPwX1tomarHuTFO9BGcNOeXGdNqbeKfqqxk/edit?usp=sharing">
+              <a target="_blank" rel="noreferrer" href="https://docs.google.com/spreadsheets/d/1YpUqced7qPwX1tomarHuTFO9BGcNOeXGdNqbeKfqqxk/edit?usp=sharing">
                 https://docs.google.com/spreadsheets/...
               </a>
             </p>

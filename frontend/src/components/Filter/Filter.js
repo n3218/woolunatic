@@ -82,7 +82,6 @@ const Filter = ({ products, setFilteredProducts }) => {
     return productsToFilter.filter(product => {
       return filterKeys.every(key => {
         if (typeof filters[key] === "boolean") {
-          console.log("key: ", key)
           if (filters[key] === true) {
             return product[key] === true
           } else {
@@ -90,7 +89,6 @@ const Filter = ({ products, setFilteredProducts }) => {
           }
         }
         if (!filters[key].length) {
-          console.log("!filters[key].length")
           return true
         }
         if (key === "price") return product[key] <= filters[key]
@@ -158,7 +156,7 @@ const Filter = ({ products, setFilteredProducts }) => {
           <ListGroup variant="flush">
             <ListGroup.Item>
               <Form.Group controlId="priceRange">
-                <Form.Label as="h6">Price, €/100g</Form.Label>
+                <Form.Label as="h5">Price, €/100g</Form.Label>
                 <Form.Control min={initialFilterData.priceMin} max={initialFilterData.priceMax} step={0.5} type="range" onChange={e => onChangeStateHandler(e, "price")} value={filterState.price} />
                 <div className="label-comment">
                   <div>
@@ -175,7 +173,7 @@ const Filter = ({ products, setFilteredProducts }) => {
             </ListGroup.Item>
             <ListGroup.Item>
               <Form.Group controlId="fibersRange">
-                <Form.Label as="h6">Fiber Content</Form.Label>
+                <Form.Label as="h5">Fiber Content</Form.Label>
                 {initialFilterData.category &&
                   initialFilterData.category
                     .filter(fib => fib[1] > 0)
@@ -216,7 +214,7 @@ const Filter = ({ products, setFilteredProducts }) => {
             </ListGroup.Item>
             <ListGroup.Item>
               <Form.Group controlId="lengthRange">
-                <Form.Label as="h6">Weight</Form.Label>
+                <Form.Label as="h5">Weight</Form.Label>
                 <div className="label-comment">
                   <div>{/* <small>{TranslateToWeight(initialFilterData.lengthMin)}</small> */}</div>
                   <div className="mx-2">
@@ -242,14 +240,14 @@ const Filter = ({ products, setFilteredProducts }) => {
                     <small>{initialFilterData.lengthMax}m</small>
                   </div>
                 </div>
-                <Form.Label as="h6" className="mt-3">
+                <Form.Label as="h5" className="mt-3">
                   Length, m/100g
                 </Form.Label>
               </Form.Group>
             </ListGroup.Item>
             <ListGroup.Item>
               <Form.Group controlId="colorRange">
-                <Form.Label as="h6">Color</Form.Label>
+                <Form.Label as="h5">Color</Form.Label>
                 <div className="color">
                   {initialFilterData.colorWay &&
                     initialFilterData.colorWay.map(
@@ -273,7 +271,7 @@ const Filter = ({ products, setFilteredProducts }) => {
             </ListGroup.Item>
             <ListGroup.Item>
               <Form.Group controlId="brandsRange">
-                <Form.Label as="h6">Brand</Form.Label>
+                <Form.Label as="h5">Brand</Form.Label>
                 {initialFilterData.brand &&
                   initialFilterData.brand.map((brand, i) => (
                     <div key={brand[0]} className={i > 5 && !showBrands ? "display-none" : "display-block"}>

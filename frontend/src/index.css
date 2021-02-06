@@ -1,5 +1,10 @@
 @import "./_cosmo.min.css";
 @import "~react-image-gallery/styles/css/image-gallery.css";
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lato&display=swap");
+/* @font-face {
+  font-family: "Dancing Script";
+  src: url("./Dancing_Script/static/DancingScript-Bold.ttf") format("ttf"), url("./Dancing_Script/static/DancingScript-Regular.ttf") format("ttf");
+} */
 
 /* --breakpoint-xs: 0;
 --breakpoint-sm: 576px;
@@ -28,7 +33,7 @@
   --blue: #417d97;
 
   --primary: var(--blue);
-  --secondary: var(--gray);
+  --secondary: var(--medium-gray);
   --danger: var(--red);
 }
 
@@ -185,19 +190,25 @@ main {
 }
 
 h1 {
-  margin: 0.5em 0 0 0;
+  font-family: "Dancing Script";
 }
+
+h1,
 h2 {
   margin: 0.5em 0 0.5em 0;
   border-top: 1px solid var(--light-gray);
   border-bottom: 1px solid var(--light-gray);
-  text-transform: uppercase;
+  text-transform: capitalize;
+  /* text-transform: uppercase; */
   text-align: center;
 }
 h3 {
   text-transform: uppercase;
 }
-
+h5 {
+  /* font-family: "Dancing Script"; */
+  font-weight: 500;
+}
 .container {
   padding: 0;
   margin: 0;

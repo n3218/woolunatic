@@ -81,7 +81,7 @@ const Payment = ({ order, userInfo }) => {
           </small>
         </Col>
         <Col className="m-0 p-0">
-          <a href={arr[key].href} target="_blank">
+          <a href={arr[key].href} target="_blank" rel="noreferrer">
             {arr[key].href.substring(0, 20)}...
           </a>
         </Col>

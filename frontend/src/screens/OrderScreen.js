@@ -111,7 +111,7 @@ const OrderScreen = ({ match, history }) => {
                         <tr key={i}>
                           <td>{item.brand}</td>
                           <td>
-                            <Link target="_blank" to={`/products/${item.product}`} className="text-capitalize">
+                            <Link target="_blank" rel="noreferrer" to={`/products/${item.product}`} className="text-capitalize">
                               {item.name}
                             </Link>
                           </td>

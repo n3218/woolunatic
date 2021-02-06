@@ -8,7 +8,7 @@ const HowToScreen = () => {
     <Jumbotron>
       <Meta title="How to Order | Woolunatics" />
       <FormContainer>
-        <h2>Как сделать заказ:</h2>
+        <h1>How to Order:</h1>
         <ol>
           <li>Вы выбираете заинтересовавшие вас артикулы, предварительно ознакомившись с ассортиментом в постах, видео Igtv, прикрепленных сторис.</li>
 

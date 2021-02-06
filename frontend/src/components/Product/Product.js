@@ -39,6 +39,7 @@ const Product = ({ product }) => {
   return (
     <Card className="product-card">
       <div className="product-card_badges">
+        {product.outOfStock && <div className="badge badge-pill badge-secondary">out Of Stock</div>}
         {product.regular && <div className="badge badge-pill badge-success">regular</div>}
         {product.novelty && <div className="badge badge-pill badge-primary">new</div>}
         {product.inSale && <div className="badge badge-pill badge-danger">sale</div>}

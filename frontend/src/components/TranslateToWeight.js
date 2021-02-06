@@ -1,5 +1,3 @@
-import React from "react"
-
 const TranslateToWeight = val => {
   const weightValues = {
     1000: "Cobweb",

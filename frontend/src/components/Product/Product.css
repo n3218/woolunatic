@@ -45,6 +45,7 @@
   margin-top: 0.3rem;
   color: var(--secondary);
   font-size: 1.1em;
+  font-weight: 500;
 }
 
 .product-card_color {
@@ -85,4 +86,7 @@
 }
 .badge {
   margin: 2px;
+}
+.badge-secondary {
+  background-color: var(--secondary);
 }

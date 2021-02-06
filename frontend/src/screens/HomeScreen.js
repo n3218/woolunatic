@@ -6,7 +6,6 @@ import Message from "../components/Message"
 import Loader from "../components/Loader"
 import { productTopAction } from "../actions/productActions"
 import Promo from "../components/Promo/Promo"
-// import PromoInstagram from "../components/PromoInstagram"
 import Meta from "../components/Meta"
 import { Link } from "react-router-dom"
 
@@ -28,7 +27,7 @@ const HomeScreen = () => {
       ) : (
         <>
           <Promo />
-          <h2>Latest from MY YARN COLLECTION</h2>
+          <h1>Latest from my Yarn Collection</h1>
           <Meta />
           <Row>
             {products &&
@@ -45,9 +44,6 @@ const HomeScreen = () => {
           </Row>
         </>
       )}
-      {/* <div className="py-5">
-        <PromoInstagram />
-      </div> */}
     </div>
   )
 }

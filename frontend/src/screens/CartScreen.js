@@ -1,81 +1,215 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
+import { Row, Col, Button, ListGroup, Card } from "react-bootstrap"
+import { cartAddItemAction, cartCleanItemsAction, cartUpdateItemAction } from "../actions/cartActions"
 import Message from "../components/Message"
-import { Row, Col, Button, Card, ListGroup } from "react-bootstrap"
-import { cartAddItemAction } from "../actions/cartActions"
-import { useEffect } from "react"
 import Meta from "../components/Meta"
 import CartItems from "../components/CartItems"
+import OrderSummary from "../components/OrderSummary"
+import ShippingSection from "../components/ShippingSection"
+import PaymentSection from "../components/PaymentSection/PaymentSection"
+import CheckoutSteps from "../components/CheckoutSteps"
+import { USER_DETAILS_RESET } from "../constants/userConstants"
+import { ORDER_CREATE_RESET } from "../constants/orderConstants"
+import { createOrderAction, molliePayAction } from "../actions/orderActions"
 
 const CartScreen = ({ match, location, history }) => {
+  const dispatch = useDispatch()
+  const checkoutStep = match.params.step
   const productId = match.params.id
   const qty = location.search ? Number(location.search.split("=")[1].split("&")[0]) : 1
-  const dispatch = useDispatch()
   const cart = useSelector(state => state.cart)
   const { cartItems } = cart
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
+  const [paymentMethod, setPaymentMethod] = useState("")
+  const [summary, setSummary] = useState({})
+
+  if (!cart.shippingAddress.address) {
+    history.push("/cart/checkout/shipping")
+  }
+  if (!userInfo) {
+    history.push("/login")
+  }
 
   useEffect(() => {
-    if (!userInfo) {
-      history.push("/login")
-    }
     if (productId) {
       dispatch(cartAddItemAction(productId, qty))
     }
-  }, [dispatch, productId, qty, history, userInfo])
+  }, [dispatch, productId, qty])
 
-  const checkoutHandler = () => {
-    history.push("/login?redirect=shipping")
+  // ----------------------------------------------Calculating prices
+  useEffect(() => {
+    if (cartItems) {
+      let taxPrice = 0
+      let shippingPrice = 0
+      const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
+      const itemsPrice = addDecimals(cartItems.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
+      if (checkoutStep === "payment") {
+        taxPrice = addDecimals(Number(((21.0 * itemsPrice) / 100).toFixed(2)))
+        shippingPrice = addDecimals(itemsPrice > 100 ? 26 : 26)
+      }
+      const totalPrice = (Number(itemsPrice) + Number(taxPrice) + Number(shippingPrice)).toFixed(2)
+      const itemsWeight = cartItems.reduce((acc, item) => acc + item.qty, 0)
+      const totalWeight = itemsWeight + 300 + cartItems.length * 40
+      setSummary({ itemsPrice, taxPrice, shippingPrice, totalPrice, itemsWeight, totalWeight })
+    }
+  }, [cartItems, checkoutStep])
+  // ---------------------------------------------/Calculating prices
+  //
+  //
+  //
+  // -------------------------------------------------Order Creation
+  const orderCreate = useSelector(state => state.orderCreate)
+  const { order, success, error } = orderCreate
+
+  useEffect(() => {
+    if (success) {
+      if (order && paymentMethod === "Mollie") {
+        proceedMollyPayment(order)
+      }
+      history.push(`/orders/${order._id}`)
+    }
+    dispatch({ type: USER_DETAILS_RESET })
+    dispatch({ type: ORDER_CREATE_RESET })
+    // eslint-disable-next-line
+  }, [history, success])
+
+  const placeOrderHandler = () => {
+    dispatch(
+      createOrderAction({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: paymentMethod,
+        itemsPrice: summary.itemsPrice,
+        taxPrice: summary.taxPrice,
+        shippingPrice: summary.shippingPrice,
+        totalPrice: summary.totalPrice,
+        itemsWeight: summary.itemsWeight,
+        totalWeight: summary.totalWeight
+      })
+    )
+  }
+
+  const proceedMollyPayment = order => {
+    const data = {
+      totalPrice: order.totalPrice,
+      currency: "EUR",
+      description: `Order #${order._id}`,
+      orderId: order._id
+    }
+    dispatch(molliePayAction(data))
+  }
+
+  const checkoutHandler = async () => {
+    await cartItems.map(item => dispatch(cartUpdateItemAction(item.product, item.qty)))
+    dispatch(cartCleanItemsAction())
+    if (userInfo) {
+      history.push("/cart/checkout/shipping")
+    } else {
+      history.push("/login?redirect=cart/checkout/shipping")
+    }
   }
 
   return (
     <>
       <Meta title="Shopping Cart | Woolunatics" />
-      <h2>Shopping Cart</h2>
+      {checkoutStep ? <h2>Checkout</h2> : <h2>Shopping Cart</h2>}
+      {checkoutStep && <CheckoutSteps step={checkoutStep} />}
       <Row>
         <Col md={9} xs={12}>
+          {match.params.step && (
+            <ListGroup variant="flush">
+              {/* ------------------------------------ SHIPPING ADDRESS ------------------------------ */}
+              <ListGroup.Item>
+                <Row>
+                  <Col lg={3} md={3} sm={6}>
+                    <h4>SHIPPING ADDRESS</h4>
+                  </Col>
+                  <Col>
+                    <ShippingSection cart={cart} history={history} checkoutStep={match.params.step} userInfo={userInfo} />
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+              {/* ------------------------------------ SHIPPING ADDRESS ------------------------------ */}
+
+              {/* ------------------------------------ PAYMENT ------------------------------------- */}
+              {checkoutStep && checkoutStep !== "shipping" && (
+                <ListGroup.Item>
+                  <Row>
+                    <Col lg={3} md={3} sm={6}>
+                      <h4>PAYMENT METHOD</h4>
+                    </Col>
+                    <Col>
+                      <PaymentSection order={cart} userInfo={userInfo} checkoutStep={checkoutStep} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              )}
+              {/* ------------------------------------ /PAYMENT ------------------------------------- */}
+            </ListGroup>
+          )}
+
+          {/* ---------------------------CART ITEMS --------------------------------- */}
           {cartItems.length === 0 ? (
             <Message variant="success">
-              {" "}
               Your cart is empty <br /> <Link to="/">Go Shopping</Link>
             </Message>
           ) : (
-            <CartItems cartItems={cartItems} />
+            <CartItems items={cartItems} checkoutStep={1} />
           )}
-        </Col>
-        <Col md={3}>
-          <Card border="light">
-            <Card.Header className="card-header text-center">
-              <h4>Subtotal ({cartItems.length}) items</h4>
-            </Card.Header>
-            <ListGroup variant="flush">
-              <ListGroup.Item>
+          {cartItems && cartItems.length > 0 && (
+            <Card border="light">
+              <Card.Header className="card-header text-center">
                 <Row>
-                  <Col>
-                    <strong>Items price: </strong>
-                  </Col>
-                  <Col className="text-right">€{cartItems.reduce((acc, item) => acc + item.qty * item.price * 0.01, 0).toFixed(2)}</Col>
-                </Row>
-                <Row>
-                  <Col>
+                  <Col xs={10} xl={10} className="text-right">
                     <strong>Items weight: </strong>
                   </Col>
-                  <Col className="text-right">{cartItems.reduce((acc, item) => acc + item.qty, 0)}g</Col>
+                  <Col xs={2} xl={2} className="text-right">
+                    {summary.itemsWeight || 0}g
+                  </Col>
                 </Row>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Button type="button" className="btn-block btn-success my-3" disabled={cartItems.length === 0} onClick={checkoutHandler}>
-                  Checkout
-                </Button>
-                <Button type="button" className="btn-block btn-success bg-blue my-3" onClick={() => history.push("/yarns")}>
-                  Continue shopping
-                </Button>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card>
+                <Row>
+                  <Col xs={10} xl={10} className="text-right">
+                    <strong>Total weight: </strong>
+                  </Col>
+                  <Col xs={2} xl={2} className="text-right">
+                    {summary.totalWeight || 0}g
+                  </Col>
+                </Row>
+              </Card.Header>
+            </Card>
+          )}
+          {/* ---------------------------/CART ITEMS --------------------------------- */}
         </Col>
+
+        {cartItems && cartItems.length > 0 && (
+          <Col>
+            <OrderSummary cart={summary} items={cartItems} checkoutStep={checkoutStep} error={error}>
+              {/* ---------------------------CART CHECKOUT BUTTONS------------------------------- */}
+              {!match.params.step && (
+                <>
+                  <Button type="button" className="btn-block btn-success my-3" disabled={cartItems.length === 0} onClick={checkoutHandler}>
+                    Checkout
+                  </Button>
+                  <Button type="button" className="btn-block btn-success bg-blue my-3" onClick={() => history.push("/yarns")}>
+                    Continue shopping
+                  </Button>
+                </>
+              )}
+              {/* ---------------------------/CART CHECKOUT BUTTONS------------------------------- */}
+
+              {/* ---------------------------PAYMENT BUTTONS------------------------------- */}
+              {paymentMethod && (
+                <Button className="btn-success btn-block" onClick={() => placeOrderHandler()}>
+                  Pay via {paymentMethod}
+                </Button>
+              )}
+              {/* ---------------------------/PAYMENT BUTTONS------------------------------- */}
+            </OrderSummary>
+          </Col>
+        )}
       </Row>
     </>
   )

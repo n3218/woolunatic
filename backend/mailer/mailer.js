@@ -26,7 +26,7 @@ export const sendMail = async orderData => {
     ${item.name}
     </td>
     <td style="text-align: center;">
-      <a target="_blank" href='https://woolunatic.herokuapp.com/products/${item.product}'>${item.color.replace(/_+/g, " ")}</a>
+      <a target="_blank" rel="noreferrer" href='https://woolunatic.herokuapp.com/products/${item.product}'>${item.color.replace(/_+/g, " ")}</a>
     </td>
     <td style="text-align: center;">${item.fibers}</td>
     <td style="text-align: center;">${item.qty}</td>
