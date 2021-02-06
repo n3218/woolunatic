@@ -10,6 +10,7 @@ import OrderSummary from "../components/OrderSummary"
 import ShippingSection from "../components/ShippingSection"
 import PaymentSection from "../components/PaymentSection/PaymentSection"
 import CheckoutSteps from "../components/CheckoutSteps"
+import OrderWeightsSummary from "../components/OrderWeightsSummary"
 import { USER_DETAILS_RESET } from "../constants/userConstants"
 import { ORDER_CREATE_RESET } from "../constants/orderConstants"
 import { createOrderAction, molliePayAction } from "../actions/orderActions"
@@ -37,7 +38,10 @@ const CartScreen = ({ match, location, history }) => {
     if (productId) {
       dispatch(cartAddItemAction(productId, qty))
     }
-  }, [dispatch, productId, qty])
+    if (cartItems.length === 0) {
+      history.push("/cart")
+    }
+  }, [dispatch, productId, qty, cartItems, history])
 
   // ----------------------------------------------Calculating prices
   useEffect(() => {
@@ -69,7 +73,7 @@ const CartScreen = ({ match, location, history }) => {
       if (order && paymentMethod === "Mollie") {
         proceedMollyPayment(order)
       }
-      history.push(`/orders/${order._id}`)
+      history.push(`/hidescreen`)
     }
     dispatch({ type: USER_DETAILS_RESET })
     dispatch({ type: ORDER_CREATE_RESET })
@@ -119,75 +123,61 @@ const CartScreen = ({ match, location, history }) => {
       {checkoutStep && <CheckoutSteps step={checkoutStep} />}
       <Row>
         <Col md={9} xs={12}>
-          {match.params.step && (
-            <ListGroup variant="flush">
-              {/* ------------------------------------ SHIPPING ADDRESS ------------------------------ */}
-              <ListGroup.Item>
-                <Row>
-                  <Col lg={3} md={3} sm={6}>
-                    <h4>SHIPPING ADDRESS</h4>
-                  </Col>
-                  <Col>
-                    <ShippingSection cart={cart} history={history} checkoutStep={match.params.step} userInfo={userInfo} />
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-              {/* ------------------------------------ SHIPPING ADDRESS ------------------------------ */}
-
-              {/* ------------------------------------ PAYMENT ------------------------------------- */}
-              {checkoutStep && checkoutStep !== "shipping" && (
+          <ListGroup variant="flush">
+            {match.params.step && (
+              <>
                 <ListGroup.Item>
                   <Row>
                     <Col lg={3} md={3} sm={6}>
-                      <h4>PAYMENT METHOD</h4>
+                      <h4>SHIPPING ADDRESS</h4>
                     </Col>
                     <Col>
-                      <PaymentSection order={cart} userInfo={userInfo} checkoutStep={checkoutStep} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
+                      <ShippingSection cart={cart} history={history} checkoutStep={match.params.step} userInfo={userInfo} />
                     </Col>
                   </Row>
                 </ListGroup.Item>
-              )}
-              {/* ------------------------------------ /PAYMENT ------------------------------------- */}
-            </ListGroup>
-          )}
 
-          {/* ---------------------------CART ITEMS --------------------------------- */}
+                {checkoutStep && checkoutStep !== "shipping" && (
+                  <ListGroup.Item>
+                    <Row>
+                      <Col lg={3} md={3} sm={6}>
+                        <h4>PAYMENT METHOD</h4>
+                      </Col>
+                      <Col>
+                        <PaymentSection order={cart} userInfo={userInfo} checkoutStep={checkoutStep} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                )}
+
+                <ListGroup.Item>
+                  <h4>ORDER ITEMS</h4>
+                </ListGroup.Item>
+              </>
+            )}
+          </ListGroup>
+
           {cartItems.length === 0 ? (
-            <Message variant="success">
-              Your cart is empty <br /> <Link to="/">Go Shopping</Link>
+            <Message variant="success" className="py-5">
+              Your cart is empty <br /> <Link to="/">Go Shopping...</Link>
             </Message>
           ) : (
-            <CartItems items={cartItems} checkoutStep={1} />
+            <>
+              <CartItems items={cartItems} />
+              <OrderWeightsSummary order={summary} />
+            </>
           )}
-          {cartItems && cartItems.length > 0 && (
-            <Card border="light">
-              <Card.Header className="card-header text-center">
-                <Row>
-                  <Col xs={10} xl={10} className="text-right">
-                    <strong>Items weight: </strong>
-                  </Col>
-                  <Col xs={2} xl={2} className="text-right">
-                    {summary.itemsWeight || 0}g
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs={10} xl={10} className="text-right">
-                    <strong>Total weight: </strong>
-                  </Col>
-                  <Col xs={2} xl={2} className="text-right">
-                    {summary.totalWeight || 0}g
-                  </Col>
-                </Row>
-              </Card.Header>
-            </Card>
-          )}
-          {/* ---------------------------/CART ITEMS --------------------------------- */}
         </Col>
-
+        {/* 
+        //
+        //
+        // 
+        // 
+        */}
         {cartItems && cartItems.length > 0 && (
           <Col>
             <OrderSummary cart={summary} items={cartItems} checkoutStep={checkoutStep} error={error}>
-              {/* ---------------------------CART CHECKOUT BUTTONS------------------------------- */}
+              {/* ---------------------------CART CHECKOUT BUTTONS */}
               {!match.params.step && (
                 <>
                   <Button type="button" className="btn-block btn-success my-3" disabled={cartItems.length === 0} onClick={checkoutHandler}>
@@ -198,15 +188,14 @@ const CartScreen = ({ match, location, history }) => {
                   </Button>
                 </>
               )}
-              {/* ---------------------------/CART CHECKOUT BUTTONS------------------------------- */}
-
-              {/* ---------------------------PAYMENT BUTTONS------------------------------- */}
+              {/* ---------------------------/CART CHECKOUT BUTTONS */}
+              {/* ---------------------------PAYMENT BUTTONS */}
               {paymentMethod && (
                 <Button className="btn-success btn-block" onClick={() => placeOrderHandler()}>
                   Pay via {paymentMethod}
                 </Button>
               )}
-              {/* ---------------------------/PAYMENT BUTTONS------------------------------- */}
+              {/* ---------------------------/PAYMENT BUTTONS */}
             </OrderSummary>
           </Col>
         )}

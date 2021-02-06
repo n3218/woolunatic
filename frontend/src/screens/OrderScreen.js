@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, ListGroup, Button, Table } from "react-bootstrap"
+import { Row, Col, ListGroup, Button, Table, Card } from "react-bootstrap"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 import { getOrderDetailsAction, deliverOrderAction } from "../actions/orderActions"
@@ -9,6 +9,7 @@ import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from "../constants/orderConstant
 import Meta from "../components/Meta"
 import OrderSummary from "../components/OrderSummary"
 import Payment from "../components/Payment/Payment"
+import OrderWeightsSummary from "../components/OrderWeightsSummary"
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
@@ -53,7 +54,7 @@ const OrderScreen = ({ match, history }) => {
       <Meta title={`Order #${order._id} | Woolunatics`} />
       <h2>Order #{order._id}</h2>
       <Row>
-        <Col md={9}>
+        <Col md={9} xs={12}>
           <ListGroup variant="flush">
             <ListGroup.Item>
               <Row>
@@ -89,60 +90,64 @@ const OrderScreen = ({ match, history }) => {
 
             <ListGroup.Item>
               <h4>ORDER ITEMS</h4>
-              {order.orderItems.length === 0 ? (
-                <Message>Order is empty.</Message>
-              ) : (
-                <>
-                  <Table bordered hover responsive className="table-sm order-summary-table">
-                    <thead>
-                      <tr>
-                        <th>brand</th>
-                        <th>name</th>
-                        <th>color</th>
-                        <th>fibers,%</th>
-                        <th>weight,g</th>
-                        <th>m/100gr</th>
-                        <th>€/100gr</th>
-                        <th>price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {order.orderItems.map((item, i) => (
-                        <tr key={i}>
-                          <td>{item.brand}</td>
-                          <td>
-                            <Link target="_blank" rel="noreferrer" to={`/products/${item.product}`} className="text-capitalize">
-                              {item.name}
-                            </Link>
-                          </td>
-                          <td className="text-capitalize">{item.color.replace(/_+/g, " ")}</td>
-                          <td>{item.fibers}</td>
-                          <td>{item.qty}</td>
-                          <td>{item.meterage}</td>
-                          <td>€{item.price}</td>
-                          <td>€{(item.qty * item.price) / 100}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </>
-              )}
             </ListGroup.Item>
           </ListGroup>
+          {order.orderItems.length === 0 ? (
+            <Message>Order is empty.</Message>
+          ) : (
+            <>
+              <Table bordered hover responsive className="table-sm order-summary-table mb-0">
+                <thead>
+                  <tr>
+                    <th>brand</th>
+                    <th>name</th>
+                    <th>color</th>
+                    <th>fibers,%</th>
+                    <th>weight,g</th>
+                    <th>m/100gr</th>
+                    <th>€/100gr</th>
+                    <th>price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {order.orderItems.map((item, i) => (
+                    <tr key={i}>
+                      <td>{item.brand}</td>
+                      <td>
+                        <Link target="_blank" rel="noreferrer" to={`/products/${item.product}`} className="text-capitalize">
+                          {item.name}
+                        </Link>
+                      </td>
+                      <td className="text-capitalize">{item.color.replace(/_+/g, " ")}</td>
+                      <td>{item.fibers}</td>
+                      <td>{item.qty}</td>
+                      <td>{item.meterage}</td>
+                      <td>€{item.price}</td>
+                      <td>€{(item.qty * item.price) / 100}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+
+              <OrderWeightsSummary order={order} />
+            </>
+          )}
+
           <div className="jumbotron text-right">
             <h5>Test user for PayPal payments : sb-k30x54012881@personal.example.com</h5>
             <h5>Test password for PayPal payments : {`RHU*Oy6{`}</h5>
           </div>
         </Col>
-
-        <OrderSummary cart={order} items={order.orderItems} error={error}>
-          {loadingDeliver && <Loader />}
-          {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-            <Button type="button" className="btn-success btn-block " onClick={deliverHandler}>
-              Mark as shipped
-            </Button>
-          )}
-        </OrderSummary>
+        <Col>
+          <OrderSummary cart={order} items={order.orderItems} error={error}>
+            {loadingDeliver && <Loader />}
+            {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+              <Button type="button" className="btn-success btn-block bg-blue" onClick={deliverHandler}>
+                Mark as shipped
+              </Button>
+            )}
+          </OrderSummary>
+        </Col>
       </Row>
     </>
   )
