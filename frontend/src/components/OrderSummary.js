@@ -18,22 +18,21 @@ const OrderSummary = ({ cart, items, children, error, checkoutStep }) => {
             </Col>
             <Col className="text-right">€{(items && cart.totalPrice) || 0}</Col>
           </Row>
-          {checkoutStep === "payment" && (
-            <>
-              <Row>
-                <Col>
-                  <strong>Tax</strong>
-                </Col>
-                <Col className="text-right">€{cart.taxPrice || 0}</Col>
-              </Row>
-              <Row>
-                <Col>
-                  <strong>Shipping price: </strong>
-                </Col>
-                <Col className="text-right">€{cart.shippingPrice || 0}</Col>
-              </Row>
-            </>
-          )}
+
+          <>
+            <Row>
+              <Col>
+                <strong>Tax</strong>
+              </Col>
+              <Col className="text-right">€{cart.taxPrice || 0}</Col>
+            </Row>
+            <Row>
+              <Col>
+                <strong>Shipping price: </strong>
+              </Col>
+              <Col className="text-right">€{cart.shippingPrice || 0}</Col>
+            </Row>
+          </>
         </ListGroup.Item>
 
         {cart.totalPrice && (
