@@ -35,7 +35,7 @@ const CollectionScreen = ({ match }) => {
     <>
       {error && <Message variant="danger">{error}</Message>}
       <>
-        <h2>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "CASHMERE MIXES" : match.params.category.split("-").join(" | ")) : "YARN COLLECTION"}</h2>
+        <h1>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "Cachmere Mixes" : match.params.category.split("-").join(" | ")) : "All Yarns"}</h1>
         <Meta />
         <div className="display-flex">
           <div className="filter-container">
@@ -44,7 +44,7 @@ const CollectionScreen = ({ match }) => {
           <div className="filtered-products-container">
             <Row>
               {filteredProducts.map(product => (
-                <Col key={product._id} xs={6} sm={4} md={4} lg={3} xl={2} className="product-card-block">
+                <Col key={product._id} xs={4} sm={4} md={4} lg={3} xl={2} className="product-card-block">
                   <Product product={product} />
                 </Col>
               ))}

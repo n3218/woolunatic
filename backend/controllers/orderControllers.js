@@ -20,10 +20,12 @@ export const createNewOrder = asyncHandler(async (req, res) => {
     itemsPrice,
     taxPrice,
     shippingPrice,
-    totalPrice
+    totalPrice,
+    itemsWeight,
+    totalWeight
   } = req.body
   if (orderItems && orderItems.length === 0) {
-    res / status(400)
+    res.status(400)
     throw new Error("No items in the order")
   } else {
     const order = new Order({
@@ -34,7 +36,9 @@ export const createNewOrder = asyncHandler(async (req, res) => {
       itemsPrice,
       taxPrice,
       shippingPrice,
-      totalPrice
+      totalPrice,
+      itemsWeight,
+      totalWeight
     })
     const createdOrder = await order.save()
     res.status(201).json(createdOrder)

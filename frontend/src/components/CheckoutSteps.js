@@ -2,46 +2,30 @@ import React from "react"
 import { Nav } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
 
-const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
+const CheckoutSteps = ({ step }) => {
   return (
     <>
       <ol className="breadcrumb justify-content-center">
         <li className="breadcrumb-item">
           <Nav.Item>
-            {step1 ? (
-              <LinkContainer to="/cart">
-                <Nav.Link>Cart</Nav.Link>
-              </LinkContainer>
-            ) : (
-              <Nav.Link disabled>Shipping</Nav.Link>
-            )}
+            <Nav.Link href="/cart">Cart</Nav.Link>
           </Nav.Item>
         </li>
         <li className="breadcrumb-item">
           <Nav.Item>
-            {step2 ? (
-              <LinkContainer to="/shipping">
-                <Nav.Link>Shipping</Nav.Link>
-              </LinkContainer>
-            ) : (
-              <Nav.Link disabled>Shipping</Nav.Link>
-            )}
+            <Nav.Link href="/cart/checkout/shipping">Shipping</Nav.Link>
           </Nav.Item>
         </li>
-        {/* <li className="breadcrumb-item active">
+        <li className="breadcrumb-item">
           <Nav.Item>
-            {step3 ? (
-              <LinkContainer to="/payment">
-                <Nav.Link>Payment Type</Nav.Link>
-              </LinkContainer>
-            ) : (
-              <Nav.Link disabled>Payment Type</Nav.Link>
-            )}
+            <Nav.Link href="/cart/checkout/payment" disabled={step === "shipping"}>
+              Payment Method
+            </Nav.Link>
           </Nav.Item>
-        </li> */}
-        <li className="breadcrumb-item active">
+        </li>
+        <li className="breadcrumb-item">
           <Nav.Item>
-            {step4 ? (
+            {step === 4 ? (
               <LinkContainer to="/placeorder">
                 <Nav.Link>Review Order</Nav.Link>
               </LinkContainer>

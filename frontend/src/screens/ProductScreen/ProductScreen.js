@@ -72,7 +72,7 @@ const ProductScreen = ({ history, match }) => {
     } else {
       setInitialImages([...imagesForGallery([noimage])])
     }
-  }, [dispatch, match, successCreateReview, productId, product])
+  }, [dispatch, successCreateReview, productId, product])
 
   const addToCartHandler = () => {
     history.push(`/cart/${productId}?qty=${qty}`)

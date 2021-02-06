@@ -1,5 +1,5 @@
 import React from "react"
-import { Link, Route } from "react-router-dom"
+import { Route } from "react-router-dom"
 import { Navbar, Nav, NavDropdown, Container, Row, Col } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
 import { LinkContainer } from "react-router-bootstrap"
