@@ -1,0 +1,24 @@
+.orderpayment {
+  transition: all 1s ease-in-out;
+}
+
+.orderpayment-enter,
+.orderpayment-exit-done {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: all 1s ease-in-out;
+}
+
+.orderpayment-enter-active,
+.orderpayment-exit-active {
+  transform: translateY(-50%);
+  opacity: 0.5;
+  transition: all 1s ease-in-out;
+}
+
+.orderpayment-enter-done,
+.orderpayment-exit {
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 1s ease-in-out;
+}

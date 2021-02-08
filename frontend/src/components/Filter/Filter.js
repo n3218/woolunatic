@@ -23,7 +23,6 @@ const Filter = ({ products, setFilteredProducts }) => {
   const [showBrands, setShowBrands] = useState(false)
 
   useEffect(() => {
-    console.log("Filter:useEffect-1")
     const brandMap = {}
     const brandArr = []
     const categoryMap = { cashmere: 0, cashmix: 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, camel: 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
@@ -72,7 +71,6 @@ const Filter = ({ products, setFilteredProducts }) => {
   }, [products])
 
   useEffect(() => {
-    console.log("Filter:useEffect-2")
     let newProds = multiPropsFilter(products, filterState)
     setFilteredProducts(newProds)
   }, [products, filterState])
@@ -136,8 +134,6 @@ const Filter = ({ products, setFilteredProducts }) => {
       [cat]: [...copyFilterState]
     })
   }
-
-  console.log("filterState: ", filterState)
 
   return (
     <>
