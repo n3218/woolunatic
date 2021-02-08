@@ -109,7 +109,15 @@ const Payment = ({ order, userInfo }) => {
                   <img src="/assets/payments/amex.svg" className="payment-icon" alt="amex" />
                 </Col>
               </Row>
-              {!order.isPaid && paymentMethod === "Mollie" && <Col md={6}>{<Button onClick={proceedMollyPayment}>Mollie Pay</Button>}</Col>}
+              {!order.isPaid && paymentMethod === "Mollie" && (
+                <Col md={6}>
+                  {
+                    <Button className="btn-block btn-success my-3" onClick={proceedMollyPayment}>
+                      Pay via Mollie
+                    </Button>
+                  }
+                </Col>
+              )}
               <Row>
                 <Col xs={3} lg={2} xl={2}>
                   {radioButton("PayPal", "PayPal")}

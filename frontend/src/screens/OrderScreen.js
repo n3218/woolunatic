@@ -24,11 +24,11 @@ const OrderScreen = ({ match, history }) => {
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
 
-  if (!loading) {
-    // Calculate prices
-    const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
-    order.itemsPrice = addDecimals(order.orderItems.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
-  }
+  // if (!loading) {
+  //   // Calculate prices
+  //   const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
+  //   order.itemsPrice = addDecimals(order.orderItems.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
+  // }
 
   useEffect(() => {
     if (!userInfo) {

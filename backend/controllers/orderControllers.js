@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler"
 import Order from "../models/orderModel.js"
 import querystring from "querystring"
 import colors from "colors"
+import { sendMail } from "../mailer/mailer.js"
 
 import { createMollieClient } from "@mollie/api-client"
 import { json } from "express"
@@ -97,7 +98,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc update Order to Paid
+// @desc update Order to Paid by PAYPAL
 // @route GET /api/orders/:id/pay
 // @access Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
@@ -115,6 +116,7 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
       links: JSON.stringify({ self: { href: req.body.links[0]["href"] } })
     }
     const updatedOrder = await order.save()
+    getOrderToMailById(req.params.id)
     console.log("=========================updateOrderToPaid:updatedOrder: ", updatedOrder)
     res.json(updatedOrder)
   } else {
@@ -140,7 +142,7 @@ export const molliePay = asyncHandler(async (req, res) => {
   })
 })
 
-// @desc get Order status from Mollie
+// @desc get Order status from MOLLIE
 // @route POST /api/orders/molliewebhook
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
@@ -186,6 +188,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 
       const updatedOrder = await order.save()
       console.log("updatedOrder: ", updatedOrder) ////////// UPDATED ORDER
+      getOrderToMailById(orderId)
       res.status(200).send("200 OK")
     } else {
       res.status(404)
@@ -207,3 +210,14 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 })
 
 // https://www.mollie.com/dashboard/org_11322007/payments
+
+export const getOrderToMailById = async orderId => {
+  const order = await Order.findById(orderId).populate("user", "name email")
+  if (order) {
+    sendMail(order)
+    res.json(order)
+  } else {
+    res.status(404)
+    throw new Error("Order not found")
+  }
+}
