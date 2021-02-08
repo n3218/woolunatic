@@ -20,7 +20,11 @@ import {
   ORDER_MOLLIE_PAY_REQUEST,
   ORDER_MOLLIE_PAY_SUCCESS,
   ORDER_MOLLIE_PAY_FAIL,
-  ORDER_MOLLIE_PAY_RESET
+  ORDER_MOLLIE_PAY_RESET,
+  ORDER_SEND_CONFIRMATION_REQUEST,
+  ORDER_SEND_CONFIRMATION_SUCCESS,
+  ORDER_SEND_CONFIRMATION_FAIL,
+  ORDER_SEND_CONFIRMATION_RESET
 } from "../constants/orderConstants"
 import axios from "axios"
 import { logout } from "./userActions"
@@ -167,7 +171,7 @@ export const listOrdersAction = (pageNumber = "") => async (dispatch, getState) 
 }
 
 export const molliePayAction = orderData => async (dispatch, getState) => {
-  console.log("orderData:", orderData)
+  console.log("molliePayAction: orderData:", orderData)
   try {
     dispatch({ type: ORDER_MOLLIE_PAY_REQUEST })
     const {
@@ -180,11 +184,10 @@ export const molliePayAction = orderData => async (dispatch, getState) => {
       }
     }
 
-    console.log("orderData.orderId: ", orderData.orderId)
-
+    console.log("molliePayAction: orderData.orderId: ", orderData.orderId)
     const { data } = await axios.put(`/api/orders/${orderData.orderId}/molliepay`, orderData, config)
 
-    console.log("data: ", data)
+    console.log("molliePayAction: data: ", data)
     dispatch({ type: ORDER_MOLLIE_PAY_SUCCESS, payload: data })
     window.location.href = data
   } catch (error) {
@@ -193,5 +196,36 @@ export const molliePayAction = orderData => async (dispatch, getState) => {
       dispatch(logout())
     }
     dispatch({ type: ORDER_MOLLIE_PAY_FAIL, payload: message })
+  }
+}
+
+export const sendOrderConfirmationAction = order => async (dispatch, getState) => {
+  console.log("sendOrderConfirmationAction: order:", order)
+
+  try {
+    dispatch({ type: ORDER_SEND_CONFIRMATION_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+
+    const { data } = await axios.put(`/api/mailer/${order._id}`, order, config)
+
+    console.log("data: ", data)
+
+    dispatch({ type: ORDER_SEND_CONFIRMATION_SUCCESS, payload: data })
+
+    // window.location.href = data
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({ type: ORDER_SEND_CONFIRMATION_FAIL, payload: message })
   }
 }

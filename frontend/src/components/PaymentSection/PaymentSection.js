@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react"
-import axios from "axios"
-import { Form, Button, Col, Row } from "react-bootstrap"
+import React from "react"
+// import axios from "axios"
+import { Form, Col, Row } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { savePaymentMethodAction } from "../../actions/cartActions"
 // import { PayPalButton } from "react-paypal-button-v2"
-import Message from "../Message"
-import Loader from "../Loader"
-import { molliePayAction, payOrderAction } from "../../actions/orderActions"
+// import Message from "../Message"
+// import Loader from "../Loader"
+// import { molliePayAction, payOrderAction } from "../../actions/orderActions"
 // import MolliePayment from "../PaymentMollie"
 import "./PaymentSection.css"
-import PaymentStatus from "../PaymentStatus"
+// import PaymentStatus from "../PaymentStatus"
 
-const Payment = ({ order, userInfo, checkoutStep, paymentMethod, setPaymentMethod }) => {
+const PaymentSection = ({ order, userInfo, checkoutStep, paymentMethod, setPaymentMethod }) => {
   const dispatch = useDispatch()
-  const orderId = order._id
-  const [sdkReady, setSdkReady] = useState(false)
+  // const orderId = order._id
+  // const [sdkReady, setSdkReady] = useState(false)
 
   // useEffect(() => {
   //   const addPayPalScript = async () => {
@@ -42,19 +42,19 @@ const Payment = ({ order, userInfo, checkoutStep, paymentMethod, setPaymentMetho
     dispatch(savePaymentMethodAction(e.target.value))
   }
 
-  const successPaymentHandler = paymentResult => {
-    dispatch(payOrderAction(orderId, paymentResult))
-  }
+  // const successPaymentHandler = paymentResult => {
+  //   dispatch(payOrderAction(orderId, paymentResult))
+  // }
 
-  const proceedMollyPayment = () => {
-    const data = {
-      totalPrice: order.totalPrice,
-      currency: "EUR",
-      description: `Order #${order._id}`,
-      orderId: order._id
-    }
-    dispatch(molliePayAction(data))
-  }
+  // const proceedMollyPayment = () => {
+  //   const data = {
+  //     totalPrice: order.totalPrice,
+  //     currency: "EUR",
+  //     description: `Order #${order._id}`,
+  //     orderId: order._id
+  //   }
+  //   dispatch(molliePayAction(data))
+  // }
 
   const radioButton = (label, name) => (
     <Form.Check //
@@ -68,24 +68,24 @@ const Payment = ({ order, userInfo, checkoutStep, paymentMethod, setPaymentMetho
     ></Form.Check>
   )
 
-  const showLinks = links => {
-    const arr = JSON.parse(links)
-    console.log("arr: ", arr)
-    return Object.keys(arr).map(key => (
-      <Row key={key}>
-        <Col xs={4} sm={6} lg={4} className="p-0 m-0">
-          <small>
-            <i>{key}: </i>
-          </small>
-        </Col>
-        <Col className="m-0 p-0">
-          <a href={arr[key].href} target="_blank" rel="noreferrer">
-            {arr[key].href.substring(0, 20)}...
-          </a>
-        </Col>
-      </Row>
-    ))
-  }
+  // const showLinks = links => {
+  //   const arr = JSON.parse(links)
+  //   console.log("arr: ", arr)
+  //   return Object.keys(arr).map(key => (
+  //     <Row key={key}>
+  //       <Col xs={4} sm={6} lg={4} className="p-0 m-0">
+  //         <small>
+  //           <i>{key}: </i>
+  //         </small>
+  //       </Col>
+  //       <Col className="m-0 p-0">
+  //         <a href={arr[key].href} target="_blank" rel="noreferrer">
+  //           {arr[key].href.substring(0, 20)}...
+  //         </a>
+  //       </Col>
+  //     </Row>
+  //   ))
+  // }
 
   return (
     <>
@@ -150,15 +150,15 @@ const Payment = ({ order, userInfo, checkoutStep, paymentMethod, setPaymentMetho
   )
 }
 
-const PaymentRow = ({ val1, children }) => {
-  return (
-    <Row>
-      <Col xl={2} xs={2} className="mr-2 h6 mb-0">
-        {val1}
-      </Col>
-      <Col className="p-0 m-0">{children}</Col>
-    </Row>
-  )
-}
+// const PaymentRow = ({ val1, children }) => {
+//   return (
+//     <Row>
+//       <Col xl={2} xs={2} className="mr-2 h6 mb-0">
+//         {val1}
+//       </Col>
+//       <Col className="p-0 m-0">{children}</Col>
+//     </Row>
+//   )
+// }
 
-export default Payment
+export default PaymentSection
