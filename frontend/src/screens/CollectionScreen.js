@@ -9,7 +9,6 @@ import Meta from "../components/Meta"
 import Filter from "../components/Filter/Filter"
 
 const CollectionScreen = ({ match }) => {
-  console.log(match.params)
   const keyword = match.params.keyword
   const category = match.params.category
   const pageNumber = Number(match.params.pageNumber) || 1
@@ -19,18 +18,16 @@ const CollectionScreen = ({ match }) => {
   const [filteredProducts, setFilteredProducts] = useState([])
 
   // useEffect(() => {
-  //   console.log("CollectionScreen:useEffect-1")
+  //
   //   if (success) {
   //     setFilteredProducts([...products])
   //   }
   // }, [products, success])
 
   useEffect(() => {
-    console.log("CollectionScreen:useEffect-2")
     dispatch(listProducts(keyword, pageNumber, category))
   }, [dispatch, keyword, pageNumber, category])
 
-  console.log("CollectionScreen:filteredProducts: ", filteredProducts)
   return (
     <>
       {error && <Message variant="danger">{error}</Message>}

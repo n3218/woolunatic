@@ -104,8 +104,6 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
   console.log("=========================updateOrderToPaid:req.body: ", req.body)
   const order = await Order.findById(req.params.id)
   if (order) {
-    console.log("=========================updateOrderToPaid:if(order):order: ", order)
-
     order.isPaid = true
     order.paidAt = Date.now()
     order.paymentMethod = "PayPal"
@@ -114,9 +112,8 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
       status: req.body.status,
       update_time: req.body.update_time,
       email_address: req.body.payer.email_address,
-      links: JSON.stringify(payment._links)
+      links: JSON.stringify({ self: { href: req.body.links[0]["href"] } })
     }
-
     const updatedOrder = await order.save()
     console.log("=========================updateOrderToPaid:updatedOrder: ", updatedOrder)
     res.json(updatedOrder)

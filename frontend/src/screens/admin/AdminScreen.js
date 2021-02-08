@@ -196,8 +196,6 @@ const AdminScreen = ({ history }) => {
                       <strong>
                         white
                         <br />
-                        natural
-                        <br />
                         beige
                         <br />
                         yellow

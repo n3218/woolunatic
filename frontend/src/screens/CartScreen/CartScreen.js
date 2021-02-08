@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, Button, ListGroup, Card } from "react-bootstrap"
-import { cartAddItemAction, cartCleanItemsAction, cartUpdateItemAction } from "../actions/cartActions"
-import Message from "../components/Message"
-import Meta from "../components/Meta"
-import CartItems from "../components/CartItems"
-import OrderSummary from "../components/OrderSummary"
-import ShippingSection from "../components/ShippingSection"
-import PaymentSection from "../components/PaymentSection/PaymentSection"
-import CheckoutSteps from "../components/CheckoutSteps"
-import OrderWeightsSummary from "../components/OrderWeightsSummary"
-import { USER_DETAILS_RESET } from "../constants/userConstants"
-import { ORDER_CREATE_RESET } from "../constants/orderConstants"
-import { createOrderAction, molliePayAction } from "../actions/orderActions"
+import { Row, Col, Button, ListGroup } from "react-bootstrap"
+import { cartAddItemAction, cartCleanItemsAction, cartUpdateItemAction } from "../../actions/cartActions"
+import Message from "../../components/Message"
+import Meta from "../../components/Meta"
+import CartItems from "../../components/CartItems"
+import OrderSummary from "../../components/OrderSummary"
+import ShippingSection from "../../components/ShippingSection"
+import PaymentSection from "../../components/PaymentSection/PaymentSection"
+import CheckoutSteps from "../../components/CheckoutSteps"
+import OrderWeightsSummary from "../../components/OrderWeightsSummary"
+import { USER_DETAILS_RESET } from "../../constants/userConstants"
+import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
+import { createOrderAction, molliePayAction } from "../../actions/orderActions"
+// import { CSSTransition } from "react-transition-group"
+import "./CartScreen.css"
+import HideScreen from "../HideScreen/HideScreen"
 
 const CartScreen = ({ match, location, history }) => {
   const dispatch = useDispatch()
@@ -26,6 +29,7 @@ const CartScreen = ({ match, location, history }) => {
   const { userInfo } = userLogin
   const [paymentMethod, setPaymentMethod] = useState("")
   const [summary, setSummary] = useState({})
+  const [hideScreen, setHideScreen] = useState(false)
 
   if (!cart.shippingAddress.address) {
     history.push("/cart/checkout/shipping")
@@ -71,14 +75,19 @@ const CartScreen = ({ match, location, history }) => {
   useEffect(() => {
     if (success) {
       if (order && paymentMethod === "Mollie") {
+        setHideScreen(true)
         proceedMollyPayment(order)
+        history.push(`/orders/${order._id}/mollie?total=${order.totalPrice}`)
       }
-      history.push(`/hidescreen`)
+      if (order && paymentMethod === "PayPal") {
+        setHideScreen(true)
+        history.push(`/orders/${order._id}/paypal?total=${order.totalPrice}`)
+      }
     }
-    dispatch({ type: USER_DETAILS_RESET })
-    dispatch({ type: ORDER_CREATE_RESET })
+    // dispatch({ type: USER_DETAILS_RESET })
+    // dispatch({ type: ORDER_CREATE_RESET })
     // eslint-disable-next-line
-  }, [history, success])
+  }, [success])
 
   const placeOrderHandler = () => {
     dispatch(
@@ -95,6 +104,7 @@ const CartScreen = ({ match, location, history }) => {
       })
     )
   }
+  // -------------------------------------------------/Order Creation
 
   const proceedMollyPayment = order => {
     const data = {
@@ -118,7 +128,9 @@ const CartScreen = ({ match, location, history }) => {
 
   return (
     <>
+      {hideScreen && <HideScreen orderId={order._id} total={order.totalPrice} paymentMethod={order.paymentMethod} />}
       <Meta title="Shopping Cart | Woolunatics" />
+
       {checkoutStep ? <h2>Checkout</h2> : <h2>Shopping Cart</h2>}
       {checkoutStep && <CheckoutSteps step={checkoutStep} />}
       <Row>

@@ -75,14 +75,14 @@ const Payment = ({ order, userInfo }) => {
     console.log("arr: ", arr)
     return Object.keys(arr).map(key => (
       <Row key={key}>
-        <Col xs={4} sm={6} lg={4} className="p-0 m-0">
+        <Col xs={4} sm={4} lg={2} className="p-0 m-0">
           <small>
             <i>{key}: </i>
           </small>
         </Col>
         <Col className="m-0 p-0">
           <a href={arr[key].href} target="_blank" rel="noreferrer">
-            {arr[key].href.substring(0, 20)}...
+            {arr[key].href.substring(0, 30)}...
           </a>
         </Col>
       </Row>

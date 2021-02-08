@@ -15,7 +15,7 @@ const OrderWeightsSummary = ({ order }) => {
         </Row>
         <Row>
           <Col xs={10} xl={10} className="text-right">
-            <strong>Total weight: </strong>
+            <strong>Estimated total weight: </strong>
           </Col>
           <Col xs={2} xl={2} className="text-right">
             {order.totalWeight || 0}g
