@@ -17,6 +17,11 @@
 .product-list td {
   /* height: 30px; */
   padding-right: 0 1rem;
+  max-width: 80px;
+}
+
+.product-list-max {
+  max-width: auto;
 }
 
 .product-list-item td {
@@ -26,6 +31,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   border-right: 1px solid lightgray;
+  font-size: 0.9em;
 }
 
 .product-list-image {

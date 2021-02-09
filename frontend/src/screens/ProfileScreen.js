@@ -128,7 +128,7 @@ const ProfileScreen = ({ history, location }) => {
                     <td>{order.isDelivered ? <span className="text-success">{order.deliveredAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
                     <td>
                       <LinkContainer to={`/orders/${order._id}`}>
-                        <Button className="btn-sm">Details</Button>
+                        <Button className="btn-sm btn-success">Details</Button>
                       </LinkContainer>
                     </td>
                   </tr>

@@ -16,7 +16,7 @@ const OrderSummary = ({ cart, items, children, error, checkoutStep }) => {
             <Col>
               <strong>Items price: </strong>
             </Col>
-            <Col className="text-right">€{(items && cart.totalPrice) || 0}</Col>
+            <Col className="text-right">€{(items && cart.itemsPrice) || 0}</Col>
           </Row>
 
           <>
