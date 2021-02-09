@@ -31,9 +31,9 @@ const CartScreen = ({ match, location, history }) => {
   const [summary, setSummary] = useState({})
   const [hideScreen, setHideScreen] = useState(false)
 
-  if (!cart.shippingAddress.address) {
-    history.push("/cart/checkout/shipping")
-  }
+  // if (!cart.shippingAddress.address) {
+  //   history.push("/cart/checkout/shipping")
+  // }
   if (!userInfo) {
     history.push("/login")
   }
@@ -77,15 +77,17 @@ const CartScreen = ({ match, location, history }) => {
       if (order && paymentMethod === "Mollie") {
         setHideScreen(true)
         proceedMollyPayment(order)
+        dispatch({ type: USER_DETAILS_RESET })
+        dispatch({ type: ORDER_CREATE_RESET })
         history.push(`/orders/${order._id}/mollie?total=${order.totalPrice}`)
       }
       if (order && paymentMethod === "PayPal") {
         setHideScreen(true)
+        dispatch({ type: USER_DETAILS_RESET })
+        dispatch({ type: ORDER_CREATE_RESET })
         history.push(`/orders/${order._id}/paypal?total=${order.totalPrice}`)
       }
     }
-    // dispatch({ type: USER_DETAILS_RESET })
-    // dispatch({ type: ORDER_CREATE_RESET })
     // eslint-disable-next-line
   }, [success])
 
@@ -133,6 +135,11 @@ const CartScreen = ({ match, location, history }) => {
 
       {checkoutStep ? <h2>Checkout</h2> : <h2>Shopping Cart</h2>}
       {checkoutStep && <CheckoutSteps step={checkoutStep} />}
+      {cartItems.length === 0 && (
+        <Message variant="success" className="py-5">
+          Your cart is empty <br /> <Link to="/">Go Shopping...</Link>
+        </Message>
+      )}
       <Row>
         <Col md={9} xs={12}>
           <ListGroup variant="flush">
@@ -169,23 +176,14 @@ const CartScreen = ({ match, location, history }) => {
             )}
           </ListGroup>
 
-          {cartItems.length === 0 ? (
-            <Message variant="success" className="py-5">
-              Your cart is empty <br /> <Link to="/">Go Shopping...</Link>
-            </Message>
-          ) : (
+          {cartItems.length !== 0 && (
             <>
               <CartItems items={cartItems} />
               <OrderWeightsSummary order={summary} />
             </>
           )}
         </Col>
-        {/* 
-        //
-        //
-        // 
-        // 
-        */}
+
         {cartItems && cartItems.length > 0 && (
           <Col>
             <OrderSummary cart={summary} items={cartItems} checkoutStep={checkoutStep} error={error}>

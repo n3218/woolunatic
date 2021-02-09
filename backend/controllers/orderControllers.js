@@ -214,10 +214,10 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 export const getOrderToMailById = async orderId => {
   const order = await Order.findById(orderId).populate("user", "name email")
   if (order) {
-    sendMail(order)
-    res.json(order)
+    return sendMail(order)
+    // res.json(order)
   } else {
-    res.status(404)
+    // res.status(404)
     throw new Error("Order not found")
   }
 }

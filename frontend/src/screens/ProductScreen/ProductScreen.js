@@ -105,7 +105,7 @@ const ProductScreen = ({ history, match }) => {
           <div className="submenu">
             {userInfo && userInfo.isAdmin && (
               <Link to={`/admin/product/${productId}/edit`} className="btn btn-success bg-blue my-3 px-5">
-                Edit
+                <i className="fas fa-edit text-success"></i> Edit
               </Link>
             )}
           </div>
@@ -131,6 +131,12 @@ const ProductScreen = ({ history, match }) => {
                 </a>
               </div>
               <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Art:</Col>
+                    <Col className="text-capitalize">{product.art}</Col>
+                  </Row>
+                </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Color:</Col>

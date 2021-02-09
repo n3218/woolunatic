@@ -75,7 +75,7 @@ const Payment = ({ order, userInfo }) => {
     console.log("arr: ", arr)
     return Object.keys(arr).map(key => (
       <Row key={key}>
-        <Col xs={4} sm={4} lg={2} className="p-0 m-0">
+        <Col className="p-0 m-0">
           <small>
             <i>{key}: </i>
           </small>
@@ -146,7 +146,7 @@ const Payment = ({ order, userInfo }) => {
           <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
           <PaymentRow val1="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</PaymentRow>
           {order.paymentResult && order.paymentResult.email && <PaymentRow val1="Email"> {order.paymentResult.email}</PaymentRow>}
-          <PaymentRow val1="Links">{order.paymentResult.links && showLinks(order.paymentResult.links)}</PaymentRow>
+          {userInfo && userInfo.isAdmin && <PaymentRow val1="Links">{order.paymentResult.links && showLinks(order.paymentResult.links)}</PaymentRow>}
         </>
       )}
       {!order.isPaid && !paymentMethod && <Message variant="warning">Not Paid</Message>}
