@@ -105,7 +105,7 @@ const ProductScreen = ({ history, match }) => {
           <div className="submenu">
             {userInfo && userInfo.isAdmin && (
               <Link to={`/admin/product/${productId}/edit`} className="btn btn-success bg-blue my-3 px-5">
-                <i className="fas fa-edit text-success"></i> Edit
+                <i className="fas fa-edit text-white"></i> Edit
               </Link>
             )}
           </div>

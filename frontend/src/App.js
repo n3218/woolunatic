@@ -8,8 +8,6 @@ import CollectionScreen from "./screens/CollectionScreen"
 import LoginScreen from "./screens/LoginScreen"
 import RegisterScreen from "./screens/RegisterScreen"
 import ProfileScreen from "./screens/ProfileScreen"
-// import ShippingScreen from "./screens/ShippingScreen"
-// import PaymentScreen from "./screens/_PaymentScreen"
 import PlaceOrderScreen from "./screens/PlaceOrderScreen"
 import AboutScreen from "./screens/AboutScreen"
 import HowToScreen from "./screens/HowToScreen"
@@ -35,8 +33,6 @@ const App = () => {
             <Route path="/login" exact component={LoginScreen} />
             <Route path="/register" exact component={RegisterScreen} />
             <Route path="/profile" exact component={ProfileScreen} />
-            {/* <Route path="/shipping" exact component={ShippingScreen} /> */}
-            {/* <Route path="/payment" exact component={PaymentScreen} /> */}
             <Route path="/placeorder" exact component={PlaceOrderScreen} />
             <Route path="/about" component={AboutScreen} />
             <Route path="/how-to" component={HowToScreen} />

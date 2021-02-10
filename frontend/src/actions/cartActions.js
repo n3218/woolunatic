@@ -4,13 +4,18 @@ import {
   CART_SAVE_SHIPPING_ADDRESS,
   CART_SAVE_PAYMENT_METHOD,
   CART_UPDATE_ITEM,
-  CART_CLEAN_ITEMS
+  CART_CLEAN_ITEMS,
+  CART_CHECK_ITEMS_REQUEST,
+  CART_CHECK_ITEMS_SUCCESS,
+  CART_CHECK_ITEMS_FAIL,
+  REMOVE_CART_ITEMS_FROM_DB_REQUEST,
+  REMOVE_CART_ITEMS_FROM_DB_SUCCESS,
+  REMOVE_CART_ITEMS_FROM_DB_FAIL
 } from "../constants/cartConstants"
 import axios from "axios"
 
 export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
   const { data } = await axios.get(`/api/products/${id}`)
-
   dispatch({
     type: CART_ADD_ITEM,
     payload: {
@@ -25,48 +30,6 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
       price: data.price,
       color: data.color,
       qty
-    }
-  })
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
-}
-
-export const cartUpdateItemAction = (product, qty) => async (dispatch, getState) => {
-  var message = ""
-  try {
-    const { data } = await axios.get(`/api/products/${product}`)
-    if (data.outOfStock) {
-      message = "Product out of stock"
-    }
-    if (data.inStock) {
-      const arr = data.inStock
-        .split(",")
-        .map(el => Number(el.trim()))
-        .sort((a, b) => a - b)
-
-      if (arr.includes(qty)) {
-      } else {
-        if (data.minimum > 0) {
-          let minLeftover = Math.ceil(((1500 / data.meterage) * 100) / 100) * 100
-          let maxVal = arr[arr.length - 1] - minLeftover
-          if (qty >= data.minimum && qty <= maxVal) {
-            message = ""
-          } else {
-            message = "Weight not found"
-          }
-        } else {
-          message = "Weight not found"
-        }
-      }
-    }
-  } catch (err) {
-    message = "Product not found"
-  }
-  dispatch({
-    type: CART_UPDATE_ITEM,
-    payload: {
-      product,
-      qty,
-      message: message
     }
   })
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
@@ -100,5 +63,54 @@ export const cartCleanItemsAction = () => async (dispatch, getState) => {
   dispatch({
     type: CART_CLEAN_ITEMS
   })
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+}
+
+export const cartCheckItemsAction = cartItems => async (dispatch, getState) => {
+  try {
+    dispatch({ type: CART_CHECK_ITEMS_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.post(`/api/products/check`, cartItems, config)
+    if (data) {
+      dispatch({ type: CART_CHECK_ITEMS_SUCCESS, payload: data })
+    }
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    console.error(message)
+    dispatch({ type: CART_CHECK_ITEMS_FAIL, payload: message })
+  }
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+}
+
+export const cartRemoveItemsFromDBAction = cartItems => async (dispatch, getState) => {
+  try {
+    dispatch({ type: REMOVE_CART_ITEMS_FROM_DB_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.post(`/api/products/removefromdb`, cartItems, config)
+    if (data) {
+      console.log("=========================REMOVEProductsFromDBAction:data: ", data)
+      dispatch({ type: REMOVE_CART_ITEMS_FROM_DB_SUCCESS, payload: data })
+    }
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    console.error(message)
+    dispatch({ type: REMOVE_CART_ITEMS_FROM_DB_FAIL, payload: message })
+  }
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }

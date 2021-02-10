@@ -3,8 +3,8 @@ import { PayPalButton } from "react-paypal-button-v2"
 import axios from "axios"
 import FormContainer from "../../components/FormContainer"
 import Loader from "../../components/Loader"
-import { Form, Button, Col, Row } from "react-bootstrap"
-import { molliePayAction, payOrderAction } from "../../actions/orderActions"
+import { Col, Row } from "react-bootstrap"
+import { payOrderAction } from "../../actions/orderActions"
 
 import "./HideScreen.css"
 import { useDispatch } from "react-redux"
@@ -21,6 +21,7 @@ const HideScreen = ({ match, location, history }) => {
   console.log("total: ", total)
   console.log("typeof total: ", typeof total)
   console.log("paymentMethod: ", paymentMethod)
+
   useEffect(() => {
     const addPayPalScript = async () => {
       const { data: clientId } = await axios.get("/api/config/paypal")

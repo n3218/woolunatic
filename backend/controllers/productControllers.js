@@ -66,7 +66,10 @@ export const getProducts = asyncHandler(async (req, res) => {
 
   const count = await Product.countDocuments({ ...parameters })
   const products = await Product.find({ ...parameters })
-    .sort([[sortBy, order]])
+    .sort([
+      ["outOfStock", 1],
+      [sortBy, order]
+    ])
     .limit(pageSize)
     .skip(pageSize * (page - 1))
   res.json({ products, page, pages: Math.ceil(count / pageSize), count })
@@ -76,7 +79,7 @@ export const getProducts = asyncHandler(async (req, res) => {
 // @route  GET /api/products/top
 // @access Public
 export const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ updatedAt: -1 }).limit(12)
+  const products = await Product.find({}).sort({ outOfStock: 1, updatedAt: -1 }).limit(12)
   res.json(products)
 })
 
@@ -201,5 +204,108 @@ export const createProductReview = asyncHandler(async (req, res) => {
   } else {
     res.status(404)
     throw new Error("Product not found")
+  }
+})
+
+// @desc   Check Products in Stock
+// @route  POST /api/products/check
+// @access Private
+export const checkProductsInStock = asyncHandler(async (req, res) => {
+  const cartItems = req.body
+  const checkItem = async item => {
+    const product = await Product.findById(item.product)
+    if (product) {
+      if (product.outOfStock) {
+        return { ...item, message: "Product out of Stock" }
+      } else if (product.inStock) {
+        const arr = product.inStock
+          .split(",")
+          .map(el => Number(el.trim()))
+          .sort((a, b) => a - b)
+        if (arr.includes(item.qty)) {
+          return { ...item, message: "" }
+        } else {
+          if (product.minimum > 0) {
+            let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
+            let maxVal = arr[arr.length - 1] - minLeftover
+            if (item.qty >= product.minimum && item.qty <= maxVal) {
+              return item
+            } else {
+              return { ...item, message: "Weight not found" }
+            }
+          } else {
+            return { ...item, message: "Weight not found" }
+          }
+        }
+      }
+    } else {
+      return { ...item, message: "Product not Found" }
+    }
+  }
+  const checkedItems = cartItems.map(item => checkItem(item))
+  const results = await Promise.all(checkedItems)
+  console.log("=================checkProductsInStock:results: ", results)
+  if (results) {
+    res.status(200).json(results)
+  } else {
+    res.status(404)
+    throw new Error("Checking items in stock failed")
+  }
+})
+
+// @desc   Check Products in Stock
+// @route  POST /api/products/removefromdb
+// @access Private
+export const removeItemsFromDB = asyncHandler(async (req, res) => {
+  console.log("=================removeItemsFromDB:req.body: ", req.body)
+  const cartItems = req.body
+
+  const removeItem = async item => {
+    const product = await Product.findById(item.product)
+    if (product) {
+      const arr = product.inStock
+        .split(",")
+        .map(el => Number(el.trim()))
+        .sort((a, b) => a - b)
+      let index = arr.indexOf(item.qty)
+      if (index !== -1) {
+        arr.splice(index, 1)
+        product.inStock = arr.join(",")
+      } else {
+        if (product.minimum > 0) {
+          let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
+          let maxVal = arr[arr.length - 1] - minLeftover
+          if (item.qty >= product.minimum && item.qty <= maxVal) {
+            let windBigger = arr[arr.length - 1] - item.qty
+            arr.pop().push(windBigger)
+            product.inStock = arr.join(",")
+          } else {
+            return { message: "Weight not found" }
+          }
+        }
+      }
+      if (arr.length === 0) {
+        product.outOfStock = true
+      }
+      console.log("++++++++++++++++++ productController:removeItemsFromDB:product: ", product)
+      const savedProduct = await product.save()
+      console.log("++++++++++++++++++ productController:removeItemsFromDB:savedProduct: ", savedProduct)
+    } else {
+      return { message: "Product not Found" }
+    }
+  }
+
+  // res.status(201).json({ message: "Review added" })
+
+  const removeddItems = cartItems.map(item => removeItem(item))
+
+  const results = await Promise.all(removeddItems)
+  console.log("=================removeItemsFromDB:results: ", results)
+
+  if (results) {
+    res.status(201).json(results)
+  } else {
+    res.status(404)
+    throw new Error("Checking items in stock failed")
   }
 })

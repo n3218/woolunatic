@@ -3,7 +3,7 @@ import { Form, Button } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { saveShippingAddressAction, cartCleanItemsAction } from "../actions/cartActions"
 
-const ShippingSection = ({ cart, history, checkoutStep, userInfo }) => {
+const ShippingSection = ({ onClickEvent, cart, history, checkoutStep, userInfo }) => {
   const dispatch = useDispatch()
   const { shippingAddress } = cart
 
@@ -14,8 +14,8 @@ const ShippingSection = ({ cart, history, checkoutStep, userInfo }) => {
 
   const submitShippingHandler = e => {
     e.preventDefault()
+    dispatch(onClickEvent())
     dispatch(saveShippingAddressAction({ address, city, zipCode, country }))
-    dispatch(cartCleanItemsAction())
     history.push("/cart/checkout/payment")
   }
 

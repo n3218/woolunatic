@@ -29,12 +29,7 @@ const productSchema = mongoose.Schema(
     fibers: { type: String, required: false, default: "" },
     price: { type: Number, required: true, default: 0 },
     description: { type: String, required: false, default: "" },
-    image: [
-      {
-        type: String,
-        required: false
-      }
-    ],
+    image: [{ type: String, required: false }],
     reviews: [reviewSchema],
     rating: { type: Number, required: false, default: 0 },
     numReviews: { type: Number, required: false, default: 0 },

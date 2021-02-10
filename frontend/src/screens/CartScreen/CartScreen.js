@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, Button, ListGroup } from "react-bootstrap"
-import { cartAddItemAction, cartCleanItemsAction, cartUpdateItemAction } from "../../actions/cartActions"
+import { cartAddItemAction, cartCleanItemsAction, cartCheckItemsAction, cartRemoveItemsFromDBAction } from "../../actions/cartActions"
 import Message from "../../components/Message"
 import Meta from "../../components/Meta"
 import CartItems from "../../components/CartItems"
@@ -13,10 +13,10 @@ import CheckoutSteps from "../../components/CheckoutSteps"
 import OrderWeightsSummary from "../../components/OrderWeightsSummary"
 import { USER_DETAILS_RESET } from "../../constants/userConstants"
 import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
-import { createOrderAction, molliePayAction, sendOrderConfirmationAction } from "../../actions/orderActions"
-// import { CSSTransition } from "react-transition-group"
-import "./CartScreen.css"
+import { createOrderAction, molliePayAction } from "../../actions/orderActions"
 import HideScreen from "../HideScreen/HideScreen"
+import Loader from "../../components/Loader"
+import "./CartScreen.css"
 
 const CartScreen = ({ match, location, history }) => {
   const dispatch = useDispatch()
@@ -30,23 +30,25 @@ const CartScreen = ({ match, location, history }) => {
   const [paymentMethod, setPaymentMethod] = useState("")
   const [summary, setSummary] = useState({})
   const [hideScreen, setHideScreen] = useState(false)
+  const [showWarning, setShowWarning] = useState(false)
 
-  // if (!cart.shippingAddress.address) {
-  //   history.push("/cart/checkout/shipping")
-  // }
   if (!userInfo) {
     history.push("/login")
   }
-
+  if (checkoutStep && cartItems && cartItems.length === 0) {
+    history.push("/cart")
+  }
+  // ----------------------------------------------Add to Cart Item
   useEffect(() => {
     if (productId) {
       dispatch(cartAddItemAction(productId, qty))
     }
-    if (cartItems.length === 0) {
-      history.push("/cart")
-    }
-  }, [dispatch, productId, qty, cartItems, history])
-
+  }, [dispatch, productId, qty, cartItems])
+  // ----------------------------------------------/Add to Cart Item
+  //
+  //
+  //
+  //
   // ----------------------------------------------Calculating prices
   useEffect(() => {
     if (cartItems) {
@@ -62,8 +64,9 @@ const CartScreen = ({ match, location, history }) => {
       const itemsWeight = cartItems.reduce((acc, item) => acc + item.qty, 0)
       const totalWeight = itemsWeight + 300 + cartItems.length * 40
       setSummary({ itemsPrice, taxPrice, shippingPrice, totalPrice, itemsWeight, totalWeight })
+      showWarningHandler()
     }
-  }, [cartItems, checkoutStep])
+  }, [cartItems, checkoutStep, dispatch])
   // ---------------------------------------------/Calculating prices
   //
   //
@@ -71,7 +74,6 @@ const CartScreen = ({ match, location, history }) => {
   // -------------------------------------------------Order Creation
   const orderCreate = useSelector(state => state.orderCreate)
   const { order, success, error } = orderCreate
-
   useEffect(() => {
     if (success) {
       if (order && paymentMethod === "Mollie") {
@@ -92,6 +94,10 @@ const CartScreen = ({ match, location, history }) => {
   }, [success])
 
   const placeOrderHandler = () => {
+    dispatch(cartCheckItemsAction(cartItems))
+    showWarningHandler()
+    dispatch(cartCleanItemsAction())
+    dispatch(cartRemoveItemsFromDBAction(cartItems))
     dispatch(
       createOrderAction({
         orderItems: cart.cartItems,
@@ -118,15 +124,34 @@ const CartScreen = ({ match, location, history }) => {
     dispatch(molliePayAction(data))
   }
 
-  const checkoutHandler = async () => {
-    await cartItems.map(item => dispatch(cartUpdateItemAction(item.product, item.qty)))
+  const checkoutHandler = () => {
     dispatch(cartCleanItemsAction())
+    showWarningHandler()
     if (userInfo) {
       history.push("/cart/checkout/shipping")
     } else {
       history.push("/login?redirect=cart/checkout/shipping")
     }
   }
+
+  const showWarningHandler = () => {
+    if (cartItems) {
+      let res = cartItems.filter(it => it.message && it.message.length > 0)
+      if (res.length > 0) {
+        setShowWarning(true)
+      } else {
+        setShowWarning(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    dispatch(cartCheckItemsAction(cartItems))
+  }, [productId, checkoutStep, paymentMethod])
+
+  useEffect(() => {
+    showWarningHandler()
+  }, [productId, checkoutStep, paymentMethod])
 
   return (
     <>
@@ -135,9 +160,14 @@ const CartScreen = ({ match, location, history }) => {
 
       {checkoutStep ? <h2>Checkout</h2> : <h2>Shopping Cart</h2>}
       {checkoutStep && <CheckoutSteps step={checkoutStep} />}
-      {cartItems.length === 0 && (
+      {cartItems && cartItems.length === 0 && (
         <Message variant="success" className="py-5">
           Your cart is empty <br /> <Link to="/">Go Shopping...</Link>
+        </Message>
+      )}
+      {showWarning && (
+        <Message variant="danger" className="py-5">
+          Some of items in your cart are out of stock
         </Message>
       )}
       <Row>
@@ -145,17 +175,18 @@ const CartScreen = ({ match, location, history }) => {
           <ListGroup variant="flush">
             {match.params.step && (
               <>
-                <ListGroup.Item>
-                  <Row>
-                    <Col lg={3} md={3} sm={6}>
-                      <h4>SHIPPING ADDRESS</h4>
-                    </Col>
-                    <Col>
-                      <ShippingSection cart={cart} history={history} checkoutStep={match.params.step} userInfo={userInfo} />
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-
+                {checkoutStep && checkoutStep === "shipping" && cartItems.length > 0 && (
+                  <ListGroup.Item>
+                    <Row>
+                      <Col lg={3} md={3} sm={6}>
+                        <h4>SHIPPING ADDRESS</h4>
+                      </Col>
+                      <Col>
+                        <ShippingSection onClickEvent={cartCleanItemsAction} cart={cart} history={history} checkoutStep={match.params.step} userInfo={userInfo} />
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                )}
                 {checkoutStep && checkoutStep !== "shipping" && (
                   <ListGroup.Item>
                     <Row>
@@ -176,12 +207,14 @@ const CartScreen = ({ match, location, history }) => {
             )}
           </ListGroup>
 
-          {cartItems.length !== 0 && (
+          {/* ---------------------------CART CHECKED ITEMS */}
+          {cartItems && cartItems.length > 0 && (
             <>
               <CartItems items={cartItems} />
               <OrderWeightsSummary order={summary} />
             </>
           )}
+          {/* ---------------------------/CART CHECKED ITEMS */}
         </Col>
 
         {cartItems && cartItems.length > 0 && (

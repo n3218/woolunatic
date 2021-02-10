@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, ListGroup, Button, Table, Card } from "react-bootstrap"
+import { Row, Col, ListGroup, Button, Table } from "react-bootstrap"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
 import { getOrderDetailsAction, deliverOrderAction } from "../actions/orderActions"
@@ -23,12 +23,6 @@ const OrderScreen = ({ match, history }) => {
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
-
-  // if (!loading) {
-  //   // Calculate prices
-  //   const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
-  //   order.itemsPrice = addDecimals(order.orderItems.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
-  // }
 
   useEffect(() => {
     if (!userInfo) {
