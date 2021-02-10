@@ -5,7 +5,6 @@ dotenv.config()
 
 export const sendMail = async orderData => {
   const order = new Object(orderData)
-  console.log("typeof order: ", typeof order)
   console.log("===================sendMail:order: ", order)
 
   const GMAIL_EMAIL = process.env.GMAIL_EMAIL
@@ -18,6 +17,7 @@ export const sendMail = async orderData => {
       pass: GMAIL_PASSWORD
     }
   })
+
   const row = item => {
     return `<tr style="border: 1px solid #9AABBD;">
     <td style="text-align: center;">
@@ -51,12 +51,15 @@ export const sendMail = async orderData => {
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
-        <div style="font-size: 30px; line-height: 2; font-weight: 800; margin-bottom: 20px;" align="left">
+        <div style="font-size: 30px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
           <a href="https://woolunatic.herokuapp.com" rel="noreferrer" target="_blank"><img style="height: 70px;" alt="Woolunatics.NL" src="https://woolunatic.herokuapp.com/assets/logo.png" /></a>
         </div>
-        <div style="font-size: 20px; margin-bottom: 20px;"><a href="https://woolunatic.herokuapp.com/orders/${order._id}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">#${order._id}</a> Order confirmation</div>
+        <div style="font-size: 20px; margin-bottom: 10px;">
+          <a href="https://woolunatic.herokuapp.com/orders/${order._id}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">#${order._id}</a>
+        </div>
+        <div style="font-size: 18px; font-weight: 300; margin-bottom: 10px;">Order confirmation</div>
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Hello ${order.user.name}</div> 
-        <div style="font-size: 16px; font-weight: 300; margin-bottom: 20px;">Just to let you know, we've received your order. Thanks for shopping with us.</div>
+        <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">Just to let you know, we've received your order. Thanks for shopping with us.</div>
         
         <hr style="border-top: 2px solid #81869c;" />
 
@@ -165,8 +168,10 @@ export const sendMail = async orderData => {
   await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error)
+      return error
     } else {
       console.log("Email sent... " + info.response)
+      return info.response
     }
   })
 }

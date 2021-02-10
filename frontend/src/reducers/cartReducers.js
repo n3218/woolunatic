@@ -6,7 +6,13 @@ import {
   CART_SAVE_PAYMENT_METHOD,
   CART_SAVE_SHIPPING_ADDRESS,
   CART_UPDATE_ITEM,
-  CART_CLEAN_ITEMS
+  CART_CLEAN_ITEMS,
+  CART_CHECK_ITEMS_REQUEST,
+  CART_CHECK_ITEMS_SUCCESS,
+  CART_CHECK_ITEMS_FAIL,
+  REMOVE_CART_ITEMS_FROM_DB_REQUEST,
+  REMOVE_CART_ITEMS_FROM_DB_SUCCESS,
+  REMOVE_CART_ITEMS_FROM_DB_FAIL
 } from "../constants/cartConstants"
 
 export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, action) => {
@@ -17,7 +23,6 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
       if (existItem) {
         return {
           ...state
-          // cartItems: state.cartItems.map(x => (x.product === existItem.product && x.qty === existItem.qty ? item : x))
         }
       } else {
         return {
@@ -25,43 +30,65 @@ export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, acti
           cartItems: [...state.cartItems, item]
         }
       }
-
-    case CART_UPDATE_ITEM:
-      const { product, qty, message } = action.payload
-      const updatingItem = state.cartItems.filter(el => el.product === product && el.qty === qty)[0]
-      return {
-        ...state,
-        cartItems: [...state.cartItems.map(el => (el.product === updatingItem.product && el.qty === updatingItem.qty ? { ...updatingItem, qty, message } : el))]
-      }
-
     case CART_REMOVE_ITEM:
       return {
         ...state,
         cartItems: state.cartItems.filter(item => !(item.qty === action.payload.qty && item.product === action.payload.id))
       }
-
     case CART_SAVE_SHIPPING_ADDRESS:
       return {
         ...state,
         shippingAddress: action.payload
       }
-
     case CART_SAVE_PAYMENT_METHOD:
       return {
         ...state,
         paymentMethod: action.payload
       }
-
     case CART_CLEAR_ITEMS:
       return {
         ...state,
         cartItems: []
       }
-
     case CART_CLEAN_ITEMS:
       return {
         ...state,
-        cartItems: state.cartItems.filter(item => item.message === "")
+        cartItems: state.cartItems.filter(item => !item.message || item.message === "")
+      }
+    case CART_CHECK_ITEMS_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+    case CART_CHECK_ITEMS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        cartItems: action.payload
+      }
+    case CART_CHECK_ITEMS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
+
+    case REMOVE_CART_ITEMS_FROM_DB_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+    case REMOVE_CART_ITEMS_FROM_DB_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        cartItems: []
+      }
+    case REMOVE_CART_ITEMS_FROM_DB_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
       }
     default:
       return state

@@ -150,7 +150,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
-      console.log("=============================mollieHook:payment: ", payment) ////// mollieHook:payment
+      console.log("=============================mollieHook:payment: ", payment) //---- mollieHook:payment
       orderToUpdate = {
         id: payment.metadata.order_id,
         paymentMethod: payment.method,
@@ -172,13 +172,12 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
         console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
       }
       console.log("=============================payment.status: ", payment.status) // PAYMENT STATUS
-
       getOrderToUpdate(orderToUpdate.id)
     })
 
   const getOrderToUpdate = async orderId => {
-    console.log("getOrderToUpdate") /////////////////////// getOrderToUpdate
-    console.log("orderId: ", orderId) //////////////////// orderId
+    console.log("getOrderToUpdate") //---------------------------getOrderToUpdate
+    console.log("orderId: ", orderId) //--------------------------------- orderId
     const order = await Order.findById(orderId)
     if (order) {
       order.paymentMethod = orderToUpdate.paymentMethod
@@ -187,7 +186,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       order.isPaid = orderToUpdate.isPaid
 
       const updatedOrder = await order.save()
-      console.log("updatedOrder: ", updatedOrder) ////////// UPDATED ORDER
+      console.log("updatedOrder: ", updatedOrder) //--------------- UPDATED ORDER
       getOrderToMailById(orderId)
       res.status(200).send("200 OK")
     } else {
@@ -203,8 +202,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     })
     .on("end", () => {
       const id = querystring.parse(body).id
-      console.log("=============================req.body: ", body) /////////////////////////////// ID
-      console.log("=============================req.body.id: ", id) /////////////////////////////// ID
+      console.log("=============================req.body.id: ", id) //----------ID
       getPayment(id)
     })
 })

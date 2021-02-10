@@ -24,11 +24,7 @@ import {
   ORDER_MOLLIE_PAY_REQUEST,
   ORDER_MOLLIE_PAY_SUCCESS,
   ORDER_MOLLIE_PAY_FAIL,
-  ORDER_MOLLIE_PAY_RESET,
-  ORDER_SEND_CONFIRMATION_REQUEST,
-  ORDER_SEND_CONFIRMATION_SUCCESS,
-  ORDER_SEND_CONFIRMATION_FAIL,
-  ORDER_SEND_CONFIRMATION_RESET
+  ORDER_MOLLIE_PAY_RESET
 } from "../constants/orderConstants"
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -191,31 +187,6 @@ export const orderMolliePayReducer = (state = {}, action) => {
         error: action.payload
       }
     case ORDER_MOLLIE_PAY_RESET:
-      return {}
-    default:
-      return state
-  }
-}
-
-export const orderSendConfirmationReducer = (state = {}, action) => {
-  console.log("orderSendConfirmationReducer")
-  switch (action.type) {
-    case ORDER_SEND_CONFIRMATION_REQUEST:
-      return {
-        loading: true,
-        data: {}
-      }
-    case ORDER_SEND_CONFIRMATION_SUCCESS:
-      return {
-        loading: false,
-        data: action.payload
-      }
-    case ORDER_SEND_CONFIRMATION_FAIL:
-      return {
-        loading: false,
-        error: action.payload
-      }
-    case ORDER_SEND_CONFIRMATION_RESET:
       return {}
     default:
       return state

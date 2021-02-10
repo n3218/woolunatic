@@ -1,15 +1,11 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
-import { cartRemoveItemAction, cartUpdateItemAction } from "../actions/cartActions"
+import { cartRemoveItemAction } from "../actions/cartActions"
 
-const CartItem = ({ item, productId, qty, checkoutStep }) => {
+const CartItem = ({ item }) => {
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(cartUpdateItemAction(productId, qty))
-  }, [dispatch, productId, qty, checkoutStep])
 
   const removeFromCartHandler = (id, qty) => {
     dispatch(cartRemoveItemAction(id, qty))
@@ -64,4 +60,4 @@ const CartItem = ({ item, productId, qty, checkoutStep }) => {
   )
 }
 
-export default CartItem // used in CartScreen and PlaceOrderScreen
+export default CartItem // used in CartScreen

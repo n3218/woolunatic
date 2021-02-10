@@ -93,51 +93,51 @@ const Header = () => {
         <Col className="p-0">
           <Nav className="ml-auto navbar-light bg-light py-3 justify-content-center">
             <LinkContainer to="/yarns" exact>
-              <Nav.Link className="underlink">
+              <Nav.Link href="/yarns" className="underlink">
                 <span className="underlink-content">All Yarns</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/cashmere">
+            <LinkContainer to="/yarns/cashmere" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Cashmere</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/cashmix">
+            <LinkContainer to="/yarns/cashmix" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Cashmere mix</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/merino-wool-lambswool">
+            <LinkContainer to="/yarns/merino-wool-lambswool" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Merino/Wool</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/angora">
+            <LinkContainer to="/yarns/angora" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Angora</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/mohair-alpaca">
+            <LinkContainer to="/yarns/mohair-alpaca" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Mohair/Alpaca</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/camel-yak">
+            <LinkContainer to="/yarns/camel-yak" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Camel/Yak</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/silk-viscose">
+            <LinkContainer to="/yarns/silk-viscose" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Silk</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/cotton-linen">
+            <LinkContainer to="/yarns/cotton-linen" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Linen/Cotton</span>
               </Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/yarns/fantasy-pailettes">
+            <LinkContainer to="/yarns/fantasy-pailettes" exact>
               <Nav.Link className="underlink">
                 <span className="underlink-content">Fantasy Yarns</span>
               </Nav.Link>
