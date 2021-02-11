@@ -3,38 +3,23 @@ import bcrypt from "bcryptjs"
 
 const userSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true
-    },
-    password: {
-      type: String,
-      required: true
-    },
-    isAdmin: {
-      type: Boolean,
-      required: true,
-      default: false
-    },
-    storecredit: {
-      type: Number,
-      required: true,
-      default: 0.0
-    },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    isAdmin: { type: Boolean, required: true, default: false },
+    storecredit: { type: Number, required: true, default: 0 },
     favorites: [
       {
-        name: { type: String, required: true },
-        brand: { type: String, required: true },
-        fibers: { type: String, required: true },
-        meterage: { type: String, required: true },
-        color: { type: String, required: true },
-        image: { type: String, required: false },
-        price: { type: Number, required: true },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: "Product"
+        }
+      }
+    ],
+    cart: [
+      {
+        weight: { type: String, required: false },
         product: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
