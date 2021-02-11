@@ -116,8 +116,8 @@ const OrderScreen = ({ match, history }) => {
                       <td>{item.fibers}</td>
                       <td>{item.qty}</td>
                       <td>{item.meterage}</td>
-                      <td>€{item.price}</td>
-                      <td>€{(item.qty * item.price) / 100}</td>
+                      <td>€{item.price.toFixed(2)}</td>
+                      <td>€{((item.qty * item.price) / 100).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>

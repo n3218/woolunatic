@@ -79,7 +79,7 @@ export const getProducts = asyncHandler(async (req, res) => {
 // @route  GET /api/products/top
 // @access Public
 export const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ outOfStock: 1, updatedAt: -1 }).limit(12)
+  const products = await Product.find({}).sort({ outOfStock: 1, novelty: -1, updatedAt: -1 }).limit(12)
   res.json(products)
 })
 
@@ -279,6 +279,10 @@ export const removeItemsFromDB = asyncHandler(async (req, res) => {
             let windBigger = arr[arr.length - 1] - item.qty
             arr.pop().push(windBigger)
             product.inStock = arr.join(",")
+            const savedProduct = await product.save()
+            console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\ removeItemsFromDB: savedProduct: ", savedProduct)
+
+            return `Weight '${item.qty}' removed from list inStock in product '${product.art}', product still has '${product.inStock}' weights inStock.`
           } else {
             return { message: "Weight not found" }
           }
@@ -286,21 +290,29 @@ export const removeItemsFromDB = asyncHandler(async (req, res) => {
       }
       if (arr.length === 0) {
         product.outOfStock = true
+        const savedProduct = await product.save()
+        console.log("/////////////////////////// removeItemsFromDB: savedProduct: ", savedProduct)
+        return `Weight '${item.qty}' removed, product '${product.art}' marked as 'outOfStock'.`
       }
-      console.log("++++++++++++++++++ productController:removeItemsFromDB:product: ", product)
-      const savedProduct = await product.save()
-      console.log("++++++++++++++++++ productController:removeItemsFromDB:savedProduct: ", savedProduct)
     } else {
       return { message: "Product not Found" }
     }
   }
 
-  // res.status(201).json({ message: "Review added" })
+  let results = cartItems.reduce((acc, nextItem) => {
+    return acc.then(() => {
+      return removeItem(nextItem)
+    })
+  }, Promise.resolve())
 
-  const removeddItems = cartItems.map(item => removeItem(item))
+  // const removedItems = cartItems.map(item => removeItem(item))
 
-  const results = await Promise.all(removeddItems)
+  // const results = await Promise.all(removedItems)
   console.log("=================removeItemsFromDB:results: ", results)
+
+  results.then(e => {
+    console.log("=================removeItemsFromDB:e: ", e)
+  })
 
   if (results) {
     res.status(201).json(results)

@@ -35,6 +35,15 @@ const productSchema = mongoose.Schema(
     numReviews: { type: Number, required: false, default: 0 },
     minimum: { type: Number, required: true, default: 0 },
     inStock: { type: String, required: false, default: "" },
+    stockLock: {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
+      },
+      lockedAt: { type: Date, required: true },
+      value: { type: String, required: true }
+    },
     outOfStock: { type: Boolean, required: true, default: false },
     novelty: { type: Boolean, required: true, default: false },
     inSale: { type: Boolean, required: true, default: false },
