@@ -34,6 +34,10 @@
   font-size: 0.9em;
 }
 
+.product-list-item_image {
+  max-width: 70px;
+  width: 70px;
+}
 .product-list-image {
   width: 60px;
 }

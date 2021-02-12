@@ -35,75 +35,97 @@ const upload = multer({
   }
 })
 
-router.post("/", upload.single("csv-file"), (req, res) => {
+router.post("/", upload.single("csv-file"), async (req, res) => {
   console.log("req.file: ", req.file)
-  //
-  //
-  const newProducts = []
   const newProductsMap = {}
-  //
-  //
+  let rows = 0
   fs.createReadStream(req.file.path)
     .pipe(csv.parse({ headers: true }))
     .on("error", error => console.error(error))
     .on("data", row => {
-      let newProduct = {
-        // _id: row._id,
-        art: row.brand + "_" + row.name + "_" + row.color,
-        brand: row.brand,
-        name: row.name,
-        color: row.color,
-        colorWay: row.colorWay,
-        category: row.category,
-        meterage: Number(row.meterage),
-        fibers: row.fibers,
-        price: Number(row.price.replace(/[ €]+/g, "")),
-        nm: row.nm,
-        novelty: row.novelty,
-        inSale: row.inSale,
-        regular: row.regular,
-        // image: row.image
-        //   .replace(/[\'\[\]\"]+?/g, "")
-        //   .split(",")
-        //   .map(el => String(el.trim())),
-        // reviews: [{ ...row.reviews.replace(/[\'\[\]]+?/g, "") }],
-        // rating: Number(row.rating),
-        // numReviews: Number(row.numReviews),
-        // minimum: Number(row.minimum),
-        inStock: row.inStock,
-        novelty: Boolean(row.novelty) | false,
-        regular: Boolean(row.regular) | false,
-        inSale: Boolean(row.inSale) | false,
-        // outOfStock: row.outOfStock === "FALSE" ? false : true,
-        // user: row.user
-        user: `5fc6e1458fa9f7a30eaf05ec`
-
-        // createdAt: row.createdAt,
-        // updatedAt: row.updatedAt,
-        // description: row.description
+      let identifier = row.brand.trim() + "_" + row.name.trim() + "_" + row.color.trim()
+      const newData = {}
+      if (row.art) {
+        newData.art = row.art.trim()
       }
-      if (newProductsMap[newProduct.art]) {
-        newProductsMap[newProduct.art].inStock = newProductsMap[newProduct.art].inStock + "," + newProduct.inStock
+      if (row.brand) {
+        newData.brand = row.brand.trim()
+      }
+      if (row.name) {
+        newData.name = row.name.trim()
+      }
+      if (row.color) {
+        newData.color = row.color.trim()
+      }
+      if (row.colorWay) {
+        newData.colorWay = row.colorWay.trim()
+      }
+      if (row.category) {
+        newData.category = row.category.trim()
+      }
+      if (row.meterage) {
+        newData.meterage = Number(row.meterage)
+      }
+      if (row.fibers) {
+        newData.fibers = row.fibers.trim()
+      }
+      if (row.price) {
+        newData.price = Number(row.price.replace(/[ €]+/g, ""))
+      }
+      if (row.nm) {
+        newData.nm = row.nm.trim()
+      }
+      if (row.minimum) {
+        newData.minimum = Number(row.minimum) | 0
+      }
+      if (row.inStock) {
+        newData.inStock = row.inStock.trim()
+      }
+      if (Number(row.novelty) === 1) {
+        newData.novelty = true
       } else {
-        newProductsMap[newProduct.art] = newProduct
+        newData.novelty = false
       }
-      // newProducts.push(newProduct)
+      if (Number(row.regular) === 1) {
+        newData.regular = true
+      } else {
+        newData.regular = false
+      }
+      if (Number(row.inSale) === 1) {
+        newData.inSale = true
+      } else {
+        newData.inSale = false
+      }
+      if (Number(row.outOfStock) === 1) {
+        newData.outOfStock = true
+      } else {
+        newData.outOfStock = false
+      }
+      newData.user = `5fc6e1458fa9f7a30eaf05ec`
+
+      if (newProductsMap[identifier]) {
+        if (row.art) {
+          newProductsMap[identifier].art = newProductsMap[identifier].art + "," + row.art.trim()
+        }
+        if (row.inStock) {
+          newProductsMap[identifier].inStock = newProductsMap[identifier].inStock + "," + row.inStock.trim()
+        }
+      } else {
+        newProductsMap[identifier] = newData
+      }
+      const filter = { brand: row.brand.trim(), name: row.name.trim(), color: row.color.trim() }
+      const options = { upsert: true }
+      const result = Product.findOneAndUpdate(filter, newProductsMap[identifier], options, (err, doc) => {
+        if (err) return res.status(500).send({ message: err })
+        console.log("++++++++++++++++++doc: ", doc)
+      })
+      // console.log("++++++++++++++++++result: ", result)
     })
     .on("end", async rowCount => {
-      console.log("newProductsMap: ")
-      Object.keys(newProductsMap).map(key => newProducts.push(newProductsMap[key]))
-      console.log("newProducts: ")
-      console.log("Created new products: ", newProducts.length)
-      // await Product.updateMany({ _id: { $in: ids } }, newProducts)
-      await Product.insertMany(newProducts)
-      console.log(`Parsed ${rowCount} rows`)
+      rows = rowCount
+      console.log(`================================Parsed ${rowCount} rows`)
+      res.json({ success: true, fileName: req.file.path, rows: rows })
     })
-  //
-  //
-  // console.log("newProducts.length: ", newProducts.length)
-  // console.log("req.file.path: ", req.file.path)
-  // console.log("rowCount: ", rowCount)
-  res.json({ success: true, fileName: req.file.path })
 })
 
 export default router

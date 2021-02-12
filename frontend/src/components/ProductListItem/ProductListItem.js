@@ -19,7 +19,9 @@ const ProductListItem = ({ product, history }) => {
   return (
     <tr key={product._id} className={`product-list-item ${product.outOfStock && "font-weight-light"}`}>
       <td onClick={detailsHandler}>{product.art}</td>
-      <td onClick={detailsHandler}>{Array.isArray(product.image) && product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={product.image[0]} alt={product.name} fluid className="product-list-image" />}</td>
+      <td onClick={detailsHandler} className="product-list-item_image">
+        {Array.isArray(product.image) && product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={product.image[0]} alt={product.name} fluid className="product-list-image" />}
+      </td>
       <td onClick={detailsHandler}>{product.brand}</td>
       <td onClick={detailsHandler}>{product.name}</td>
       <td onClick={detailsHandler}>{product.color && product.color}</td>
@@ -34,14 +36,14 @@ const ProductListItem = ({ product, history }) => {
       </td>
       <td>{product.minimum > 0 && product.minimum}</td>
       <td>
-        {product.regular && (
-          <div className="p-0 m-0">
-            <span className="badge badge-pill badge-primary m-0">regular</span>
-          </div>
-        )}
         {product.novelty && (
           <div className="p-0 m-0">
             <span className="badge badge-pill badge-success m-0">new</span>
+          </div>
+        )}
+        {product.regular && (
+          <div className="p-0 m-0">
+            <span className="badge badge-pill badge-primary m-0">regular</span>
           </div>
         )}
         {product.inSale && (

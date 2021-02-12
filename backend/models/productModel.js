@@ -33,21 +33,21 @@ const productSchema = mongoose.Schema(
     reviews: [reviewSchema],
     rating: { type: Number, required: false, default: 0 },
     numReviews: { type: Number, required: false, default: 0 },
-    minimum: { type: Number, required: true, default: 0 },
+    minimum: { type: Number, required: false, default: 0 },
     inStock: { type: String, required: false, default: "" },
     stockLock: {
       user: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        required: false,
         ref: "User"
       },
-      lockedAt: { type: Date, required: true },
-      value: { type: String, required: true }
+      lockedAt: { type: Date, required: false },
+      value: { type: String, required: false }
     },
-    outOfStock: { type: Boolean, required: true, default: false },
-    novelty: { type: Boolean, required: true, default: false },
-    inSale: { type: Boolean, required: true, default: false },
-    regular: { type: Boolean, required: true, default: false },
+    outOfStock: { type: Boolean, required: false, default: false },
+    novelty: { type: Boolean, required: false, default: false },
+    inSale: { type: Boolean, required: false, default: false },
+    regular: { type: Boolean, required: false, default: false },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

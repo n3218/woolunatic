@@ -19,8 +19,8 @@ import {
   ORDER_DELIVER_FAIL,
   ORDER_MOLLIE_PAY_REQUEST,
   ORDER_MOLLIE_PAY_SUCCESS,
-  ORDER_MOLLIE_PAY_FAIL,
-  ORDER_MOLLIE_PAY_RESET
+  ORDER_MOLLIE_PAY_FAIL
+  // ORDER_MOLLIE_PAY_RESET
 } from "../constants/orderConstants"
 
 import axios from "axios"

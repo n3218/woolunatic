@@ -10,16 +10,10 @@ const userSchema = mongoose.Schema(
     storecredit: { type: Number, required: true, default: 0 },
     favorites: [
       {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: "Product"
-        }
-      }
-    ],
-    cart: [
-      {
-        weight: { type: String, required: false },
+        art: { type: String, required: false },
+        brand: { type: String, required: false },
+        name: { type: String, required: true },
+        color: { type: String, required: false },
         product: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
