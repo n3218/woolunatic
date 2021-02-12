@@ -23,10 +23,12 @@ const CartScreen = ({ match, location, history }) => {
   const checkoutStep = match.params.step
   const productId = match.params.id
   const qty = location.search ? Number(location.search.split("=")[1].split("&")[0]) : 1
-  const cart = useSelector(state => state.cart)
-  const { cartItems } = cart
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
+
+  const cart = useSelector(state => state.cart)
+  const { cartItems } = cart
+
   const [paymentMethod, setPaymentMethod] = useState("")
   const [summary, setSummary] = useState({})
   const [hideScreen, setHideScreen] = useState(false)
@@ -43,7 +45,7 @@ const CartScreen = ({ match, location, history }) => {
     if (productId) {
       dispatch(cartAddItemAction(productId, qty))
     }
-  }, [dispatch, productId, qty, cartItems])
+  }, [dispatch, productId, qty])
   // ----------------------------------------------/Add to Cart Item
   //
   //
@@ -94,7 +96,7 @@ const CartScreen = ({ match, location, history }) => {
   }, [success])
 
   const placeOrderHandler = () => {
-    dispatch(cartCheckItemsAction(cartItems))
+    // dispatch(cartCheckItemsAction(cartItems))
     showWarningHandler()
     dispatch(cartCleanItemsAction())
 
@@ -126,7 +128,7 @@ const CartScreen = ({ match, location, history }) => {
   }
 
   const checkoutHandler = () => {
-    dispatch(cartCleanItemsAction())
+    // dispatch(cartCleanItemsAction())
     showWarningHandler()
     if (userInfo) {
       history.push("/cart/checkout/shipping")
@@ -147,7 +149,7 @@ const CartScreen = ({ match, location, history }) => {
   }
 
   useEffect(() => {
-    dispatch(cartCheckItemsAction(cartItems))
+    // dispatch(cartCheckItemsAction(cartItems))
   }, [productId, checkoutStep, paymentMethod])
 
   useEffect(() => {

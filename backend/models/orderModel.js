@@ -31,10 +31,7 @@ const orderSchema = mongoose.Schema(
       zipCode: { type: String, required: true },
       country: { type: String, required: true }
     },
-    paymentMethod: {
-      type: String,
-      required: false
-    },
+    paymentMethod: { type: String, required: false },
     paymentResult: {
       id: { type: String },
       status: { type: String },
@@ -42,52 +39,16 @@ const orderSchema = mongoose.Schema(
       email_address: { type: String },
       links: { type: String, required: false }
     },
-    itemsPrice: {
-      type: Number,
-      required: true,
-      default: 0.0
-    },
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: 0.0
-    },
-    shippingPrice: {
-      type: Number,
-      required: true,
-      default: 0.0
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-      default: 0.0
-    },
-    itemsWeight: {
-      type: Number,
-      required: true,
-      default: 0
-    },
-    totalWeight: {
-      type: Number,
-      required: true,
-      default: 0
-    },
-    isPaid: {
-      type: Boolean,
-      required: true,
-      default: false
-    },
-    paidAt: {
-      type: Date
-    },
-    isDelivered: {
-      type: Boolean,
-      required: true,
-      default: false
-    },
-    deliveredAt: {
-      type: Date
-    }
+    itemsPrice: { type: Number, required: true, default: 0.0 },
+    taxPrice: { type: Number, required: true, default: 0.0 },
+    shippingPrice: { type: Number, required: true, default: 0.0 },
+    totalPrice: { type: Number, required: true, default: 0.0 },
+    itemsWeight: { type: Number, required: true, default: 0 },
+    totalWeight: { type: Number, required: true, default: 0 },
+    isPaid: { type: Boolean, required: true, default: false },
+    paidAt: { type: Date },
+    isDelivered: { type: Boolean, required: true, default: false },
+    deliveredAt: { type: Date }
   },
   {
     timestamps: true

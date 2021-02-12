@@ -108,48 +108,64 @@
   border: 1px solid var(--light-gray);
   /* opacity: 0.8; */
 }
+.product_color.bg-white,
 .color > div.white label:before {
   background: white;
 }
+.product_color.bg-natural,
 .color > div.natural label:before {
   background: #fbf8e0;
   border: 1px solid #e6e3ca;
 }
+.product_color.bg-beige,
 .color > div.beige label:before {
   background: #c7b299;
 }
+.product_color.bg-yellow,
 .color > div.yellow label:before {
   background: #ffe168;
 }
+.product_color.bg-orange,
 .color > div.orange label:before {
   background: #f2763d;
 }
+.product_color.bg-red,
 .color > div.red label:before {
   background: #d92b31;
 }
+.product_color.bg-pink,
 .color > div.pink label:before {
   background: #f06eaa;
 }
+.product_color.bg-purple,
 .color > div.purple label:before {
   background: #9f5ddd;
 }
+.product_color.bg-black,
 .color > div.black label:before {
   background: black;
 }
+.product_color.bg-gray,
 .color > div.gray label:before {
   background: gray;
 }
+.product_color.bg-green,
 .color > div.green label:before {
   background: green;
 }
+.product_color.bg-blue,
 .color > div.blue label:before {
-  background: #2780e3;
+  background: #2780e3 !important;
 }
+.product_color.bg-brown,
 .color > div.brown label:before {
   background: rgb(158, 63, 19);
 }
+.product_color.bg-multicolor,
 .color > div.multicolor label:before {
-  background: linear-gradient(45deg, #fffc00, red 60%, #2780e3);
+  /* background: linear-gradient(45deg, #fffc00, red 60%, #2780e3); */
+  /* background: linear-gradient(45deg, white 25%, red 25%, red 45%, #2780e3 45%, #2780e3 65%, #fffc00 65%, #fffc00 100%); */
+  background: linear-gradient(45deg, white, red, orange, yellow, var(--light-green), rgb(0, 204, 255), var(--blue), purple);
 }
 
 .color [type="checkbox"]:checked + label:before,
@@ -157,9 +173,6 @@
   box-sizing: content-box;
   border-radius: 50%;
   opacity: 1;
-  /* border: 2px solid rgba(39, 128, 227, 0.9);
-  box-shadow: 2px 2px 2px rgba(39, 128, 227, 0.5); */
-  /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2) inset, 3px 3px 3px rgba(39, 128, 227, 0.5); */
 }
 
 .color [type="checkbox"]:checked + label::after,

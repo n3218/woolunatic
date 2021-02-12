@@ -120,10 +120,12 @@ const ProductScreen = ({ history, match }) => {
             {/* ---------------------------Title--------------------------- */}
 
             <div id="product-title">
-              <h5 className="product-brand">{product.brand}</h5>
+              <h5 className="product-brand">
+                <Link to={`/search/${product.brand}`}>{product.brand}</Link>
+              </h5>
               <h2>{product.name}</h2>
-              {product.regular && <div className="badge badge-pill badge-success">regular</div>}
-              {product.novelty && <div className="badge badge-pill badge-primary">new</div>}
+              {product.regular && <div className="badge badge-pill badge-primary">regular</div>}
+              {product.novelty && <div className="badge badge-pill badge-success">new</div>}
               {product.inSale && <div className="badge badge-pill badge-danger">sale</div>}
               <div className="text-right mr-3">
                 <a href="#review-section">
@@ -146,7 +148,9 @@ const ProductScreen = ({ history, match }) => {
                 <ListGroup.Item>
                   <Row>
                     <Col>Basic Color:</Col>
-                    <Col className="text-capitalize">{product.colorWay}</Col>
+                    <Col>
+                      <div className={`product_color bg-${product.colorWay}`} title={product.colorWay}></div>
+                    </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>

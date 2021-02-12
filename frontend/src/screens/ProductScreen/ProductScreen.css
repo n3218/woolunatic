@@ -131,3 +131,9 @@
 .list-group-item p {
   margin-bottom: 0;
 }
+.product_color {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--light-gray);
+}

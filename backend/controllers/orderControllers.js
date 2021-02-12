@@ -11,7 +11,7 @@ dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
 
 // @desc Create new order
-// @route GET /api/orders
+// @route POST /api/orders
 // @access Private
 export const createNewOrder = asyncHandler(async (req, res) => {
   const {

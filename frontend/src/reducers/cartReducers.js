@@ -12,23 +12,27 @@ import {
   CART_CHECK_ITEMS_FAIL,
   REMOVE_CART_ITEMS_FROM_DB_REQUEST,
   REMOVE_CART_ITEMS_FROM_DB_SUCCESS,
-  REMOVE_CART_ITEMS_FROM_DB_FAIL
+  REMOVE_CART_ITEMS_FROM_DB_FAIL,
+  CART_ADD_ITEM_REQUEST,
+  CART_ADD_ITEM_SUCCESS,
+  CART_ADD_ITEM_FAIL
 } from "../constants/cartConstants"
 
-export const cartReducer = (state = { cartItems: [], shippingAddress: {} }, action) => {
+export const cartReducer = (state = { items: [] }, action) => {
   switch (action.type) {
-    case CART_ADD_ITEM:
-      const item = action.payload
-      const existItem = state.cartItems.find(x => x.product === item.product && x.qty === item.qty)
-      if (existItem) {
-        return {
-          ...state
-        }
-      } else {
-        return {
-          ...state,
-          cartItems: [...state.cartItems, item]
-        }
+    case CART_ADD_ITEM_REQUEST:
+      return {
+        loading: true
+      }
+    case CART_ADD_ITEM_SUCCESS:
+      return {
+        loading: false,
+        ...action.payload
+      }
+    case CART_ADD_ITEM_FAIL:
+      return {
+        loading: false,
+        items: []
       }
     case CART_REMOVE_ITEM:
       return {

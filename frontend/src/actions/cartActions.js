@@ -1,5 +1,5 @@
 import {
-  CART_ADD_ITEM, //
+  CART_ADD_ITEM_REQUEST, //
   CART_REMOVE_ITEM,
   CART_SAVE_SHIPPING_ADDRESS,
   CART_SAVE_PAYMENT_METHOD,
@@ -10,29 +10,35 @@ import {
   CART_CHECK_ITEMS_FAIL,
   REMOVE_CART_ITEMS_FROM_DB_REQUEST,
   REMOVE_CART_ITEMS_FROM_DB_SUCCESS,
-  REMOVE_CART_ITEMS_FROM_DB_FAIL
+  REMOVE_CART_ITEMS_FROM_DB_FAIL,
+  CART_ADD_ITEM_FAIL,
+  CART_ADD_ITEM_SUCCESS
 } from "../constants/cartConstants"
 import axios from "axios"
 
 export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
-  const { data } = await axios.get(`/api/products/${id}`)
-  dispatch({
-    type: CART_ADD_ITEM,
-    payload: {
-      product: data._id,
-      art: data.art,
-      name: data.name,
-      brand: data.brand,
-      fibers: data.fibers,
-      meterage: data.meterage,
-      minimum: data.minimum,
-      image: data.image[0],
-      price: data.price,
-      color: data.color,
+  try {
+    dispatch({ type: CART_ADD_ITEM_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const item = {
+      user: userInfo._id,
+      product: id,
       qty
     }
-  })
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+    const { data } = await axios.post(`/api/cart`, item, config)
+    dispatch({ type: CART_ADD_ITEM_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: CART_ADD_ITEM_FAIL, payload: message })
+  }
 }
 
 export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {

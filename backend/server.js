@@ -9,6 +9,7 @@ import connectDB from "./config/db.js"
 import productRoutes from "./routes/productRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 import orderRoutes from "./routes/orderRoutes.js"
+import cartRoutes from "./routes/cartRoutes.js"
 import uploadRoutes from "./routes/uploadRoutes.js"
 import importDataRoutes from "./routes/importDataRoutes.js"
 import mailerRoutes from "./routes/mailerRoutes.js"
@@ -32,6 +33,7 @@ app.use(express.json())
 app.use("/api/products", productRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
+app.use("/api/cart", cartRoutes)
 app.use("/api/upload", uploadRoutes)
 app.use("/api/importdata", importDataRoutes)
 app.use("/api/mailer", mailerRoutes)
