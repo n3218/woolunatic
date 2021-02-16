@@ -3,7 +3,7 @@ import { Route } from "react-router-dom"
 import { Table, Button } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { listProducts, productCreateAction } from "../../actions/productActions"
-import { PRODUCT_CREATE_RESET } from "../../constants/productConstants"
+import { PRODUCT_CREATE_RESET, PRODUCT_DELETE_RESET } from "../../constants/productConstants"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import Paginate from "../../components/Paginate"
@@ -25,6 +25,7 @@ const ProductListScreen = ({ history, match }) => {
 
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
+
     if (!userInfo || !userInfo.isAdmin) {
       history.push("/login")
     }

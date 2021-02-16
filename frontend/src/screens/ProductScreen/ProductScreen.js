@@ -8,7 +8,7 @@ import Rating from "../../components/Rating/Rating"
 import { productDetailsAction, productCreateReviewAction } from "../../actions/productActions"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
-import { PRODUCT_CREATE_REVIEW_RESET } from "../../constants/productConstants"
+import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DELETE_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
 import TranslateToWeight from "../../components/TranslateToWeight"
 import "./ProductScreen.css"
@@ -28,6 +28,7 @@ const ProductScreen = ({ history, match }) => {
   const productCreateReview = useSelector(state => state.productCreateReview)
   const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview
   const noimage = "/uploads/noimage/noimage.webp"
+  const imgPath = "/uploads/products/"
 
   const imagesForGallery = imageArray => {
     let currentImages = []
@@ -36,9 +37,9 @@ const ProductScreen = ({ history, match }) => {
   }
 
   const checkImg = async (img, checkedImgArr) => {
-    await fetch(img).then(res => {
+    await fetch(imgPath + img).then(res => {
       if (res.ok) {
-        checkedImgArr.push(img)
+        checkedImgArr.push(imgPath + img)
       } else {
         checkedImgArr.push(noimage)
       }
@@ -54,6 +55,7 @@ const ProductScreen = ({ history, match }) => {
     if (!product || !product._id || product._id !== productId || successCreateReview) {
       dispatch(productDetailsAction(productId))
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
+      dispatch({ type: PRODUCT_DELETE_RESET })
     }
     if (product && product.inStock) {
       const arr = product.inStock
@@ -65,8 +67,7 @@ const ProductScreen = ({ history, match }) => {
         setQty(arr[0])
       }
     }
-
-    if (!loading && product && Array.isArray(product.image) && product.image.length > 0) {
+    if (product && Array.isArray(product.image) && product.image.length > 0) {
       let checkedImgArr = []
       product.image.map(img => checkImg(img, checkedImgArr))
     } else {

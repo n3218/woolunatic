@@ -31,8 +31,8 @@ export const sendMail = async orderData => {
     <td style="text-align: center;">${item.fibers}</td>
     <td style="text-align: center;">${item.qty}</td>
     <td style="text-align: center;">${item.meterage}</td>
-    <td style="text-align: center;">€${item.price}</td>
-    <td style="text-align: center;">€${(item.qty * item.price) / 100}</td>
+    <td style="text-align: center;">€${item.price.toFixed(2)}</td>
+    <td style="text-align: center;">€${((item.qty * item.price) / 100).toFixed(2)}</td>
   </tr>`
   }
 
