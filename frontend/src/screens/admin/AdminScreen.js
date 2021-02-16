@@ -7,6 +7,7 @@ import Message from "../../components/Message"
 import Meta from "../../components/Meta"
 import "react-quill/dist/quill.snow.css"
 import "./AdminScreen.css"
+import ImageBulkUpload from "../../components/ImageBulkUpload"
 
 const AdminScreen = ({ history }) => {
   const [uploading, setUploading] = useState(false)
@@ -25,7 +26,6 @@ const AdminScreen = ({ history }) => {
     const formData = new FormData()
     formData.append("csv-file", file)
     setUploading(true)
-
     try {
       const config = {
         headers: {
@@ -36,7 +36,6 @@ const AdminScreen = ({ history }) => {
       console.log("formData: ", formData.get("csv-file"))
       const { data } = await axios.post("/api/importdata", formData, config)
       console.log("data: ", data)
-
       setData(data)
       setUploading(false)
     } catch (error) {
@@ -75,7 +74,8 @@ const AdminScreen = ({ history }) => {
             <Form.Group controlId="csv-file">
               <Row>
                 <Col sm="2">
-                  <Form.Label>Update Products by uploading CSV file (fields separated by commas)</Form.Label>
+                  <h4>Updating Products</h4>
+                  <Form.Label>by uploading CSV file (fields separated by commas)</Form.Label>
                 </Col>
                 <Col>
                   <Form.File //
@@ -90,18 +90,41 @@ const AdminScreen = ({ history }) => {
             </Form.Group>
           </Form>
           {uploading && <Loader />}
-          {!uploading && data.success && <Message variant="success">File {data.fileName} successfully uploaded!</Message>}
+          {!uploading && data.success && (
+            <Message variant="success">
+              <div>
+                File "{data.fileName}" successfully uploaded and{" "}
+                <span className="h5">
+                  <mark>{data.totalRows}</mark>
+                </span>{" "}
+                rows parsed!
+              </div>
+              <div>
+                newly added Products:{" "}
+                <span className="h5">
+                  <mark>{data.newlyAddedProducts}</mark>
+                </span>
+              </div>
+              <div>
+                updated Products:{" "}
+                <span className="h5">
+                  <mark>{data.updatedProducts}</mark>
+                </span>
+              </div>
+            </Message>
+          )}
           <Jumbotron>
             <p>
-              This is a form for uploading product data (<span className="text-danger">inserts new products ONLY</span>)
+              This is a form for uploading product's data (it identifies Product by group of fields Brand+Name+Color). <br />
+              System is looking for next headers and data in format below. <br />
+              <strong>File may contain any other columns and order of columns does not matter</strong>
             </p>
             <p>
-              File example here:{" "}
+              File example is here:{" "}
               <a target="_blank" rel="noreferrer" href="https://docs.google.com/spreadsheets/d/1YpUqced7qPwX1tomarHuTFO9BGcNOeXGdNqbeKfqqxk/edit?usp=sharing">
-                https://docs.google.com/spreadsheets/...
+                https://docs.google.com/spreadsheets/d/1YpUqced7qPwX1tomarHuTFO9...
               </a>
             </p>
-            System is looking for next headers in any order and data in next format:
             <small>
               <Table striped hover responsive className="table-sm product-list">
                 <thead>
@@ -308,11 +331,28 @@ const AdminScreen = ({ history }) => {
                 upload <strong>.csv</strong> file via this field.
               </li>
             </ol>
-            <p>
-              <strong>File may contain any other columns and order of columns does not matter</strong>
-            </p>
-            .
           </Jumbotron>
+          <ImageBulkUpload />
+          {/* <Form onSubmit={submitHandler} id="UploadImages">
+            <Form.Group controlId="csv-file">
+              <Row>
+                <Col sm="2">
+                  <h4>Uploading Images</h4>
+                  <Form.Label>JPEG, JPG, PNG</Form.Label>
+                </Col>
+                <Col>
+                  <Form.File //
+                    id="images"
+                    label="Choose Images to upload"
+                    custom
+                    onChange={handleImageUpload}
+                    multiple
+                    accept="image/*"
+                  ></Form.File>
+                </Col>
+              </Row>
+            </Form.Group>
+          </Form> */}
         </Col>
       </Row>
     </>

@@ -1,4 +1,5 @@
 import React from "react"
+import { withRouter } from "react-router"
 import { Route } from "react-router-dom"
 import { Navbar, Nav, NavDropdown, Container, Row, Col } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
@@ -7,7 +8,7 @@ import { logout } from "../../actions/userActions"
 import SearchBox from "../SearchBox"
 import "./Header.css"
 
-const Header = () => {
+const Header = ({ location }) => {
   const dispatch = useDispatch()
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
@@ -91,7 +92,7 @@ const Header = () => {
 
       <Row>
         <Col className="p-0">
-          <Nav className="ml-auto navbar-light bg-light py-3 justify-content-center">
+          <Nav activeKey={location.pathname} className="ml-auto navbar-light bg-light py-3 justify-content-center">
             <LinkContainer to="/yarns" exact>
               <Nav.Link href="/yarns" className="underlink">
                 <span className="underlink-content">All Yarns</span>
@@ -149,4 +150,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default withRouter(Header)

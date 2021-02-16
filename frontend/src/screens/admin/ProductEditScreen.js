@@ -6,8 +6,8 @@ import ReactQuill from "react-quill"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import { FormFieldAsRow, FormFieldAsRowCheckbox } from "../../components/FormField"
-import { productDetailsAction, productUpdateAction } from "../../actions/productActions"
-import { PRODUCT_DETAILS_RESET, PRODUCT_UPDATE_RESET } from "../../constants/productConstants"
+import { productDeleteAction, productDetailsAction, productUpdateAction } from "../../actions/productActions"
+import { PRODUCT_DETAILS_RESET, PRODUCT_DELETE_RESET, PRODUCT_UPDATE_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
 import ImageLarge from "../../components/ImageLarge"
 import ImageUpload from "../../components/ImageUpload"
@@ -40,6 +40,8 @@ const ProductEditScreen = ({ history, match }) => {
   const { loading, error, product } = productDetails
   const productUpdate = useSelector(state => state.productUpdate)
   const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate
+  const productDelete = useSelector(state => state.productDelete)
+  const { loading: loadingProductDelete, error: errorProductDelete, success: successProductDelete, message: messageProductDelete } = productDelete
 
   useEffect(() => {
     if (successUpdate) {
@@ -70,7 +72,7 @@ const ProductEditScreen = ({ history, match }) => {
         setRegular(product.regular)
       }
     }
-  }, [product, dispatch, productId, history, successUpdate])
+  }, [product, dispatch, productId, history, successUpdate, successProductDelete])
 
   const submitHandler = e => {
     e.preventDefault()
@@ -99,71 +101,92 @@ const ProductEditScreen = ({ history, match }) => {
     )
   }
 
+  const deleteProductHandler = id => {
+    if (window.confirm("Are you sure?")) {
+      dispatch(productDeleteAction(id))
+    }
+  }
+
+  console.log("messageProductDelete: ", messageProductDelete)
   return (
     <>
       <Meta title="Admin | Edit Product | Woolunatics" />
-      <div className="submenu">
-        <Link to={`/products/${productId}`} className="btn btn-success bg-blue my-3 px-5">
-          <i className="fas fa-eye text-white"></i> Preview
-        </Link>
-      </div>
+      {successProductDelete ? (
+        <Message variant="success">{messageProductDelete}</Message>
+      ) : (
+        <>
+          <div className="submenu">
+            <Link to={`/products/${productId}`} className="btn btn-success bg-blue my-3 px-5">
+              <i className="fas fa-eye text-white"></i> Preview
+            </Link>
+          </div>
 
-      <Row>
-        <Col md={4} sm={12}>
-          <ImageLarge image={image} name={`${brand} ${name}`} />
-        </Col>
-        <Col md={8}>
-          <h2>Edit Product</h2>
-          {loadingUpdate && <Loader />}
-          {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
-          {loading ? (
-            <Loader />
-          ) : error ? (
-            <Message variant="danger">{error}</Message>
-          ) : (
-            <Form onSubmit={submitHandler} id="ProductEditForm">
-              <FormFieldAsRow value={art} label="Art." onChange={setArt} />
-              <FormFieldAsRow value={name} label="Name" onChange={setName} />
-              <FormFieldAsRow value={brand} label="Brand" onChange={setBrand} />
-              <FormFieldAsRow value={color} label="Color" onChange={setColor} />
-              <FormFieldAsRow value={colorWay} label="ColorWay" onChange={setColorWay} />
-              <FormFieldAsRow value={category} label="Category" onChange={setCategory} />
-              <FormFieldAsRow value={fibers} label="Fibers" onChange={setFibers} />
-              <FormFieldAsRow value={nm} label="Nm" onChange={setNm} />
-              <FormFieldAsRow value={meterage} label="Meterage" onChange={setMeterage} />
-              <FormFieldAsRow value={price} comment="Whole number or separated by dot" label="Price" onChange={setPrice} />
-              <FormFieldAsRow value={minimum} comment="'0' if no winding" label="Minimum" onChange={setMinimum} />
-              <FormFieldAsRow value={inStock} comment="Cones weights, separated by commas" label="In Stock" onChange={setInStock} />
-              <FormFieldAsRowCheckbox value={regular} label="Regular" onChange={setRegular} />
-              <FormFieldAsRowCheckbox value={novelty} label="Novelty" onChange={setNovelty} />
-              <FormFieldAsRowCheckbox value={inSale} label="inSale" onChange={setInSale} />
-              <FormFieldAsRowCheckbox value={outOfStock} label="OutOfStock" onChange={setOutOfStock} />
+          <Row>
+            <Col md={4} sm={12}>
+              <ImageLarge image={image} name={`${brand} ${name}`} />
+            </Col>
+            <Col md={8}>
+              <h2>Edit Product</h2>
+              {loadingUpdate && <Loader />}
+              {loadingProductDelete && <Loader />}
 
-              <ImageUpload color={color} setColor={setColor} image={image} setUploading={setUploading} setImage={setImage} uploading={uploading} />
+              {errorProductDelete && <Message variant="danger">{errorProductDelete}</Message>}
+              {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
+              {loading ? (
+                <Loader />
+              ) : error ? (
+                <Message variant="danger">{error}</Message>
+              ) : (
+                <Form onSubmit={submitHandler} id="ProductEditForm">
+                  <FormFieldAsRow value={art} label="Art." onChange={setArt} />
+                  <FormFieldAsRow value={name} label="Name" onChange={setName} />
+                  <FormFieldAsRow value={brand} label="Brand" onChange={setBrand} />
+                  <FormFieldAsRow value={color} label="Color" onChange={setColor} />
+                  <FormFieldAsRow value={colorWay} label="ColorWay" onChange={setColorWay} />
+                  <FormFieldAsRow value={category} label="Category" onChange={setCategory} />
+                  <FormFieldAsRow value={fibers} label="Fibers" onChange={setFibers} />
+                  <FormFieldAsRow value={nm} label="Nm" onChange={setNm} />
+                  <FormFieldAsRow value={meterage} label="Meterage" onChange={setMeterage} />
+                  <FormFieldAsRow value={price} comment="Whole number or separated by dot" label="Price" onChange={setPrice} />
+                  <FormFieldAsRow value={minimum} comment="'0' if no winding" label="Minimum" onChange={setMinimum} />
+                  <FormFieldAsRow value={inStock} comment="Cones weights, separated by commas" label="In Stock" onChange={setInStock} />
+                  <FormFieldAsRowCheckbox value={regular} label="Regular" onChange={setRegular} />
+                  <FormFieldAsRowCheckbox value={novelty} label="Novelty" onChange={setNovelty} />
+                  <FormFieldAsRowCheckbox value={inSale} label="inSale" onChange={setInSale} />
+                  <FormFieldAsRowCheckbox value={outOfStock} label="OutOfStock" onChange={setOutOfStock} />
 
-              <Form.Group controlId="Description">
-                <Row>
-                  <Col sm="2">
-                    <Form.Label>Description:</Form.Label>
-                  </Col>
-                  <Col>
-                    <ReactQuill value={description} onChange={setDescription} />
-                  </Col>
-                </Row>
-              </Form.Group>
+                  <ImageUpload image={image} setImage={setImage} uploading={uploading} setUploading={setUploading} />
 
-              <Row>
-                <Col sm="2"></Col>
-                <Col>
-                  <Button type="submit" className="btn-success my-3 px-5">
-                    Save Changes
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-          )}
-        </Col>
-      </Row>
+                  <Form.Group controlId="Description">
+                    <Row>
+                      <Col sm="2">
+                        <Form.Label>Description:</Form.Label>
+                      </Col>
+                      <Col>
+                        <ReactQuill value={description} onChange={setDescription} />
+                      </Col>
+                    </Row>
+                  </Form.Group>
+
+                  <Row>
+                    <Col sm="2"></Col>
+                    <Col>
+                      <Button type="submit" className="btn-success my-3 px-5">
+                        Save Changes
+                      </Button>
+                    </Col>
+                    <Col className="text-right">
+                      <Button title="Delete" className="btn-danger bg-red my-3 px-5" onClick={() => deleteProductHandler(product._id)}>
+                        <i className="fas fa-trash text-white"></i> Delete product
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form>
+              )}
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   )
 }

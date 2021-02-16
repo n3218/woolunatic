@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler"
 import Product from "../models/productModel.js"
+import fs from "fs"
 
 // @desc   Fetch all products
 // @route  GET /api/products
@@ -101,12 +102,43 @@ export const getProductById = asyncHandler(async (req, res) => {
 // @access Private/+Admin
 export const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
+  let files = fs.readdirSync("uploads/products/")
+  let thumbs = fs.readdirSync("uploads/thumbs")
+  let minithumbs = fs.readdirSync("uploads/minithumbs")
+  let message = ""
+  console.log(files)
   if (product) {
-    await product.remove()
-    res.json({ message: "Product removed" })
-  } else {
-    res.status(404)
-    throw new Error("Product not found")
+    if (product.image && product.image.length > 0) {
+      product.image.map(img => {
+        try {
+          if (files.includes(img)) {
+            console.log("Files contain IMG")
+            fs.unlinkSync(`uploads/products/${img}`) // remove fullsize file
+            message += `Fullsize ${img} removed. `
+          }
+          if (thumbs.includes("thumb-" + img)) {
+            console.log("thumbs contain IMG")
+            fs.unlinkSync(`uploads/thumbs/thumb-${img}`) // remove thumb file
+            message += `Thumb ${img} removed. `
+          }
+          if (minithumbs.includes("minithumb-" + img)) {
+            console.log("minithumbs contain IMG")
+            fs.unlinkSync(`uploads/minithumbs/minithumb-${img}`) // remove minithumb file
+            message += `Minithumb ${img} removed. `
+          }
+        } catch (err) {
+          console.log(err)
+          res.status(404)
+          throw new Error("Can't delete Image from Disk")
+        }
+      })
+      await product.remove()
+      console.log({ message: `Product was successfully deleted. ${message}` })
+      res.json({ message: `Product was successfully deleted. ${message}` })
+    } else {
+      res.status(404)
+      throw new Error("Product not found")
+    }
   }
 })
 
@@ -319,5 +351,22 @@ export const removeItemsFromDB = asyncHandler(async (req, res) => {
   } else {
     res.status(404)
     throw new Error("Checking items in stock failed")
+  }
+})
+
+// @desc   Delete an Image from Product
+// @route  PUT /api/products/deleteimage/:img
+// @access Private/+Admin
+export const deleteProductImage = asyncHandler(async (req, res) => {
+  console.log("deleteProductImage: req.params.img: ", req.params.img)
+  try {
+    fs.unlinkSync(`uploads/products/${req.params.img}`) // remove fullsize file
+    fs.unlinkSync(`uploads/thumbs/thumb-${req.params.img}`) // remove thumb file
+    fs.unlinkSync(`uploads/minithumbs/minithumb-${req.params.img}`) // remove minithumb file
+    res.json({ message: "Image deleted from Disk" })
+  } catch (err) {
+    console.log(err)
+    res.status(404)
+    throw new Error("Can't delete Image from Disk")
   }
 })

@@ -37,7 +37,6 @@ const upload = multer({
 
 router.post("/", upload.single("csv-file"), async (req, res) => {
   console.log("req.file: ", req.file)
-  let totalRows = 0
   let updatedProducts = 0
   let newlyAddedProducts = 0
 
@@ -114,9 +113,9 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         product.price = newData.price || product.price
         product.nm = newData.nm || product.nm
         product.minimum = newData.minimum || product.minimum
-        product.novelty = newData.novelty
-        product.regular = newData.regular
-        product.inSale = newData.inSale
+        product.novelty = newData.novelty || product.novelty
+        product.regular = newData.regular || product.regular
+        product.inSale = newData.inSale || product.inSale
         product.outOfStock = newData.outOfStock || product.outOfStock
         product.inStock = newData.inStock || product.inStock
         // product.inStock = product.inStock + "," + newData.inStock
@@ -125,6 +124,8 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         let result = await product.save()
         if (result) {
           updatedProducts++
+          console.log("--------------------Product.save: result: ", result)
+          // res.json(newProduct)
         } else {
           res.status(400)
           throw new Error({ message: "Can not updated Product" })
@@ -133,20 +134,20 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         let newProduct = await Product.create(newData)
         if (newProduct) {
           newlyAddedProducts++
+          console.log("--------------------Product.create: newProduct: ", newProduct)
+          // res.json(newProduct)
         } else {
           res.status(400)
           throw new Error({ message: "Can not save New Product" })
         }
       }
-      if (updatedProducts + newlyAddedProducts === totalRows) {
-        console.log("//////////////////totalRows, updatedProducts, newlyAddedProducts: ", totalRows, updatedProducts, newlyAddedProducts)
-        res.json({ success: true, fileName: req.file.path, updatedProducts, newlyAddedProducts, totalRows })
-      }
+
+      console.log("++++++++++++++++++updatedProducts, newlyAddedProducts: ", updatedProducts, newlyAddedProducts)
     })
     .on("end", async rowCount => {
-      totalRows = rowCount
-      fs.unlinkSync(req.file.path) // remove temp file
+      console.log(`================================Parsed ${rowCount} rows`)
     })
+  res.json({ success: true, fileName: req.file.path, rows: rowCount, updatedProducts, newlyAddedProducts })
 })
 
 export default router

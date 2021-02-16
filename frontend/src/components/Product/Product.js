@@ -7,6 +7,7 @@ import Rating from "../Rating/Rating"
 const Product = ({ product }) => {
   const noimage = "/uploads/noimage/noimage.webp"
   const [imgSrc, setImgSrc] = useState(noimage)
+  const thumbPath = "/uploads/thumbs/thumb-"
 
   // const getImageOrFallback = (path, fallback) => {
   //   return new Promise(resolve => {
@@ -21,9 +22,9 @@ const Product = ({ product }) => {
   // }
 
   const checkImg = async img => {
-    await fetch(img).then(res => {
+    await fetch(thumbPath + img).then(res => {
       if (res.ok) {
-        setImgSrc(img)
+        setImgSrc(thumbPath + img)
       } else {
         setImgSrc(noimage)
       }

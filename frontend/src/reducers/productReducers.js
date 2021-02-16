@@ -26,7 +26,12 @@ import {
   PRODUCT_DETAILS_RESET,
   PRODUCT_LISTINCATEGORY_REQUEST,
   PRODUCT_LISTINCATEGORY_SUCCESS,
-  PRODUCT_LISTINCATEGORY_FAIL
+  PRODUCT_LISTINCATEGORY_FAIL,
+  PRODUCT_IMAGE_DELETE_REQUEST,
+  PRODUCT_IMAGE_DELETE_SUCCESS,
+  PRODUCT_IMAGE_DELETE_FAIL,
+  PRODUCT_IMAGE_DELETE_RESET,
+  PRODUCT_DELETE_RESET
 } from "../constants/productConstants"
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -83,9 +88,11 @@ export const productDeleteReducer = (state = {}, action) => {
     case PRODUCT_DELETE_REQUEST:
       return { loading: true }
     case PRODUCT_DELETE_SUCCESS:
-      return { loading: false, success: true }
+      return { loading: false, success: true, message: action.payload.message }
     case PRODUCT_DELETE_FAIL:
       return { loading: false, error: action.payload }
+    case PRODUCT_DELETE_RESET:
+      return {}
     default:
       return state
   }
@@ -144,6 +151,21 @@ export const productTopReducer = (state = { products: [] }, action) => {
       return { loading: false, products: action.payload }
     case PRODUCT_TOP_FAIL:
       return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const productImageDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PRODUCT_IMAGE_DELETE_REQUEST:
+      return { loading: true }
+    case PRODUCT_IMAGE_DELETE_SUCCESS:
+      return { loading: false, success: true }
+    case PRODUCT_IMAGE_DELETE_FAIL:
+      return { loading: false, error: action.payload }
+    case PRODUCT_IMAGE_DELETE_RESET:
+      return {}
     default:
       return state
   }

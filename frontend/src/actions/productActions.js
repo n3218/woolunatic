@@ -23,7 +23,10 @@ import {
   PRODUCT_CREATE_REVIEW_FAIL,
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
-  PRODUCT_TOP_FAIL
+  PRODUCT_TOP_FAIL,
+  PRODUCT_IMAGE_DELETE_REQUEST,
+  PRODUCT_IMAGE_DELETE_SUCCESS,
+  PRODUCT_IMAGE_DELETE_FAIL
 } from "../constants/productConstants"
 import axios from "axios"
 import { logout } from "./userActions"
@@ -70,8 +73,9 @@ export const productDeleteAction = id => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    await axios.delete(`/api/products/${id}`, config)
-    dispatch({ type: PRODUCT_DELETE_SUCCESS })
+    const { data } = await axios.delete(`/api/products/${id}`, config)
+    console.log("data: ", data)
+    dispatch({ type: PRODUCT_DELETE_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     if (message === "Not authorized, token failed") {
@@ -173,5 +177,30 @@ export const productTopAction = () => async dispatch => {
     })
   } catch (error) {
     dispatch({ type: PRODUCT_TOP_FAIL, payload: error.response && error.response.data.message ? error.response.data.message : error.message })
+  }
+}
+
+export const productImageDeleteAction = img => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PRODUCT_IMAGE_DELETE_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    await axios.delete(`/api/products/deleteimage/${img}`, config)
+    dispatch({ type: PRODUCT_IMAGE_DELETE_SUCCESS })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({
+      type: PRODUCT_IMAGE_DELETE_FAIL,
+      payload: message
+    })
   }
 }
