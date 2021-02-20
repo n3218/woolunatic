@@ -12,7 +12,16 @@ import {
   REMOVE_CART_ITEMS_FROM_DB_SUCCESS,
   REMOVE_CART_ITEMS_FROM_DB_FAIL,
   CART_ADD_ITEM_FAIL,
-  CART_ADD_ITEM_SUCCESS
+  CART_ADD_ITEM_SUCCESS,
+  CART_REMOVE_ITEM_REQUEST,
+  CART_REMOVE_ITEM_SUCCESS,
+  CART_REMOVE_ITEM_FAIL,
+  GET_CART_REQUEST,
+  GET_CART_SUCCESS,
+  GET_CART_FAIL,
+  START_CHECKOUT_FAIL,
+  START_CHECKOUT_REQUEST,
+  START_CHECKOUT_SUCCESS
 } from "../constants/cartConstants"
 import axios from "axios"
 
@@ -30,10 +39,11 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
     }
     const item = {
       user: userInfo._id,
-      product: id,
+      productId: id,
       qty
     }
     const { data } = await axios.post(`/api/cart`, item, config)
+    localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
     dispatch({ type: CART_ADD_ITEM_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
@@ -41,12 +51,51 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
   }
 }
 
+export const getCartAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: GET_CART_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.get(`/api/cart/${userInfo._id}`, config)
+    localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    dispatch({ type: GET_CART_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: GET_CART_FAIL, payload: message })
+  }
+}
+
 export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {
-  dispatch({
-    type: CART_REMOVE_ITEM,
-    payload: { id, qty }
-  })
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+  try {
+    dispatch({ type: CART_REMOVE_ITEM_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const item = {
+      user: userInfo._id,
+      productId: id,
+      qty
+    }
+    const { data } = await axios.put(`/api/cart/${userInfo._id}`, item, config)
+    localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    dispatch({ type: CART_REMOVE_ITEM_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: CART_REMOVE_ITEM_FAIL, payload: message })
+  }
 }
 
 export const saveShippingAddressAction = data => async dispatch => {
@@ -119,4 +168,30 @@ export const cartRemoveItemsFromDBAction = cartItems => async (dispatch, getStat
     dispatch({ type: REMOVE_CART_ITEMS_FROM_DB_FAIL, payload: message })
   }
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+}
+
+export const startCheckoutAction = () => async (dispatch, getState) => {
+  console.log("startCheckoutAction")
+  try {
+    dispatch({ type: START_CHECKOUT_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const item = {
+      user: userInfo._id
+    }
+    const { data } = await axios.put(`/api/cart/startcheckout`, item, config)
+    console.log("data: ", data)
+    // localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    dispatch({ type: START_CHECKOUT_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: START_CHECKOUT_FAIL, payload: message })
+  }
 }

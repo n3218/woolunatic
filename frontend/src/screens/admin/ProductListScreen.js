@@ -25,7 +25,6 @@ const ProductListScreen = ({ history, match }) => {
 
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET })
-
     if (!userInfo || !userInfo.isAdmin) {
       history.push("/login")
     }
@@ -34,7 +33,7 @@ const ProductListScreen = ({ history, match }) => {
     } else {
       dispatch(listProducts("", pageNumber))
     }
-  }, [dispatch, history, userInfo, successDelete, successCreate, createdProduct, pageNumber])
+  }, [dispatch, history, userInfo, successCreate, createdProduct, pageNumber, successDelete])
 
   const createProductHandler = () => {
     dispatch(productCreateAction())
@@ -49,10 +48,9 @@ const ProductListScreen = ({ history, match }) => {
           <i className="fas fa-plus mr-1"></i> Create Product
         </Button>
       </div>
-      {loadingDelete && <Loader />}
+      {(loadingDelete || loadingCreate) && <Loader />}
       {errorDelete && <Message variant="danger">{errorDelete}</Message>}
       {successDelete && <Message variant="success">Product was deleted</Message>}
-      {loadingCreate && <Loader />}
       {errorCreate && <Message variant="danger">{errorCreate}</Message>}
       {loading ? (
         <Loader />

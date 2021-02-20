@@ -26,7 +26,13 @@ import {
   PRODUCT_TOP_FAIL,
   PRODUCT_IMAGE_DELETE_REQUEST,
   PRODUCT_IMAGE_DELETE_SUCCESS,
-  PRODUCT_IMAGE_DELETE_FAIL
+  PRODUCT_IMAGE_DELETE_FAIL,
+  DELETE_ALL_PRODUCTS_IMAGES_REQUEST,
+  DELETE_ALL_PRODUCTS_IMAGES_SUCCESS,
+  DELETE_ALL_PRODUCTS_IMAGES_FAIL,
+  DELETE_ALL_PRODUCTS_DATA_REQUEST,
+  DELETE_ALL_PRODUCTS_DATA_SUCCESS,
+  DELETE_ALL_PRODUCTS_DATA_FAIL
 } from "../constants/productConstants"
 import axios from "axios"
 import { logout } from "./userActions"
@@ -200,6 +206,57 @@ export const productImageDeleteAction = img => async (dispatch, getState) => {
     }
     dispatch({
       type: PRODUCT_IMAGE_DELETE_FAIL,
+      payload: message
+    })
+  }
+}
+
+export const deleteAllProductsImagesAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: DELETE_ALL_PRODUCTS_IMAGES_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    await axios.delete(`/api/upload/bulk`, config)
+    dispatch({ type: DELETE_ALL_PRODUCTS_IMAGES_SUCCESS })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({
+      type: DELETE_ALL_PRODUCTS_IMAGES_FAIL,
+      payload: message
+    })
+  }
+}
+
+export const deleteAllProductsDataAction = () => async (dispatch, getState) => {
+  console.log("deleteAllProductsDataAction")
+  try {
+    dispatch({ type: DELETE_ALL_PRODUCTS_DATA_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    await axios.delete(`/api/products/delete/bulk`, config)
+    dispatch({ type: DELETE_ALL_PRODUCTS_DATA_SUCCESS })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({
+      type: DELETE_ALL_PRODUCTS_DATA_FAIL,
       payload: message
     })
   }

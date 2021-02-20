@@ -31,7 +31,15 @@ import {
   PRODUCT_IMAGE_DELETE_SUCCESS,
   PRODUCT_IMAGE_DELETE_FAIL,
   PRODUCT_IMAGE_DELETE_RESET,
-  PRODUCT_DELETE_RESET
+  PRODUCT_DELETE_RESET,
+  DELETE_ALL_PRODUCTS_IMAGES_REQUEST,
+  DELETE_ALL_PRODUCTS_IMAGES_SUCCESS,
+  DELETE_ALL_PRODUCTS_IMAGES_FAIL,
+  DELETE_ALL_PRODUCTS_IMAGES_RESET,
+  DELETE_ALL_PRODUCTS_DATA_REQUEST,
+  DELETE_ALL_PRODUCTS_DATA_SUCCESS,
+  DELETE_ALL_PRODUCTS_DATA_FAIL,
+  DELETE_ALL_PRODUCTS_DATA_RESET
 } from "../constants/productConstants"
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -165,6 +173,36 @@ export const productImageDeleteReducer = (state = {}, action) => {
     case PRODUCT_IMAGE_DELETE_FAIL:
       return { loading: false, error: action.payload }
     case PRODUCT_IMAGE_DELETE_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const deleteAllProductsImagesReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_ALL_PRODUCTS_IMAGES_REQUEST:
+      return { loading: true }
+    case DELETE_ALL_PRODUCTS_IMAGES_SUCCESS:
+      return { loading: false, success: true }
+    case DELETE_ALL_PRODUCTS_IMAGES_FAIL:
+      return { loading: false, error: action.payload }
+    case DELETE_ALL_PRODUCTS_IMAGES_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+
+export const deleteAllProductsDataReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_ALL_PRODUCTS_DATA_REQUEST:
+      return { loading: true }
+    case DELETE_ALL_PRODUCTS_DATA_SUCCESS:
+      return { loading: false, success: true }
+    case DELETE_ALL_PRODUCTS_DATA_FAIL:
+      return { loading: false, error: action.payload }
+    case DELETE_ALL_PRODUCTS_DATA_RESET:
       return {}
     default:
       return state

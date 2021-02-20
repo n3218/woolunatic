@@ -17,13 +17,6 @@ const CollectionScreen = ({ match }) => {
   const { loading, error, success, products } = productList
   const [filteredProducts, setFilteredProducts] = useState([])
 
-  // useEffect(() => {
-  //
-  //   if (success) {
-  //     setFilteredProducts([...products])
-  //   }
-  // }, [products, success])
-
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber, category))
   }, [dispatch, keyword, pageNumber, category])

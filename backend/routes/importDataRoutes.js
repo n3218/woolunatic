@@ -119,7 +119,6 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         product.inSale = newData.inSale
         product.outOfStock = newData.outOfStock || product.outOfStock
         product.inStock = newData.inStock || product.inStock
-        // product.inStock = product.inStock + "," + newData.inStock
         product.user = `5fc6e1458fa9f7a30eaf05ec`
 
         let result = await product.save()
@@ -139,7 +138,7 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         }
       }
       if (updatedProducts + newlyAddedProducts === totalRows) {
-        console.log("//////////////////totalRows, updatedProducts, newlyAddedProducts: ", totalRows, updatedProducts, newlyAddedProducts)
+        console.log("Updated totalRows, updatedProducts, newlyAddedProducts: ", totalRows, updatedProducts, newlyAddedProducts)
         res.json({ success: true, fileName: req.file.path, updatedProducts, newlyAddedProducts, totalRows })
       }
     })

@@ -13,6 +13,8 @@ const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
   const thumbPath = "/uploads/thumbs/thumb-"
   const productImageDelete = useSelector(state => state.productImageDelete)
   const { loading: loadingImageDelete, error: errorImageDelete, success: successImageDelete } = productImageDelete
+  const userLogin = useSelector(state => state.userLogin)
+  const { userInfo } = userLogin
 
   useEffect(() => {
     if (successImageDelete) {
@@ -32,6 +34,7 @@ const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
         }
         try {
           const compressedFile = await imageCompression(file[i], options)
+          console.log("compressedFile: ", compressedFile)
           await formData.append(`image`, compressedFile, compressedFile.name) // write your own logic
         } catch (error) {
           console.log(error)
@@ -42,7 +45,12 @@ const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
     setUploading(true)
 
     try {
-      const config = { headers: { "Content-Type": "multipart/form-data" } }
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userInfo.token}`
+        }
+      }
       const { data } = await axios.post("/api/upload", formData, config)
       console.log("data: ", data)
       setImage([...image, ...data.map(img => `${img.filename}`)])

@@ -7,7 +7,7 @@ import Loader from "../../components/Loader"
 import Meta from "../../components/Meta"
 import { listOrdersAction } from "../../actions/orderActions"
 import Paginate from "../../components/Paginate"
-import PaymentStatus from "../../components/PaymentStatus"
+import { PaymentStatus } from "../../components/Utils"
 
 const OrderListScreen = ({ history, match }) => {
   const dispatch = useDispatch()

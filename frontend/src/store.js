@@ -2,7 +2,7 @@ import { createStore, combineReducers } from "redux"
 import thunk from "redux-thunk"
 import { composeWithDevTools } from "redux-devtools-extension"
 import { applyMiddleware } from "redux"
-import { productListReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer, productCreateReviewReducer, productTopReducer, productListInCategoryReducer, productImageDeleteReducer } from "./reducers/productReducers"
+import { productListReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer, productCreateReviewReducer, productTopReducer, productListInCategoryReducer, productImageDeleteReducer, deleteAllProductsImagesReducer, deleteAllProductsDataReducer } from "./reducers/productReducers"
 import { cartReducer } from "./reducers/cartReducers"
 import { userDeleteReducer, userDetailsReducer, userListReducer, userLoginReducer, userRegisterReducer, userUpdateProfileReducer, userUpdateReducer } from "./reducers/userReducers"
 import { orderCreateReducer, orderDeliverReducer, orderDetailsReducer, orderListMyReducer, orderListReducer, orderPayReducer } from "./reducers/orderReducers"
@@ -17,6 +17,8 @@ const reducer = combineReducers({
   productCreateReview: productCreateReviewReducer,
   productTop: productTopReducer,
   productImageDelete: productImageDeleteReducer,
+  deleteAllProductsImages: deleteAllProductsImagesReducer,
+  deleteAllProductsData: deleteAllProductsDataReducer,
 
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
@@ -35,17 +37,17 @@ const reducer = combineReducers({
   orderDeliver: orderDeliverReducer
 })
 
-// const cartItemsFromLocalStorage = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : []
+const cartItemsFromLocalStorage = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : []
 const userInfoFromLocalStorage = localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null
-// const shippingAddressFromStorage = localStorage.getItem("shippingAddress") ? JSON.parse(localStorage.getItem("shippingAddress")) : {}
-// const paymentMethodFromStorage = localStorage.getItem("paymentMethod") ? JSON.parse(localStorage.getItem("paymentMethod")) : {}
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress") ? JSON.parse(localStorage.getItem("shippingAddress")) : {}
+const paymentMethodFromStorage = localStorage.getItem("paymentMethod") ? JSON.parse(localStorage.getItem("paymentMethod")) : {}
 
 const initialState = {
-  // cart: {
-  //   cartItems: cartItemsFromLocalStorage,
-  //   shippingAddress: shippingAddressFromStorage,
-  //   paymentMethod: paymentMethodFromStorage
-  // },
+  cart: {
+    items: cartItemsFromLocalStorage,
+    shippingAddress: shippingAddressFromStorage,
+    paymentMethod: paymentMethodFromStorage
+  },
   userLogin: { userInfo: userInfoFromLocalStorage }
 }
 

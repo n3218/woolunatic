@@ -13,7 +13,9 @@ import AboutScreen from "./screens/AboutScreen"
 import HowToScreen from "./screens/HowToScreen"
 import ProductScreen from "./screens/ProductScreen/ProductScreen"
 import Switch from "react-bootstrap/esm/Switch"
-import CartScreen from "./screens/CartScreen/CartScreen"
+import CartScreen from "./screens/cart/CartScreen"
+import ShippingScreen from "./screens/cart/ShippingScreen"
+import PaymentScreen from "./screens/cart/PaymentScreen"
 import OrderScreen from "./screens/OrderScreen"
 import UserListScreen from "./screens/admin/UserListScreen"
 import UserEditScreen from "./screens/admin/UserEditScreen"
@@ -37,8 +39,11 @@ const App = () => {
             <Route path="/about" component={AboutScreen} />
             <Route path="/how-to" component={HowToScreen} />
             <Route path="/products/:id" component={ProductScreen} />
-            <Route path="/cart/:id?" component={CartScreen} exact />
-            <Route path="/cart/checkout/:step" component={CartScreen} />
+
+            <Route path="/cart/:id?/:qty?" component={CartScreen} exact />
+            <Route path="/checkout/shipping" component={ShippingScreen} />
+            <Route path="/checkout/payment" component={PaymentScreen} />
+
             <Route path="/orders/:id/:paymentmethod" component={HideScreen} exact />
             <Route path="/orders/:id" component={OrderScreen} />
 

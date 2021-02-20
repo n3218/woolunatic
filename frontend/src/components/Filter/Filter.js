@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Card, Form, Button, ListGroup } from "react-bootstrap"
-import TranslateToWeight from "../TranslateToWeight"
+import { TranslateToWeight } from "../Utils"
 import "./Filter.css"
 //
 const Filter = ({ products, setFilteredProducts }) => {

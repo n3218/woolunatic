@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, Button, ListGroup } from "react-bootstrap"
-import { cartAddItemAction, cartCleanItemsAction, cartCheckItemsAction, cartRemoveItemsFromDBAction } from "../../actions/cartActions"
+import { cartAddItemAction, cartCleanItemsAction, cartCheckItemsAction, cartRemoveItemsFromDBAction, getCartAction } from "../../actions/cartActions"
 import Message from "../../components/Message"
 import Meta from "../../components/Meta"
-import CartItems from "../../components/CartItems"
+import CartItem from "../../components/CartItem"
 import OrderSummary from "../../components/OrderSummary"
 import ShippingSection from "../../components/ShippingSection"
 import PaymentSection from "../../components/PaymentSection/PaymentSection"
@@ -25,10 +25,8 @@ const CartScreen = ({ match, location, history }) => {
   const qty = location.search ? Number(location.search.split("=")[1].split("&")[0]) : 1
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
-
   const cart = useSelector(state => state.cart)
-  const { cartItems } = cart
-
+  const { items } = cart
   const [paymentMethod, setPaymentMethod] = useState("")
   const [summary, setSummary] = useState({})
   const [hideScreen, setHideScreen] = useState(false)
@@ -37,38 +35,35 @@ const CartScreen = ({ match, location, history }) => {
   if (!userInfo) {
     history.push("/login")
   }
-  if (checkoutStep && cartItems && cartItems.length === 0) {
+  if (checkoutStep && items && items.length === 0) {
     history.push("/cart")
   }
-  // ----------------------------------------------Add to Cart Item
+
   useEffect(() => {
     if (productId) {
       dispatch(cartAddItemAction(productId, qty))
     }
+    dispatch(getCartAction())
   }, [dispatch, productId, qty])
-  // ----------------------------------------------/Add to Cart Item
-  //
-  //
-  //
-  //
+
   // ----------------------------------------------Calculating prices
   useEffect(() => {
-    if (cartItems) {
+    if (items && items.length > 0) {
       let taxPrice = 0
       let shippingPrice = 0
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
-      const itemsPrice = addDecimals(cartItems.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
+      const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
       if (checkoutStep === "payment") {
         taxPrice = addDecimals(Number((21.0 * itemsPrice) / 100))
         shippingPrice = addDecimals(itemsPrice > 100 ? 26 : 26)
       }
       const totalPrice = (Number(itemsPrice) + Number(taxPrice) + Number(shippingPrice)).toFixed(2)
-      const itemsWeight = cartItems.reduce((acc, item) => acc + item.qty, 0)
-      const totalWeight = itemsWeight + 300 + cartItems.length * 40
+      const itemsWeight = items.reduce((acc, item) => acc + item.qty, 0)
+      const totalWeight = itemsWeight + 300 + items.length * 40
       setSummary({ itemsPrice, taxPrice, shippingPrice, totalPrice, itemsWeight, totalWeight })
       showWarningHandler()
     }
-  }, [cartItems, checkoutStep, dispatch])
+  }, [items, checkoutStep, dispatch])
   // ---------------------------------------------/Calculating prices
   //
   //
@@ -96,13 +91,12 @@ const CartScreen = ({ match, location, history }) => {
   }, [success])
 
   const placeOrderHandler = () => {
-    // dispatch(cartCheckItemsAction(cartItems))
+    // dispatch(cartCheckItemsAction(items))
     showWarningHandler()
     dispatch(cartCleanItemsAction())
-
     dispatch(
       createOrderAction({
-        orderItems: cart.cartItems,
+        orderItems: cart.items,
         shippingAddress: cart.shippingAddress,
         paymentMethod: paymentMethod,
         itemsPrice: summary.itemsPrice,
@@ -113,7 +107,7 @@ const CartScreen = ({ match, location, history }) => {
         totalWeight: summary.totalWeight
       })
     )
-    dispatch(cartRemoveItemsFromDBAction(cartItems))
+    dispatch(cartRemoveItemsFromDBAction(items))
   }
   // -------------------------------------------------/Order Creation
 
@@ -138,8 +132,8 @@ const CartScreen = ({ match, location, history }) => {
   }
 
   const showWarningHandler = () => {
-    if (cartItems) {
-      let res = cartItems.filter(it => it.message && it.message.length > 0)
+    if (items) {
+      let res = items.filter(it => it.message && it.message.length > 0)
       if (res.length > 0) {
         setShowWarning(true)
       } else {
@@ -149,7 +143,7 @@ const CartScreen = ({ match, location, history }) => {
   }
 
   useEffect(() => {
-    // dispatch(cartCheckItemsAction(cartItems))
+    // dispatch(cartCheckItemsAction(items))
   }, [productId, checkoutStep, paymentMethod])
 
   useEffect(() => {
@@ -163,13 +157,13 @@ const CartScreen = ({ match, location, history }) => {
 
       {checkoutStep ? <h2>Checkout</h2> : <h2>Shopping Cart</h2>}
       {checkoutStep && <CheckoutSteps step={checkoutStep} />}
-      {cartItems && cartItems.length === 0 && (
+      {items && items.length === 0 && (
         <Message variant="success" className="py-5">
           Your cart is empty <br /> <Link to="/">Go Shopping...</Link>
         </Message>
       )}
       {showWarning && (
-        <Message variant="danger" className="py-5">
+        <Message variant="danger" className="py-4">
           Some of items in your cart are out of stock
         </Message>
       )}
@@ -178,7 +172,7 @@ const CartScreen = ({ match, location, history }) => {
           <ListGroup variant="flush">
             {match.params.step && (
               <>
-                {checkoutStep && checkoutStep === "shipping" && cartItems.length > 0 && (
+                {checkoutStep && checkoutStep === "shipping" && (
                   <ListGroup.Item>
                     <Row>
                       <Col lg={3} md={3} sm={6}>
@@ -210,23 +204,20 @@ const CartScreen = ({ match, location, history }) => {
             )}
           </ListGroup>
 
-          {/* ---------------------------CART CHECKED ITEMS */}
-          {cartItems && cartItems.length > 0 && (
+          {items && items.length > 0 && (
             <>
-              <CartItems items={cartItems} />
+              {items && <ListGroup variant="flush">{items.map(item => item && <CartItem history={history} key={`${item.product}-${item.qty}`} item={item} productId={item.product._id} qty={item.qty} />)}</ListGroup>}
               <OrderWeightsSummary order={summary} />
             </>
           )}
-          {/* ---------------------------/CART CHECKED ITEMS */}
         </Col>
 
-        {cartItems && cartItems.length > 0 && (
+        {items && items.length > 0 && (
           <Col>
-            <OrderSummary cart={summary} items={cartItems} checkoutStep={checkoutStep} error={error}>
-              {/* ---------------------------CART CHECKOUT BUTTONS */}
+            <OrderSummary cart={summary} items={items} checkoutStep={checkoutStep} error={error}>
               {!match.params.step && (
                 <>
-                  <Button type="button" className="btn-block btn-success my-3" disabled={cartItems.length === 0} onClick={checkoutHandler}>
+                  <Button type="button" className="btn-block btn-success my-3" disabled={items.length === 0} onClick={checkoutHandler}>
                     Checkout
                   </Button>
                   <Button type="button" className="btn-block btn-success bg-blue my-3" onClick={() => history.push("/yarns")}>
@@ -234,14 +225,11 @@ const CartScreen = ({ match, location, history }) => {
                   </Button>
                 </>
               )}
-              {/* ---------------------------/CART CHECKOUT BUTTONS */}
-              {/* ---------------------------PAYMENT BUTTONS */}
               {paymentMethod && (
                 <Button className="btn-success btn-block" onClick={() => placeOrderHandler()}>
                   Pay via {paymentMethod}
                 </Button>
               )}
-              {/* ---------------------------/PAYMENT BUTTONS */}
             </OrderSummary>
           </Col>
         )}

@@ -9,10 +9,17 @@ const cartSchema = mongoose.Schema(
     },
     items: [
       {
-        art: { type: String, required: true },
-        name: { type: String, required: true },
-        brand: { type: String, required: true },
-        color: { type: String, required: true },
+        art: { type: String, required: false },
+        brand: { type: String, required: false },
+        name: { type: String, required: false },
+        color: { type: String, required: false },
+        color: { type: String, required: false },
+        color: { type: String, required: false },
+        fibers: { type: String, required: false },
+        meterage: { type: String, required: false },
+        image: { type: String, required: false },
+        message: { type: String, required: false },
+        price: { type: Number, required: false },
         qty: { type: Number, required: true },
         product: {
           type: mongoose.Schema.Types.ObjectId,
