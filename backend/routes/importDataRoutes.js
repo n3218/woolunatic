@@ -21,8 +21,10 @@ function checkFileType(file, cb) {
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
   const mimetype = filetypes.test(file.mimetype)
   if (extname && mimetype) {
+    console.log("checkFileType: File type is CSV.")
     return cb(null, true)
   } else {
+    console.log("checkFileType: Did not pass filter.")
     cb("Csv only!")
   }
 }
