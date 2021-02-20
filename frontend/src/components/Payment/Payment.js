@@ -8,7 +8,7 @@ import Message from "../Message"
 import Loader from "../Loader"
 import { molliePayAction, payOrderAction } from "../../actions/orderActions"
 import "./Payment.css"
-import PaymentStatus from "../PaymentStatus"
+import { PaymentStatus } from "../Utils"
 
 const Payment = ({ order, userInfo }) => {
   const dispatch = useDispatch()

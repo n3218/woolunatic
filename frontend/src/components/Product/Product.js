@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from "react"
 import { Card } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import "./Product.css"
 import Rating from "../Rating/Rating"
+import "./Product.css"
 
 const Product = ({ product }) => {
   const noimage = "/uploads/noimage/noimage.webp"
   const [imgSrc, setImgSrc] = useState(noimage)
   const thumbPath = "/uploads/thumbs/thumb-"
+  const checkImg = async img => {
+    await fetch(thumbPath + img).then(res => {
+      if (res.ok) {
+        setImgSrc(thumbPath + img)
+      } else {
+        setImgSrc(noimage)
+      }
+    })
+  }
+  useEffect(() => {
+    if (product.image && product.image[0]) {
+      return checkImg(product.image[0])
+    }
+  }, [product])
 
   // const getImageOrFallback = (path, fallback) => {
   //   return new Promise(resolve => {
@@ -20,22 +34,6 @@ const Product = ({ product }) => {
   // if (product.image && product.image[0]) {
   //   return getImageOrFallback(product.image[0], noimage).then(result => result)
   // }
-
-  const checkImg = async img => {
-    await fetch(thumbPath + img).then(res => {
-      if (res.ok) {
-        setImgSrc(thumbPath + img)
-      } else {
-        setImgSrc(noimage)
-      }
-    })
-  }
-
-  useEffect(() => {
-    if (product.image && product.image[0]) {
-      return checkImg(product.image[0])
-    }
-  }, [product])
 
   return (
     <Card className="product-card">

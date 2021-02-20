@@ -32,6 +32,7 @@ const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
         }
         try {
           const compressedFile = await imageCompression(file[i], options)
+          console.log("compressedFile: ", compressedFile)
           await formData.append(`image`, compressedFile, compressedFile.name) // write your own logic
         } catch (error) {
           console.log(error)

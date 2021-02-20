@@ -90,7 +90,34 @@ export const getTopProducts = asyncHandler(async (req, res) => {
 export const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
   if (product) {
-    res.json(product)
+    if (product.onHold) {
+      let filteredHold = []
+      let arrInStock = product.inStock.split(",")
+      product.onHold.map(hold => {
+        if (new Date(hold.lockedAt).getTime() + 900000 < Date.now()) {
+          //remove from hold and put to inStock
+          if (arrInStock.length === 0) {
+            product.outOfStock = false
+          }
+          arrInStock.push(hold.qty)
+        } else {
+          //keep in hold and remove from inStock
+          filteredHold.push(hold)
+          let index = arrInStock.indexOf(hold.qty)
+          arrInStock.splice(index, 1)
+          if (arrInStock.length === 0) {
+            product.outOfStock = true
+          }
+        }
+      })
+      product.onHold = filteredHold
+      product.inStock = arrInStock.join(",")
+
+      console.log("filteredHold: ", filteredHold)
+    }
+
+    const updatedProduct = await product.save()
+    res.status(201).json(updatedProduct)
   } else {
     res.status(404)
     throw new Error("Product not found")
@@ -102,43 +129,47 @@ export const getProductById = asyncHandler(async (req, res) => {
 // @access Private/+Admin
 export const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
-  let files = fs.readdirSync("uploads/products/")
-  let thumbs = fs.readdirSync("uploads/thumbs")
-  let minithumbs = fs.readdirSync("uploads/minithumbs")
-  let message = ""
-  console.log(files)
   if (product) {
-    if (product.image && product.image.length > 0) {
-      product.image.map(img => {
-        try {
-          if (files.includes(img)) {
-            console.log("Files contain IMG")
-            fs.unlinkSync(`uploads/products/${img}`) // remove fullsize file
-            message += `Fullsize ${img} removed. `
+    const deleteImages = () => {
+      if (product.image && product.image.length > 0) {
+        product.image.map(img => {
+          try {
+            let productImage = "uploads/products/" + img
+            let productPath = fs.statSync(productImage)
+            if (productPath.isFile()) {
+              fs.unlinkSync(productImage) // remove fullsize file
+            }
+            let thumbImage = "uploads/thumbs/thumb-" + img
+            let thumbPath = fs.statSync(thumbImage)
+            if (thumbPath.isFile()) {
+              fs.unlinkSync(thumbImage) // remove thumb file
+            }
+            let minithumbImage = "uploads/minithumbs/minithumb-" + img
+            let minithumbPath = fs.statSync(minithumbImage)
+            if (minithumbPath.isFile()) {
+              fs.unlinkSync(minithumbImage) // remove minithumb file
+            }
+          } catch (err) {
+            console.log(err)
+            res.status(404)
+            throw new Error("Can't delete Image from Disk")
           }
-          if (thumbs.includes("thumb-" + img)) {
-            console.log("thumbs contain IMG")
-            fs.unlinkSync(`uploads/thumbs/thumb-${img}`) // remove thumb file
-            message += `Thumb ${img} removed. `
-          }
-          if (minithumbs.includes("minithumb-" + img)) {
-            console.log("minithumbs contain IMG")
-            fs.unlinkSync(`uploads/minithumbs/minithumb-${img}`) // remove minithumb file
-            message += `Minithumb ${img} removed. `
-          }
-        } catch (err) {
-          console.log(err)
-          res.status(404)
-          throw new Error("Can't delete Image from Disk")
-        }
-      })
-      await product.remove()
-      console.log({ message: `Product was successfully deleted. ${message}` })
-      res.json({ message: `Product was successfully deleted. ${message}` })
-    } else {
-      res.status(404)
-      throw new Error("Product not found")
+        })
+      }
     }
+
+    await Promise.all([deleteImages, product.remove()])
+      .then(() => {
+        console.log({ message: `Product was successfully deleted.` })
+        res.json({ message: `Product was successfully deleted.` })
+      })
+      .catch(err => {
+        res.status(404)
+        throw new Error("Problem with deleting Images", err)
+      })
+  } else {
+    res.status(404)
+    throw new Error("Product not found")
   }
 })
 
@@ -168,7 +199,6 @@ export const createProduct = asyncHandler(async (req, res) => {
     inSale: false,
     regular: false
   })
-
   const createdProduct = await product.save()
   res.status(201).json(createdProduct)
 })
@@ -179,7 +209,6 @@ export const createProduct = asyncHandler(async (req, res) => {
 export const updateProduct = asyncHandler(async (req, res) => {
   const { name, price, description, image, brand, category, inStock, outOfStock, fibers, meterage, minimum, color, colorWay, art, nm, novelty, inSale, regular } = req.body
   const product = await Product.findById(req.params.id)
-
   if (product) {
     product.name = name
     product.price = price
@@ -199,7 +228,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
     product.novelty = novelty
     product.inSale = inSale
     product.regular = regular
-
     const updatedProduct = await product.save()
     res.json(updatedProduct)
   } else {
@@ -214,7 +242,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
 export const createProductReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body
   const product = await Product.findById(req.params.id)
-
   if (product) {
     const alreadyReviewed = product.reviews.find(r => r.user.toString() === req.user._id.toString())
     if (alreadyReviewed) {
@@ -227,7 +254,6 @@ export const createProductReview = asyncHandler(async (req, res) => {
       comment,
       user: req.user._id
     }
-
     product.reviews.push(review)
     product.numReviews = product.reviews.length
     product.rating = product.reviews.reduce((acc, item) => acc + item.rating, 0) / product.reviews.length
@@ -285,7 +311,7 @@ export const checkProductsInStock = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc   Check Products in Stock
+// @desc   Remove Product from Stock or DB
 // @route  POST /api/products/removefromdb
 // @access Private
 export const removeItemsFromDB = asyncHandler(async (req, res) => {
@@ -354,7 +380,7 @@ export const removeItemsFromDB = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc   Delete an Image from Product
+// @desc   Delete single Image from Product
 // @route  PUT /api/products/deleteimage/:img
 // @access Private/+Admin
 export const deleteProductImage = asyncHandler(async (req, res) => {
@@ -368,5 +394,21 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
     console.log(err)
     res.status(404)
     throw new Error("Can't delete Image from Disk")
+  }
+})
+
+// @desc   Delete All Products from DB
+// @route  DELETE /api/products/delete/bulk
+// @access Private/+Admin
+export const deleteAllProductsData = asyncHandler(async (req, res) => {
+  console.log("deleteAllProductsData")
+  try {
+    await Product.deleteMany({})
+    console.log("Data Destroyed!")
+    res.json({ message: "All Products deleted from DB" })
+  } catch (error) {
+    console.error(error)
+    res.status(404)
+    throw new Error("Problem with deleting Products from DB")
   }
 })

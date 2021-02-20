@@ -10,7 +10,7 @@ import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DELETE_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
-import TranslateToWeight from "../../components/TranslateToWeight"
+import { TranslateToWeight } from "../../components/Utils"
 import "./ProductScreen.css"
 
 const ProductScreen = ({ history, match }) => {
@@ -62,6 +62,7 @@ const ProductScreen = ({ history, match }) => {
         .split(",")
         .map(el => Number(el.trim()))
         .sort((a, b) => a - b)
+
       setInStockArr([...arr])
       if (arr.length === 1) {
         setQty(arr[0])
@@ -76,7 +77,7 @@ const ProductScreen = ({ history, match }) => {
   }, [dispatch, successCreateReview, productId, product])
 
   const addToCartHandler = () => {
-    history.push(`/cart/${productId}?qty=${qty}`)
+    history.push(`/cart/${productId}/${qty}`)
   }
 
   const submitHandler = e => {
@@ -92,6 +93,11 @@ const ProductScreen = ({ history, match }) => {
       values.push(i)
     }
     return values
+  }
+
+  const onChangeHandler = e => {
+    dispatch(productDetailsAction(productId))
+    setQty(e.target.value)
   }
 
   return (
@@ -204,7 +210,7 @@ const ProductScreen = ({ history, match }) => {
                           <Col>Weight:</Col>
                           <Col>
                             <Form.Group controlId="qty">
-                              <Form.Control as="select" className="order-select" value={qty} onChange={e => setQty(e.target.value)} required>
+                              <Form.Control as="select" className="order-select" value={qty} onChange={onChangeHandler} required>
                                 <option key="0" value="">
                                   Select...
                                 </option>

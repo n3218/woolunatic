@@ -1,4 +1,16 @@
-const TranslateToWeight = val => {
+import React from "react"
+
+export const PaymentStatus = ({ paymentStatus }) => {
+  const badges = {
+    paid: "success",
+    expired: "secondary",
+    canceled: "danger",
+    COMPLETED: "success"
+  }
+  return <div className={`badge badge-${badges[paymentStatus]} text-uppercase`}>{paymentStatus}</div>
+}
+
+export const TranslateToWeight = val => {
   const weightValues = {
     1000: "Cobweb",
     800: "Lace",
@@ -24,4 +36,18 @@ const TranslateToWeight = val => {
   if (val >= 50 && val < 100) return weightValues[50]
 }
 
-export default TranslateToWeight
+export const checkImage = async (img, size) => {
+  const noimage = "/uploads/noimage/noimage.webp"
+  const path = {
+    fullsize: "/uploads/products/",
+    thumb: "/uploads/thumbs/thumb-",
+    minithumb: "/uploads/minithumbs/minithumb-"
+  }
+  await fetch(path[size] + img).then(res => {
+    if (res.ok) {
+      return path[size] + img
+    } else {
+      return noimage
+    }
+  })
+}

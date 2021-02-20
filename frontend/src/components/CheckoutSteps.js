@@ -13,12 +13,12 @@ const CheckoutSteps = ({ step }) => {
         </li>
         <li className="breadcrumb-item">
           <Nav.Item>
-            <Nav.Link href="/cart/checkout/shipping">Shipping</Nav.Link>
+            <Nav.Link href="/checkout/shipping">Shipping</Nav.Link>
           </Nav.Item>
         </li>
         <li className="breadcrumb-item">
           <Nav.Item>
-            <Nav.Link href="/cart/checkout/payment" disabled={step === "shipping"}>
+            <Nav.Link href="/checkout/payment" disabled={step === "shipping"}>
               Payment Method
             </Nav.Link>
           </Nav.Item>

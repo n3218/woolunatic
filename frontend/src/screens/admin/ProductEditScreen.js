@@ -48,6 +48,8 @@ const ProductEditScreen = ({ history, match }) => {
       dispatch({ type: PRODUCT_UPDATE_RESET })
       dispatch({ type: PRODUCT_DETAILS_RESET })
       history.push(`/products/${productId}`)
+    } else if (successProductDelete) {
+      successDeleteProductHandler()
     } else {
       if (!product.name || product._id !== productId) {
         dispatch(productDetailsAction(productId))
@@ -107,12 +109,20 @@ const ProductEditScreen = ({ history, match }) => {
     }
   }
 
-  console.log("messageProductDelete: ", messageProductDelete)
+  const successDeleteProductHandler = () => {
+    setTimeout(() => {
+      dispatch({ type: PRODUCT_DELETE_RESET })
+      history.push(`/yarns`)
+    }, 5000)
+  }
+
   return (
     <>
       <Meta title="Admin | Edit Product | Woolunatics" />
       {successProductDelete ? (
-        <Message variant="success">{messageProductDelete}</Message>
+        <Message variant="success" onClose={successDeleteProductHandler}>
+          {messageProductDelete}
+        </Message>
       ) : (
         <>
           <div className="submenu">

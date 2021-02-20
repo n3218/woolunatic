@@ -1,7 +1,7 @@
 import express from "express"
 const router = express.Router()
 
-import { createProduct, createProductReview, deleteProduct, getProductById, getProducts, updateProduct, getTopProducts, checkProductsInStock, removeItemsFromDB, deleteProductImage } from "../controllers/productControllers.js"
+import { createProduct, createProductReview, deleteProduct, getProductById, getProducts, updateProduct, getTopProducts, checkProductsInStock, removeItemsFromDB, deleteProductImage, deleteAllProductsData } from "../controllers/productControllers.js"
 import { protect, admin } from "../middleware/authMiddleware.js"
 
 router //
@@ -27,5 +27,8 @@ router //
 router //
   .route("/deleteimage/:img")
   .delete(protect, admin, deleteProductImage)
+router //
+  .route("/delete/bulk")
+  .delete(protect, admin, deleteAllProductsData)
 
 export default router
