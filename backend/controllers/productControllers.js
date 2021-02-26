@@ -2,6 +2,8 @@ import asyncHandler from "express-async-handler"
 import Product from "../models/productModel.js"
 import fs from "fs"
 
+const holdTime = 300000
+
 // @desc   Fetch all products
 // @route  GET /api/products
 // @access Public
@@ -90,34 +92,33 @@ export const getTopProducts = asyncHandler(async (req, res) => {
 export const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id)
   if (product) {
-    if (product.onHold) {
-      let filteredHold = []
-      let arrInStock = product.inStock.split(",")
-      product.onHold.map(hold => {
-        if (new Date(hold.lockedAt).getTime() + 900000 < Date.now()) {
-          //remove from hold and put to inStock
-          if (arrInStock.length === 0) {
-            product.outOfStock = false
-          }
-          arrInStock.push(hold.qty)
-        } else {
-          //keep in hold and remove from inStock
-          filteredHold.push(hold)
-          let index = arrInStock.indexOf(hold.qty)
-          arrInStock.splice(index, 1)
-          if (arrInStock.length === 0) {
-            product.outOfStock = true
-          }
-        }
-      })
-      product.onHold = filteredHold
-      product.inStock = arrInStock.join(",")
+    // if (product.onHold) {
+    //   let filteredHold = []
+    //   let arrInStock = product.inStock.split(",")
 
-      console.log("filteredHold: ", filteredHold)
-    }
+    //   product.onHold.map(hold => {
+    //     if (new Date(hold.lockedAt).getTime() + holdTime < Date.now()) {
+    //       //remove from hold and put to inStock
+    //       if (arrInStock.length === 0 || product.outOfStock === true) {
+    //         product.outOfStock = false
+    //       }
+    //       arrInStock.push(hold.qty)
+    //       console.log("getProductById: arrInStock: ", arrInStock)
+    //     } else {
+    //       //keep in hold
+    //       filteredHold.push(hold)
+    //     }
+    //   })
+    //   console.log("getProductById: arrInStock: ", arrInStock)
 
-    const updatedProduct = await product.save()
-    res.status(201).json(updatedProduct)
+    //   product.onHold = filteredHold
+    //   product.inStock = arrInStock.join(",")
+    //   console.log("getProductById: product.inStock: ", product.inStock)
+    // }
+
+    // const updatedProduct = await product.save()
+    // console.log("getProductById: updatedProduct: ", updatedProduct)
+    res.status(201).json(product)
   } else {
     res.status(404)
     throw new Error("Product not found")

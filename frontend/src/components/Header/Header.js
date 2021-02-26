@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { withRouter } from "react-router"
 import { Route } from "react-router-dom"
 import { Navbar, Nav, NavDropdown, Container, Row, Col } from "react-bootstrap"
@@ -18,6 +18,11 @@ const Header = ({ location }) => {
   const logoutHandler = () => {
     dispatch(logout())
   }
+
+  useEffect(() => {
+    console.log("-------------------window.scrollTo(0, 0)")
+    window.scrollTo(0, 0)
+  }, [location])
 
   return (
     <header>

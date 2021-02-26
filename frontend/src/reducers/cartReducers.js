@@ -1,5 +1,8 @@
 import {
   //
+  CART_ADD_ITEM_REQUEST,
+  CART_ADD_ITEM_SUCCESS,
+  CART_ADD_ITEM_FAIL,
   CART_ADD_ITEM,
   CART_CLEAR_ITEMS,
   CART_REMOVE_ITEM,
@@ -13,9 +16,6 @@ import {
   REMOVE_CART_ITEMS_FROM_DB_REQUEST,
   REMOVE_CART_ITEMS_FROM_DB_SUCCESS,
   REMOVE_CART_ITEMS_FROM_DB_FAIL,
-  CART_ADD_ITEM_REQUEST,
-  CART_ADD_ITEM_SUCCESS,
-  CART_ADD_ITEM_FAIL,
   CART_REMOVE_ITEM_REQUEST,
   CART_REMOVE_ITEM_SUCCESS,
   CART_REMOVE_ITEM_FAIL,
@@ -23,7 +23,11 @@ import {
   GET_CART_REQUEST,
   GET_CART_SUCCESS,
   GET_CART_FAIL,
-  GET_CART_RESET
+  GET_CART_RESET,
+  START_CHECKOUT_REQUEST,
+  START_CHECKOUT_SUCCESS,
+  START_CHECKOUT_FAIL,
+  START_CHECKOUT_RESET
 } from "../constants/cartConstants"
 
 export const cartReducer = (state = { items: [] }, action) => {
@@ -77,6 +81,25 @@ export const cartReducer = (state = { items: [] }, action) => {
         error: action.payload
       }
     case CART_REMOVE_ITEM_RESET:
+      return {
+        items: []
+      }
+
+    case START_CHECKOUT_REQUEST:
+      return {
+        loading: true
+      }
+    case START_CHECKOUT_SUCCESS:
+      return {
+        loading: false,
+        ...action.payload
+      }
+    case START_CHECKOUT_FAIL:
+      return {
+        loading: false,
+        error: action.payload
+      }
+    case START_CHECKOUT_RESET:
       return {
         items: []
       }
