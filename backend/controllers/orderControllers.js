@@ -129,6 +129,7 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @route PUT /api/orders/:id/molliepay
 // @access Private
 export const molliePay = asyncHandler(async (req, res) => {
+  console.log("molliePay: req.body:", req.body)
   const { totalPrice, currency, description, orderId } = req.body
   const params = {
     amount: { value: Number(totalPrice).toFixed(2), currency: String(currency) },
@@ -137,6 +138,7 @@ export const molliePay = asyncHandler(async (req, res) => {
     webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
     metadata: { order_id: String(orderId) }
   }
+  console.log("molliePay: params:", params)
   await mollieClient.payments.create(params).then(payment => {
     res.send(payment.getPaymentUrl())
   })

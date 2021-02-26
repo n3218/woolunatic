@@ -29,8 +29,8 @@ const OrderScreen = ({ match, history }) => {
       history.pushState("/login")
     }
     if (!order || order._id !== orderId || successPay || successDeliver) {
-      dispatch({ type: ORDER_PAY_RESET })
-      dispatch({ type: ORDER_DELIVER_RESET })
+      // dispatch({ type: ORDER_PAY_RESET })
+      // dispatch({ type: ORDER_DELIVER_RESET })
       dispatch(getOrderDetailsAction(orderId))
     }
   }, [dispatch, order, orderId, successPay, successDeliver, history, userInfo])
