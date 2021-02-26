@@ -17,11 +17,11 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
-  const { loading: cartLoading, error: cartError, items } = cart
+  const { loading: cartLoading, error: cartError, items, success } = cart
   const [summary, setSummary] = useState({})
-  const [warning, setWarning] = useState()
-  const [checkout, setCheckout] = useState()
-  const [isChecked, setIsChecked] = useState()
+  const [warning, setWarning] = useState(false)
+  const [checkout, setCheckout] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
 
   if (!userInfo && redirect) {
     history.push(`/login?redirect=${redirect}`)
@@ -47,40 +47,45 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   // -----------------------------------------------------------------------/Calculating totals
 
   useEffect(() => {
-    if (items && items.length > 0) {
-      console.log("if (items && items.length > 0)")
-      let res = items.filter(it => it.message && it.message.length > 0)
-      console.log("items.filter(it => it.message && it.message.length > 0): ", res)
+    if (checkoutStep === "cart") {
+      if (items && items.length > 0) {
+        console.log("if (items && items.length > 0)")
+        let res = items.filter(it => it.message && it.message.length > 0)
+        console.log("items.filter(it => it.message && it.message.length > 0): ", res)
 
-      if (res.length > 0) {
-        console.log("-------------IF (res.length > 0)")
-        setWarning(true)
-        console.log("setWarning(true)")
-        setCheckout(false)
-        console.log("setCheckout(false)")
-      } else {
-        console.log("-------------ELSE")
-        setWarning(false)
-        console.log("setWarning(false)")
-        setIsChecked(true)
-        console.log("setIsChecked(true)")
+        if (res.length > 0) {
+          console.log("-------------IF (res.length > 0)")
+          setWarning(true)
+          console.log("setWarning(true)")
+          setCheckout(false)
+          console.log("setCheckout(false)")
+        } else {
+          console.log("-------------ELSE")
+          setWarning(false)
+          console.log("setWarning(false)")
+          if (checkout) {
+            setIsChecked(true)
+          }
+          console.log("setIsChecked(true)")
+        }
       }
     }
   }, [items])
 
   useEffect(() => {
-    if (isChecked && checkout) {
+    if (success && isChecked && checkout) {
       console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ", checkout, warning, isChecked)
       dispatch(startCheckoutAction())
       history.push("/checkout/shipping")
     }
-  }, [checkout, isChecked])
+  }, [checkout, isChecked, success])
 
   // ----------------------------------------------------------------------- Handlers
   const checkoutHandler = () => {
     console.log("checkoutHandler: dispatch(getCartAction())")
     dispatch(getCartAction())
     console.log("checkoutHandler: setCheckout(true)")
+    setIsChecked(false)
     setCheckout(true)
   }
 
@@ -141,7 +146,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
                   <h4>ORDER ITEMS</h4>
                 </ListGroup.Item>
               )}
-              {items.map(item => item && <CartItem key={`${item._id}-${item.qty}`} item={item} qty={item.qty} setCheckout={setCheckout} />)}
+              {items.map(item => item && <CartItem key={`${item._id}-${item.qty}`} item={item} qty={item.qty} setCheckout={setCheckout} checkoutStep={checkoutStep} />)}
             </ListGroup>
 
             {/* --------------------------------------------------------------------ORDER WEIGHT SUMMARY */}

@@ -14,6 +14,7 @@ const UserEditScreen = ({ history, match }) => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
+  const [storecredit, setStorecredit] = useState(0)
 
   const userDetails = useSelector(state => state.userDetails)
   const { loading, error, user } = userDetails
@@ -31,13 +32,14 @@ const UserEditScreen = ({ history, match }) => {
         setName(user.name)
         setEmail(user.email)
         setIsAdmin(user.isAdmin)
+        setStorecredit(user.storecredit)
       }
     }
   }, [user, dispatch, userId, successUpdate, history])
 
   const submitHandler = e => {
     e.preventDefault()
-    dispatch(updateUserAction({ _id: userId, name, email, isAdmin }))
+    dispatch(updateUserAction({ _id: userId, name, email, isAdmin, storecredit }))
   }
 
   return (
@@ -60,6 +62,10 @@ const UserEditScreen = ({ history, match }) => {
             <Form.Group controlId="email">
               <Form.Label>Email Address</Form.Label>
               <Form.Control type="email" placeholder="Enter Email" value={email} onChange={e => setEmail(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Form.Group controlId="email">
+              <Form.Label>Store Credit</Form.Label>
+              <Form.Control type="number" placeholder="Enter Storecredit" value={storecredit} onChange={e => setStorecredit(e.target.value)}></Form.Control>
             </Form.Group>
             <Form.Group controlId="isAdmin">
               <Form.Check type="checkbox" className="custom-checkbox" label="isAdmin" checked={isAdmin} onChange={e => setIsAdmin(e.target.checked)}></Form.Check>

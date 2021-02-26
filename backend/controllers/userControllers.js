@@ -61,7 +61,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      isAdmin: user.isAdmin
+      isAdmin: user.isAdmin,
+      storecredit: user.storecredit
     })
   } else {
     res.status(401)
@@ -137,6 +138,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   if (user) {
     user.name = req.body.name || user.name
     user.email = req.body.email || user.email
+    user.storecredit = req.body.storecredit || user.storecredit
     if (req.body.isAdmin === false) {
       user.isAdmin = req.body.isAdmin
     } else {
@@ -148,7 +150,8 @@ export const updateUser = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin
+      isAdmin: updatedUser.isAdmin,
+      storecredit: updatedUser.storecredit
     })
   } else {
     res.status(401)

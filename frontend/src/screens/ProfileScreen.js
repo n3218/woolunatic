@@ -71,6 +71,7 @@ const ProfileScreen = ({ history, location }) => {
           <Message variant="warning">{error}</Message>
         ) : (
           <ListGroup>
+            <ListGroup.Item className="h5 text-center">Your Storecredit: €{Number(user.storecredit).toFixed(2)}</ListGroup.Item>
             <ListGroup.Item>
               <Form onSubmit={updateProfileHandler}>
                 <Form.Group controlId="name">

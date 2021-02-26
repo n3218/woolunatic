@@ -21,7 +21,8 @@ const fillTheCartWithData = async cart => {
         color: it.color,
         meterage: it.meterage,
         fibers: it.fibers,
-        image: it.image
+        image: it.image,
+        price: it.price
       }
 
       if (prodMap[it.product]) {
@@ -103,6 +104,7 @@ export const addItemToCart = asyncHandler(async (req, res) => {
         newItem.fibers = productData.fibers
         newItem.meterage = productData.meterage
         newItem.image = productData.image[0] || ""
+        newItem.price = productData.price
       }
     } catch (err) {
       console.log(err)
