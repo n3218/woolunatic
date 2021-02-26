@@ -217,7 +217,7 @@ export const startCheckout = asyncHandler(async (req, res) => {
           console.log("prodMap[product._id].outOfStock: ", prodMap[product._id].outOfStock)
           console.log("prodMap[product._id].inStock: ", prodMap[product._id].inStock)
           console.log("prodMap[product._id].onHold: ", prodMap[product._id].onHold)
-          // return await product.save()
+          return await product.save()
         } else {
           console.log("Error: Product not found: ", item.qty)
           res.status(404)
