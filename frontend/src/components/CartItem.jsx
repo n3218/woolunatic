@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
 import { cartRemoveItemAction } from "../actions/cartActions"
-import { checkImage } from "./Utils"
 
 const CartItem = ({ item, qty, setCheckout }) => {
   const dispatch = useDispatch()
@@ -36,6 +35,14 @@ const CartItem = ({ item, qty, setCheckout }) => {
     <ListGroup.Item className={item.message && "bg-light"}>
       <Row>
         <Col xl={2} xs={2}>
+          {typeof item.product === "object" && (
+            <div className="product-card_badges ">
+              {item.product.outOfStock && <div className="badge badge-pill badge-secondary">out Of Stock</div>}
+              {item.product.regular && <div className="badge badge-pill badge-primary">regular</div>}
+              {item.product.novelty && <div className="badge badge-pill badge-success">new</div>}
+              {item.product.inSale && <div className="badge badge-pill badge-danger">sale</div>}
+            </div>
+          )}
           <Link to={`/products/${productId}`} className="text-capitalize">
             <Image src={imgSrc} alt={item.name} fluid thumbnail />
           </Link>
@@ -74,7 +81,7 @@ const CartItem = ({ item, qty, setCheckout }) => {
             <strong>Item weight: </strong> {item.qty}g
           </div>
           <div>
-            <strong>Item meterage: </strong> {item.meterage * item.qty * 0.01}m
+            <strong>Item meterage: </strong> {(item.meterage * item.qty * 0.01).toFixed(0)}m
           </div>
           <div>
             <Button variant="link" className="text-danger py-2 px-0" onClick={() => removeFromCartHandler(item.product, item.qty)}>

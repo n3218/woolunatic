@@ -1,33 +1,8 @@
 import React from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, Card, ListGroup, Button } from "react-bootstrap"
-import { cartCleanItemsAction, cartCheckItemsAction, cartRemoveItemsFromDBAction, getCartAction } from "../actions/cartActions"
-import { createOrderAction } from "../actions/orderActions"
+import { Row, Col, Card, ListGroup } from "react-bootstrap"
 import Message from "../components/Message"
 
-const OrderSummary = ({ cart, items, error, checkoutStep, history, summary, userInfo, children }) => {
-  const dispatch = useDispatch()
-
-  const placeOrderHandler = () => {
-    // OK
-    // dispatch(cartCheckItemsAction(items))
-    // dispatch(cartCleanItemsAction())
-    dispatch(
-      createOrderAction({
-        orderItems: cart.items,
-        shippingAddress: cart.shippingAddress,
-        // paymentMethod: paymentMethod,
-        itemsPrice: summary.itemsPrice,
-        taxPrice: summary.taxPrice,
-        shippingPrice: summary.shippingPrice,
-        totalPrice: summary.totalPrice,
-        itemsWeight: summary.itemsWeight,
-        totalWeight: summary.totalWeight
-      })
-    )
-    dispatch(cartRemoveItemsFromDBAction(items))
-  }
-
+const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
   return (
     <Card className="mx-1">
       <Card.Header className="card-header text-center">
@@ -43,7 +18,6 @@ const OrderSummary = ({ cart, items, error, checkoutStep, history, summary, user
             </Col>
             <Col className="text-right">€{(items && cart.itemsPrice) || 0}</Col>
           </Row>
-
           <Row>
             <Col>
               <strong>Tax</strong>
@@ -71,28 +45,7 @@ const OrderSummary = ({ cart, items, error, checkoutStep, history, summary, user
           </ListGroup.Item>
         )}
 
-        {checkoutStep !== "shipping" && (
-          <ListGroup.Item>
-            <div id="payment-buttons">
-              {children && children}
-              {/* {checkoutStep === "cart" && (
-                <>
-                  <Button type="button" className="btn-block btn-success my-3" disabled={items.length === 0} onClick={checkoutHandler}>
-                    Checkout
-                  </Button>
-                  <Button type="button" className="btn-block btn-success bg-blue my-3" onClick={() => history.push("/yarns")}>
-                    Continue shopping
-                  </Button>
-                </>
-              )} */}
-              {checkoutStep === "payment" && (
-                <Button className="btn-success btn-block" onClick={() => placeOrderHandler()}>
-                  Continue
-                </Button>
-              )}
-            </div>
-          </ListGroup.Item>
-        )}
+        {checkoutStep !== "shipping" && children && children}
 
         {error && (
           <ListGroup.Item>

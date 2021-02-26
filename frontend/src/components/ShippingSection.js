@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Form, Button, ListGroup, Row, Col } from "react-bootstrap"
-import { saveShippingAddressAction } from "../actions/cartActions"
+import { saveShippingAddressAction, savePaymentMethodAction } from "../actions/cartActions"
 import { useDispatch } from "react-redux"
 
 const ShippingSection = ({ history, checkoutStep, userInfo, cart }) => {
@@ -14,6 +14,7 @@ const ShippingSection = ({ history, checkoutStep, userInfo, cart }) => {
   const submitShippingHandler = e => {
     e.preventDefault()
     dispatch(saveShippingAddressAction({ address, city, zipCode, country }))
+    dispatch(savePaymentMethodAction(""))
     history.push("/checkout/payment")
   }
 

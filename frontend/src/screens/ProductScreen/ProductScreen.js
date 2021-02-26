@@ -90,8 +90,14 @@ const ProductScreen = ({ history, match }) => {
     let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
     let maxVal = inStockArr[inStockArr.length - 1] - minLeftover
     for (let i = min; i <= maxVal; i += 50) {
-      values.push(i)
+      if (!inStockArr.includes(i)) {
+        values.push(i)
+      }
     }
+    console.log(
+      "total in Stock: ",
+      product.inStock.split(",").reduce((acc, el) => acc + Number(el), 0)
+    )
     return values
   }
 

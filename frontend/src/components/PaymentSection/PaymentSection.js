@@ -1,60 +1,18 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
 import { Form, Col, Row, ListGroup, Button } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { savePaymentMethodAction } from "../../actions/cartActions"
-import { PayPalButton } from "react-paypal-button-v2"
 import Message from "../Message"
-import Loader from "../Loader"
-import { molliePayAction, payOrderAction } from "../../actions/orderActions"
-import MolliePayment from "../PaymentMollie"
-import "./PaymentSection.css"
 import { PaymentStatus } from "../Utils"
+import "./PaymentSection.css"
 
 const PaymentSection = ({ order, userInfo, checkoutStep }) => {
   const dispatch = useDispatch()
-  const orderId = order._id
-  const [sdkReady, setSdkReady] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState("")
-
-  useEffect(() => {
-    const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get("/api/config/paypal")
-      const script = document.createElement("script")
-      script.type = "text/javascript"
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
-      script.async = true
-      script.onload = () => {
-        setSdkReady(true)
-      }
-      document.body.appendChild(script)
-    }
-    if (!order.isPaid) {
-      if (!window.paypal) {
-        addPayPalScript()
-      } else {
-        setSdkReady(true)
-      }
-    }
-  }, [order])
+  const [paymentMethod, setPaymentMethod] = useState(order.paymentMethod || "")
 
   const onSelectPaymentMethod = e => {
     setPaymentMethod(e.target.value)
     dispatch(savePaymentMethodAction(e.target.value))
-  }
-
-  const successPaymentHandler = paymentResult => {
-    dispatch(payOrderAction(orderId, paymentResult))
-  }
-
-  const proceedMollyPayment = () => {
-    const data = {
-      totalPrice: order.totalPrice,
-      currency: "EUR",
-      description: `Order #${order._id}`,
-      orderId: order._id
-    }
-    dispatch(molliePayAction(data))
   }
 
   const radioButton = (label, name) => (
@@ -114,11 +72,11 @@ const PaymentSection = ({ order, userInfo, checkoutStep }) => {
                     </Col>
                   </Row>
 
-                  {!order.isPaid && paymentMethod === "Mollie" && (
+                  {/* {!order.isPaid && paymentMethod === "Mollie" && checkoutStep !== "payment" && (
                     <Col md={6}>
                       <Button onClick={proceedMollyPayment}>Mollie Pay</Button>
                     </Col>
-                  )}
+                  )} */}
 
                   <Row>
                     <Col xs={3} lg={2} xl={2}>
@@ -134,20 +92,20 @@ const PaymentSection = ({ order, userInfo, checkoutStep }) => {
                 </Form.Group>
               </Form>
             )}
-            {!order.isPaid && paymentMethod === "PayPal" && <Col md={6}>{!sdkReady ? <Loader /> : <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />}</Col>}
+            {/* {!order.isPaid && paymentMethod === "PayPal" && checkoutStep !== "payment" && <Col md={6}>{!sdkReady ? <Loader /> : <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />}</Col>} */}
 
             {order.isPaid && (
               <>
                 <Message variant="success">Paid on {new Date(order.paidAt).toString()}</Message>
                 {order.paymentMethod && (
-                  <PaymentRow val1="Payment Method">
+                  <PaymentRow name="Payment Method">
                     <span className="text-capitalize">{order.paymentMethod}</span>
                   </PaymentRow>
                 )}
-                <PaymentRow val1="Payment ID">{order.paymentResult.id}</PaymentRow>
-                <PaymentRow val1="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</PaymentRow>
-                {order.paymentResult && order.paymentResult.email && <PaymentRow val1="Email"> {order.paymentResult.email}</PaymentRow>}
-                <PaymentRow val1="Links">{order.paymentResult.links && showLinks(order.paymentResult.links)}</PaymentRow>
+                <PaymentRow name="Payment ID">{order.paymentResult.id}</PaymentRow>
+                <PaymentRow name="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</PaymentRow>
+                {order.paymentResult && order.paymentResult.email && <PaymentRow name="Email"> {order.paymentResult.email}</PaymentRow>}
+                <PaymentRow name="Links">{order.paymentResult.links && showLinks(order.paymentResult.links)}</PaymentRow>
               </>
             )}
             {!order.isPaid && !paymentMethod && checkoutStep !== "payment" && <Message variant="warning">Not Paid</Message>}
@@ -158,11 +116,11 @@ const PaymentSection = ({ order, userInfo, checkoutStep }) => {
   )
 }
 
-const PaymentRow = ({ val1, children }) => {
+const PaymentRow = ({ name, children }) => {
   return (
     <Row>
       <Col xl={2} xs={2} className="mr-2 h6 mb-0">
-        {val1}
+        {name}
       </Col>
       <Col className="p-0 m-0">{children}</Col>
     </Row>

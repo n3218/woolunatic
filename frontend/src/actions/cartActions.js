@@ -43,7 +43,10 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
       qty
     }
     const { data } = await axios.post(`/api/cart`, item, config)
-    localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    if (data && data.items && data.items.length > 0) {
+      localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    }
+    console.log("cartAddItemAction: data: ", data)
     dispatch({ type: CART_ADD_ITEM_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
@@ -64,7 +67,9 @@ export const getCartAction = () => async (dispatch, getState) => {
       }
     }
     const { data } = await axios.get(`/api/cart/${userInfo._id}`, config)
-    localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    if (data && data.items && data.items.length > 0) {
+      localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    }
     dispatch({ type: GET_CART_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message

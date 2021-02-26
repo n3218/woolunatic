@@ -11,12 +11,13 @@ const reducer = combineReducers({
   productList: productListReducer,
   productListInCategory: productListInCategoryReducer,
   productDetails: productDetailsReducer,
-  productDelete: productDeleteReducer,
   productCreate: productCreateReducer,
   productUpdate: productUpdateReducer,
+  productDelete: productDeleteReducer,
   productCreateReview: productCreateReviewReducer,
   productTop: productTopReducer,
   productImageDelete: productImageDeleteReducer,
+
   deleteAllProductsImages: deleteAllProductsImagesReducer,
   deleteAllProductsData: deleteAllProductsDataReducer,
 
@@ -29,6 +30,7 @@ const reducer = combineReducers({
   userUpdate: userUpdateReducer,
 
   cart: cartReducer,
+
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
@@ -37,10 +39,10 @@ const reducer = combineReducers({
   orderDeliver: orderDeliverReducer
 })
 
-const cartItemsFromLocalStorage = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : []
-const userInfoFromLocalStorage = localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null
-const shippingAddressFromStorage = localStorage.getItem("shippingAddress") ? JSON.parse(localStorage.getItem("shippingAddress")) : {}
-const paymentMethodFromStorage = localStorage.getItem("paymentMethod") ? JSON.parse(localStorage.getItem("paymentMethod")) : {}
+const cartItemsFromLocalStorage = localStorage.getItem("cartItems") && localStorage.getItem("cartItems") !== "undefined" ? JSON.parse(localStorage.getItem("cartItems")) : []
+const userInfoFromLocalStorage = localStorage.getItem("userInfo") && localStorage.getItem("userInfo") !== "undefined" ? JSON.parse(localStorage.getItem("userInfo")) : null
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress") && localStorage.getItem("shippingAddress") !== "undefined" ? JSON.parse(localStorage.getItem("shippingAddress")) : {}
+const paymentMethodFromStorage = localStorage.getItem("paymentMethod") && localStorage.getItem("paymentMethod") !== "undefined" ? JSON.parse(localStorage.getItem("paymentMethod")) : {}
 
 const initialState = {
   cart: {

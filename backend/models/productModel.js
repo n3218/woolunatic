@@ -16,6 +16,16 @@ const reviewSchema = mongoose.Schema(
   }
 )
 
+const holdsSchema = mongoose.Schema({
+  qty: { type: String, required: false },
+  lockedAt: { type: Date, required: false },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
+    ref: "User"
+  }
+})
+
 const productSchema = mongoose.Schema(
   {
     art: { type: String, required: false },
@@ -35,17 +45,7 @@ const productSchema = mongoose.Schema(
     numReviews: { type: Number, required: false, default: 0 },
     minimum: { type: Number, required: false, default: 0 },
     inStock: { type: String, required: false, default: "" },
-    onHold: [
-      {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: false,
-          ref: "User"
-        },
-        lockedAt: { type: Date, required: false },
-        qty: { type: String, required: false }
-      }
-    ],
+    onHold: [holdsSchema],
     outOfStock: { type: Boolean, required: false, default: false },
     novelty: { type: Boolean, required: false, default: false },
     inSale: { type: Boolean, required: false, default: false },
