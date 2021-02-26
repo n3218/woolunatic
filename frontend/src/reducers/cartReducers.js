@@ -54,6 +54,7 @@ export const cartReducer = (state = { items: [] }, action) => {
     case GET_CART_SUCCESS:
       return {
         loading: false,
+        success: true,
         ...action.payload
       }
     case GET_CART_FAIL:

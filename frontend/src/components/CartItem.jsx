@@ -1,10 +1,10 @@
-import React, { memo, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
 import { cartRemoveItemAction } from "../actions/cartActions"
 
-const CartItem = ({ item, qty, setCheckout }) => {
+const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
   const dispatch = useDispatch()
   const productId = item.product._id || item.product
 
@@ -83,15 +83,17 @@ const CartItem = ({ item, qty, setCheckout }) => {
           <div>
             <strong>Item meterage: </strong> {(item.meterage * item.qty * 0.01).toFixed(0)}m
           </div>
-          <div>
-            <Button variant="link" className="text-danger py-2 px-0" onClick={() => removeFromCartHandler(item.product, item.qty)}>
-              <small>delete...</small>
-            </Button>
-          </div>
+          {checkoutStep === "cart" && (
+            <div>
+              <Button variant="link" className="text-danger py-2 px-0" onClick={() => removeFromCartHandler(item.product, item.qty)}>
+                <small>delete...</small>
+              </Button>
+            </div>
+          )}
         </Col>
       </Row>
     </ListGroup.Item>
   )
 }
 
-export default memo(CartItem) // used in CartLayout
+export default CartItem // used in CartLayout

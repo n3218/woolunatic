@@ -45,6 +45,7 @@ const UserListScreen = ({ history }) => {
               <th>ID</th>
               <th>NAME</th>
               <th>EMAIL</th>
+              <th>STORECREDIT</th>
               <th>ADMIN</th>
               <th></th>
               {/* <th></th> */}
@@ -58,6 +59,7 @@ const UserListScreen = ({ history }) => {
                 <td>
                   <a href={`mailto:${user.email}`}>{user.email}</a>
                 </td>
+                <td>{user.storecredit && Number(user.storecredit).toFixed(2)}</td>
                 <td>
                   {user.isAdmin ? ( //
                     <i className="fas fa-check text-success"></i>
