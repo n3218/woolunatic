@@ -9,6 +9,8 @@ import { molliePayAction, payOrderAction } from "../../actions/orderActions"
 import "./PlaceOrderScreen.css"
 import Message from "../../components/Message"
 import CartLayout from "./CartLayout"
+import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
+import { USER_DETAILS_RESET } from "../../constants/userConstants"
 
 const PlaceOrder = ({ match, location, history }) => {
   const dispatch = useDispatch()
@@ -47,6 +49,8 @@ const PlaceOrder = ({ match, location, history }) => {
           }
         }
         if (successPay) {
+          // dispatch({ type: USER_DETAILS_RESET })
+          // dispatch({ type: ORDER_CREATE_RESET })
           history.push(`/orders/${order._id}`)
         }
       }
@@ -60,13 +64,11 @@ const PlaceOrder = ({ match, location, history }) => {
         }
         console.log("proceedMollyPayment: data: ", data)
         dispatch(molliePayAction(data))
-        setTimeout(() => {
-          history.push(`/orders/${order._id}`)
-        }, 9000)
+        // setTimeout(() => {
+        //   history.push(`/orders/${order._id}`)
+        // }, 9000)
       }
     }
-    // dispatch({ type: USER_DETAILS_RESET })
-    // dispatch({ type: ORDER_CREATE_RESET })
   }, [order, history, successPay, dispatch])
 
   useEffect(() => {

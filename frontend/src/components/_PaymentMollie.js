@@ -16,7 +16,7 @@ const MolliePayment = ({ totalPrice, currency = "EUR", orderId }) => {
         },
         description: "My first API payment",
         redirectUrl: `https://woolunatic.herokuapp.com/orders/${orderId}`,
-        webhookUrl: "https://woolunatic.herokuapp.com/webhook"
+        webhookUrl: "https://woolunatic.herokuapp.com/api/orders/molliewebhook"
       })
       .then(payment => {
         console.log("payment: ", payment)
