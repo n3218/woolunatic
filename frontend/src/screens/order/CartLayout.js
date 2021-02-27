@@ -17,11 +17,14 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
-  const { loading: cartLoading, error: cartError, items, success } = cart
+  const { loading: cartLoading, error: cartError, items, success: cartSuccess } = cart
   const [summary, setSummary] = useState({})
   const [warning, setWarning] = useState(false)
   const [checkout, setCheckout] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
+
+  const orderCreate = useSelector(state => state.orderCreate)
+  const { loading: orderLoading, order, success, error: orderError } = orderCreate
 
   if (!userInfo && redirect) {
     history.push(`/login?redirect=${redirect}`)
@@ -73,12 +76,18 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   }, [items])
 
   useEffect(() => {
-    if (success && isChecked && checkout) {
-      console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ", checkout, warning, isChecked)
+    if (cartSuccess && isChecked && checkout) {
+      console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
       dispatch(startCheckoutAction())
       history.push("/checkout/shipping")
     }
-  }, [checkout, isChecked, success])
+  }, [checkout, isChecked, cartSuccess])
+
+  useEffect(() => {
+    if (success && order) {
+      history.push(`/checkout/payorder/${order._id}`)
+    }
+  }, [order, history, success])
 
   // ----------------------------------------------------------------------- Handlers
   const checkoutHandler = () => {
@@ -103,7 +112,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
         totalWeight: summary.totalWeight
       })
     )
-    history.push("/checkout/placeorder")
   }
   // ----------------------------------------------------------------------- /Handlers
 
@@ -113,11 +121,11 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       <h2>{title}</h2>
       {checkoutStep !== "cart" && <CheckoutSteps step={checkoutStep} />}
 
-      {(loading || cartLoading) && <Loader />}
+      {(loading || cartLoading || orderLoading) && <Loader />}
 
-      {(error || cartError) && (
+      {(error || cartError || orderError) && (
         <Message variant="warning" className="py-4" onClose={() => dispatch(getCartAction())}>
-          {error || cartError}
+          {error || cartError || orderError}
         </Message>
       )}
 
@@ -133,7 +141,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
         </Message>
       )}
 
-      {items && items.length > 0 && (
+      {items && items.length > 0 && !(cartSuccess && isChecked && checkout) && (
         <Row>
           <Col md={9} xs={12}>
             {/* --------------------------------------------------------------------SHIPPING/PAYMENT CONTENT */}

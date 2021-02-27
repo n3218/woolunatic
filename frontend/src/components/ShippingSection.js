@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Form, Button, ListGroup, Row, Col } from "react-bootstrap"
 import { saveShippingAddressAction, savePaymentMethodAction } from "../actions/cartActions"
 import { useDispatch } from "react-redux"
+import Message from "./Message"
 
 const ShippingSection = ({ history, checkoutStep, userInfo, cart }) => {
   const dispatch = useDispatch()
@@ -81,6 +82,7 @@ const ShippingSection = ({ history, checkoutStep, userInfo, cart }) => {
               <div>
                 {cart.shippingAddress.city}, {cart.shippingAddress.zipCode}, {cart.shippingAddress.country}
               </div>
+              {checkoutStep === "order" && <div className="my-3">{cart.isDelivered ? <Message variant="success">Shipped on {new Date(cart.deliveredAt).toString()}</Message> : <Message variant="warning">Not shipped</Message>}</div>}
             </>
           )}
         </Col>

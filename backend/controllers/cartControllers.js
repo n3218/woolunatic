@@ -256,3 +256,23 @@ export const startCheckout = asyncHandler(async (req, res) => {
     throw new Error("Cart not found")
   }
 })
+
+// @desc Clear Cart
+// @route PUT /api/cart/:id/clear
+// @access Private
+export const clearCart = asyncHandler(async (req, res) => {
+  console.log("req.params: ", req.params.id)
+  try {
+    const cart = await Cart.findOne({ user: req.params.id })
+    if (cart) {
+      cart.items = []
+      let updatedCart = await cart.save()
+      res.json(updatedCart)
+    } else {
+      res.status(200).json({ message: "Cart is empty" })
+    }
+  } catch {
+    res.status(404)
+    throw new Error("Can not find a product")
+  }
+})

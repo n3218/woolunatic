@@ -20,12 +20,11 @@ import {
   ORDER_MOLLIE_PAY_REQUEST,
   ORDER_MOLLIE_PAY_SUCCESS,
   ORDER_MOLLIE_PAY_FAIL
-  // ORDER_MOLLIE_PAY_RESET
 } from "../constants/orderConstants"
 
 import axios from "axios"
 import { logout } from "./userActions"
-import { CART_CLEAR_ITEMS } from "../constants/cartConstants"
+
 
 export const createOrderAction = order => async (dispatch, getState) => {
   try {
@@ -41,7 +40,6 @@ export const createOrderAction = order => async (dispatch, getState) => {
     }
     const { data } = await axios.post(`/api/orders`, order, config)
     dispatch({ type: ORDER_CREATE_SUCCESS, payload: data })
-    dispatch({ type: CART_CLEAR_ITEMS })
     localStorage.removeItem("cartItems")
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
