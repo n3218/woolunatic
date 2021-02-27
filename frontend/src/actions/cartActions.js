@@ -21,7 +21,10 @@ import {
   GET_CART_FAIL,
   START_CHECKOUT_FAIL,
   START_CHECKOUT_REQUEST,
-  START_CHECKOUT_SUCCESS
+  START_CHECKOUT_SUCCESS,
+  CART_CLEAR_REQUEST,
+  CART_CLEAR_SUCCESS,
+  CART_CLEAR_FAIL
 } from "../constants/cartConstants"
 import axios from "axios"
 
@@ -100,6 +103,27 @@ export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     dispatch({ type: CART_REMOVE_ITEM_FAIL, payload: message })
+  }
+}
+
+export const cartClearAction = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: CART_CLEAR_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.put(`/api/cart/${userInfo._id}/clear`, {}, config)
+    localStorage.setItem("cartItems", JSON.stringify([])) // save to Local Storage
+    dispatch({ type: CART_CLEAR_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: CART_CLEAR_FAIL, payload: message })
   }
 }
 

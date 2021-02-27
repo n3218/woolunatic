@@ -11,24 +11,28 @@ const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
 
       <ListGroup variant="flush">
         <ListGroup.Item>
-          <h4>Total ({items.length}) items</h4>
+          <Row>
+            <Col className="text-center">
+              <h4>Total ({items.length}) items</h4>
+            </Col>
+          </Row>
           <Row>
             <Col>
               <strong>Items price: </strong>
             </Col>
-            <Col className="text-right">€{(items && cart.itemsPrice) || 0}</Col>
+            <Col className="text-right">€{Number(cart.itemsPrice).toFixed(2) || 0}</Col>
           </Row>
           <Row>
             <Col>
               <strong>Tax</strong>
             </Col>
-            <Col className="text-right">€{cart.taxPrice || 0}</Col>
+            <Col className="text-right">€{Number(cart.taxPrice).toFixed(2) || 0}</Col>
           </Row>
           <Row>
             <Col>
               <strong>Shipping price: </strong>
             </Col>
-            <Col className="text-right">€{cart.shippingPrice || 0}</Col>
+            <Col className="text-right">€{Number(cart.shippingPrice).toFixed(2) || 0}</Col>
           </Row>
         </ListGroup.Item>
 
@@ -36,10 +40,10 @@ const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
           <ListGroup.Item>
             <Row>
               <Col>
-                <h5>Order total:</h5>
+                <h5>Total price:</h5>
               </Col>
-              <Col>
-                <h5>€{cart.totalPrice}</h5>
+              <Col className="text-right">
+                <h5>€{Number(cart.totalPrice).toFixed(2)}</h5>
               </Col>
             </Row>
           </ListGroup.Item>

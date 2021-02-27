@@ -1,4 +1,4 @@
-@import "./_cosmo.min.css";
+@import "./cosmo.min.css";
 @import "~react-image-gallery/styles/css/image-gallery.css";
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lato&display=swap");
 /* @font-face {
@@ -94,8 +94,16 @@
 .badge-danger {
   background-color: var(--red);
 }
+
 .badge-primary {
   background-color: var(--blue);
+}
+
+.alert-danger {
+  background-color: #fce3e3;
+}
+.alert-warning {
+  background-color: #ffe8be;
 }
 
 button[disabled] {

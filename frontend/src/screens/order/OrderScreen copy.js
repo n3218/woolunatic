@@ -8,21 +8,17 @@ import { getOrderDetailsAction, deliverOrderAction } from "../../actions/orderAc
 import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from "../../constants/orderConstants"
 import Meta from "../../components/Meta"
 import OrderSummary from "../../components/OrderSummary"
+import Payment from "../../components/Payment/Payment"
 import OrderWeightsSummary from "../../components/OrderWeightsSummary"
-import ShippingSection from "../../components/ShippingSection"
-import PaymentSection from "../../components/PaymentSection/PaymentSection"
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
   const dispatch = useDispatch()
-  const checkoutStep = "order"
 
   const orderDetails = useSelector(state => state.orderDetails)
   const { order, loading, error } = orderDetails
-
   const orderPay = useSelector(state => state.orderPay)
   const { loading: loadingPay, success: successPay } = orderPay
-
   const orderDeliver = useSelector(state => state.orderDeliver)
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver
   const userLogin = useSelector(state => state.userLogin)
@@ -32,16 +28,12 @@ const OrderScreen = ({ match, history }) => {
     if (!userInfo) {
       history.pushState("/login")
     }
-    if (!order || order._id !== orderId || successDeliver || successPay) {
+    if (!order || order._id !== orderId || successPay || successDeliver) {
+      dispatch({ type: ORDER_PAY_RESET })
+      dispatch({ type: ORDER_DELIVER_RESET })
       dispatch(getOrderDetailsAction(orderId))
     }
-    if (successDeliver) {
-      dispatch({ type: ORDER_DELIVER_RESET })
-    }
-    if (successPay) {
-      dispatch({ type: ORDER_PAY_RESET })
-    }
-  }, [dispatch, order, orderId, successDeliver, successPay, history, userInfo])
+  }, [dispatch, order, orderId, successPay, successDeliver, history, userInfo])
 
   const deliverHandler = () => {
     dispatch(deliverOrderAction(order))
@@ -58,8 +50,37 @@ const OrderScreen = ({ match, history }) => {
       <Row>
         <Col md={9} xs={12}>
           <ListGroup variant="flush">
-            <ShippingSection cart={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
-            <PaymentSection order={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
+            <ListGroup.Item>
+              <Row>
+                <Col lg={4} md={4} sm={5}>
+                  <h4>
+                    <nobr>SHIPPING ADDRESS</nobr>
+                  </h4>
+                </Col>
+                <Col>
+                  <div>
+                    <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+                  </div>
+                  <div>{order.user.name}</div>
+                  <div>{order.shippingAddress.address}</div>
+                  <div className="mb-3">
+                    {order.shippingAddress.city}, {order.shippingAddress.zipCode}, {order.shippingAddress.country}
+                  </div>
+                  {order.isDelivered ? <Message variant="success">Shipped on {order.deliveredAt.substring(0, 10)}</Message> : <Message variant="warning">Not shipped</Message>}
+                </Col>
+              </Row>
+            </ListGroup.Item>
+
+            <ListGroup.Item>
+              <Row>
+                <Col lg={4} md={4} sm={5}>
+                  <h4>{!order.isPaid && "SELECT "}PAYMENT METHOD</h4>
+                </Col>
+                <Col>
+                  <Payment order={order} userInfo={userInfo} />
+                </Col>
+              </Row>
+            </ListGroup.Item>
 
             <ListGroup.Item>
               <h4>ORDER ITEMS</h4>
@@ -114,21 +135,11 @@ const OrderScreen = ({ match, history }) => {
         </Col>
         <Col>
           <OrderSummary cart={order} items={order.orderItems} error={error}>
-            {!order.isPaid && order.paymentMethod && (
-              <ListGroup.Item>
-                <Button className="btn-success btn-block" onClick={() => history.push(`/checkout/payorder/${order._id}`)}>
-                  Place order and pay
-                </Button>
-              </ListGroup.Item>
-            )}
-
             {loadingDeliver && <Loader />}
             {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-              <ListGroup.Item>
-                <Button type="button" className="btn-success btn-block bg-blue" onClick={deliverHandler}>
-                  Mark as shipped
-                </Button>
-              </ListGroup.Item>
+              <Button type="button" className="btn-success btn-block bg-blue" onClick={deliverHandler}>
+                Mark as shipped
+              </Button>
             )}
           </OrderSummary>
         </Col>

@@ -13,7 +13,7 @@ const Message = ({ variant, children, header, onClose, className }) => {
 
   if (show) {
     return (
-      <Alert variant={variant} onClose={() => onCloseHandler(onClose)} dismissible className={className}>
+      <Alert variant={variant} onClose={() => onCloseHandler(onClose)} dismissible={onClose} className={`py-3 ${className}`}>
         {header && <Alert.Heading>{header}</Alert.Heading>}
         {children}
       </Alert>
