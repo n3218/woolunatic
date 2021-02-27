@@ -149,6 +149,7 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let orderToUpdate = {}
+  console.log("mollieWebHook: req: ", req)
 
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
@@ -203,6 +204,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       body += chunk.toString()
     })
     .on("end", () => {
+      console.log("mollieWebHook: req.body", body)
       const id = querystring.parse(body).id
       console.log("=============================req.body.id: ", id) //----------ID
       getPayment(id)
