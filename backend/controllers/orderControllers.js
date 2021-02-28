@@ -7,6 +7,7 @@ import { sendMail } from "../mailer/mailer.js"
 
 import { createMollieClient } from "@mollie/api-client"
 import { json } from "express"
+import Product from "../models/productModel.js"
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
 
@@ -86,7 +87,7 @@ export const getOrders = asyncHandler(async (req, res) => {
 // @route GET /api/orders/:id/deliver
 // @access Private/Admin
 export const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id)
+  const order = await Order.findById(req.params.id).populate("user", "name email")
   if (order) {
     order.isDelivered = true
     order.deliveredAt = Date.now()
@@ -103,7 +104,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @access Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
   console.log("=========================updateOrderToPaid:req.body: ", req.body)
-  const order = await Order.findById(req.params.id)
+  const order = await Order.findById(req.params.id).populate("user", "name email")
   if (order) {
     order.isPaid = true
     order.paidAt = Date.now()
@@ -116,7 +117,9 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
       links: JSON.stringify({ self: { href: req.body.links[0]["href"] } })
     }
     const updatedOrder = await order.save()
-    getOrderToMailById(req.params.id)
+    if (updatedOrder) {
+      actionsAfterOrderPay(updatedOrder)
+    }
     console.log("=========================updateOrderToPaid:updatedOrder: ", updatedOrder)
     res.json(updatedOrder)
   } else {
@@ -149,8 +152,6 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let orderToUpdate = {}
-  console.log("mollieWebHook: req: ", req)
-
   const getPayment = async id =>
     await mollieClient.payments.get(id).then(payment => {
       console.log("=============================mollieHook:payment: ", payment) //---- mollieHook:payment
@@ -158,7 +159,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
         id: payment.metadata.order_id,
         paymentMethod: payment.method,
         paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
-        isPaid: false,
+        isPaid: true,
         paymentResult: {
           id: id,
           update_time: Date.now(),
@@ -167,7 +168,6 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
           links: JSON.stringify(payment._links)
         }
       }
-
       if (payment.isPaid()) {
         orderToUpdate.isPaid = true
         console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
@@ -177,11 +177,10 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       console.log("=============================payment.status: ", payment.status) // PAYMENT STATUS
       getOrderToUpdate(orderToUpdate.id)
     })
-
   const getOrderToUpdate = async orderId => {
     console.log("getOrderToUpdate") //---------------------------getOrderToUpdate
     console.log("orderId: ", orderId) //--------------------------------- orderId
-    const order = await Order.findById(orderId)
+    const order = await Order.findById(orderId).populate("user", "name email")
     if (order) {
       order.paymentMethod = orderToUpdate.paymentMethod
       order.paidAt = orderToUpdate.paidAt
@@ -190,36 +189,82 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 
       const updatedOrder = await order.save()
       console.log("updatedOrder: ", updatedOrder) //--------------- UPDATED ORDER
-      getOrderToMailById(orderId)
+
+      if (updatedOrder) {
+        actionsAfterOrderPay(updatedOrder)
+      }
       res.status(200).send("200 OK")
     } else {
       res.status(404)
       throw new Error("Order not found")
     }
   }
-
   let body = ""
   await req
     .on("data", chunk => {
       body += chunk.toString()
     })
     .on("end", () => {
-      console.log("mollieWebHook: req.body", body)
+      // console.log("mollieWebHook: req.body", body)
       const id = querystring.parse(body).id
       console.log("=============================req.body.id: ", id) //----------ID
       getPayment(id)
     })
-})
+}) // https://www.mollie.com/dashboard/org_11322007/payments
 
-// https://www.mollie.com/dashboard/org_11322007/payments
+//
+//
+// @desc Actions after Order Pay
+export const actionsAfterOrderPay = async order => {
+  console.log("======================================actionsAfterOrderPay: order: ", order)
+  const productsMap = {}
+  await Promise.all(
+    order.orderItems.map(async item => {
+      const product = await Product.findById(item.product)
+      if (product) {
+        console.log("actionsAfterOrderPay: product: ", product)
+        if (!productsMap[product._id]) {
+          productsMap[product._id] = product
+        }
 
-export const getOrderToMailById = async orderId => {
-  const order = await Order.findById(orderId).populate("user", "name email")
-  if (order) {
-    return sendMail(order)
-    // res.json(order)
-  } else {
-    // res.status(404)
-    throw new Error("Order not found")
-  }
+        console.log("actionsAfterOrderPay: BEFORE filter productsMap[product._id]: ", productsMap[product._id].onHold)
+        product.onHold.map(hold => {
+          console.log("IF ", hold.user, " = ", order.user._id, " && ", hold.qty, " == ", item.qty)
+          if (String(hold.user) === String(order.user._id) && Number(hold.qty) === Number(item.qty)) {
+            console.log("++++++++++++++++++++++++++++++IF")
+            let index = product.onHold.indexOf(hold)
+            console.log("index: ", index)
+            productsMap[product._id].onHold.splice(index, 1)
+            productsMap[product._id].onHold.filter(hl => String(hl._id) !== String(hold._id))
+          }
+        })
+        console.log("actionsAfterOrderPay: AFTER filter productsMap[product._id]: ", productsMap[product._id].onHold)
+      } else {
+        console.error("Product not found")
+      }
+    })
+  )
+    .then(async result => {
+      console.log("--------------result: ", result)
+
+      console.log("--------------productsMap: ", productsMap)
+
+      await Promise.all(
+        Object.keys(productsMap).map(async key => {
+          let updatedProduct = await Product.findByIdAndUpdate(productsMap[key]._id, productsMap[key])
+          if (updatedProduct) {
+            return updatedProduct
+          } else {
+            console.error("Can't update a product")
+          }
+        })
+      )
+        .then(doc => console.log("doc: ", doc))
+        .catch(err => console.error("Error on updating Products: ", err))
+    })
+    .catch(err => console.error("Error on sendMail: ", err))
+
+  await sendMail(order)
+    .then(doc => console.log("doc: ", doc))
+    .catch(err => console.error("Error on sendMail: ", err))
 }

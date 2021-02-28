@@ -27,6 +27,7 @@ const upload = multer({
   fileFilter: multerFilter
 })
 
+// "/api/upload"
 router //
   .route("/")
   .post(protect, admin, upload.array("image", 10), uploadProductImages)

@@ -12,6 +12,7 @@ import {
 } from "../controllers/userControllers.js"
 import { protect, admin } from "../middleware/authMiddleware.js"
 
+// "/api/users"
 router //
   .route("/")
   .post(registerUser)

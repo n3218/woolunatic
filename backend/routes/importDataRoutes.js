@@ -4,6 +4,7 @@ import multer from "multer"
 import fs from "fs"
 import csv from "fast-csv"
 import Product from "../models/productModel.js"
+// "/api/importdata"
 
 const router = express.Router()
 

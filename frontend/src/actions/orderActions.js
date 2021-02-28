@@ -19,12 +19,14 @@ import {
   ORDER_DELIVER_FAIL,
   ORDER_MOLLIE_PAY_REQUEST,
   ORDER_MOLLIE_PAY_SUCCESS,
-  ORDER_MOLLIE_PAY_FAIL
+  ORDER_MOLLIE_PAY_FAIL,
+  ORDER_REMOVE_ITEMS_FROM_STOCK_REQUEST,
+  ORDER_REMOVE_ITEMS_FROM_STOCK_SUCCESS,
+  ORDER_REMOVE_ITEMS_FROM_STOCK_FAIL
 } from "../constants/orderConstants"
 
 import axios from "axios"
 import { logout } from "./userActions"
-
 
 export const createOrderAction = order => async (dispatch, getState) => {
   try {
@@ -69,53 +71,6 @@ export const getOrderDetailsAction = id => async (dispatch, getState) => {
       dispatch(logout())
     }
     dispatch({ type: ORDER_DETAILS_FAIL, payload: message })
-  }
-}
-
-export const payOrderAction = (orderId, paymentResult) => async (dispatch, getState) => {
-  console.log("payOrderAction: orderId: ", orderId)
-  console.log("payOrderAction: paymentResult: ", paymentResult)
-  try {
-    dispatch({ type: ORDER_PAY_REQUEST })
-    const {
-      userLogin: { userInfo }
-    } = getState()
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`
-      }
-    }
-    const { data } = await axios.put(`/api/orders/${orderId}/pay`, paymentResult, config)
-    dispatch({ type: ORDER_PAY_SUCCESS, payload: data })
-  } catch (error) {
-    const message = error.response && error.response.data.message ? error.response.data.message : error.message
-    if (message === "Not authorized, token failed") {
-      dispatch(logout())
-    }
-    dispatch({ type: ORDER_PAY_FAIL, payload: message })
-  }
-}
-
-export const deliverOrderAction = order => async (dispatch, getState) => {
-  try {
-    dispatch({ type: ORDER_DELIVER_REQUEST })
-    const {
-      userLogin: { userInfo }
-    } = getState()
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`
-      }
-    }
-    const { data } = await axios.put(`/api/orders/${order._id}/deliver`, {}, config)
-    dispatch({ type: ORDER_DELIVER_SUCCESS, payload: data })
-  } catch (error) {
-    const message = error.response && error.response.data.message ? error.response.data.message : error.message
-    if (message === "Not authorized, token failed") {
-      dispatch(logout())
-    }
-    dispatch({ type: ORDER_DELIVER_FAIL, payload: message })
   }
 }
 
@@ -165,6 +120,53 @@ export const listOrdersAction = (pageNumber = "") => async (dispatch, getState) 
   }
 }
 
+export const deliverOrderAction = order => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_DELIVER_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.put(`/api/orders/${order._id}/deliver`, {}, config)
+    dispatch({ type: ORDER_DELIVER_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({ type: ORDER_DELIVER_FAIL, payload: message })
+  }
+}
+
+export const payOrderAction = (orderId, paymentResult) => async (dispatch, getState) => {
+  console.log("payOrderAction: orderId: ", orderId)
+  console.log("payOrderAction: paymentResult: ", paymentResult)
+  try {
+    dispatch({ type: ORDER_PAY_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.put(`/api/orders/${orderId}/pay`, paymentResult, config)
+    dispatch({ type: ORDER_PAY_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({ type: ORDER_PAY_FAIL, payload: message })
+  }
+}
+
 export const molliePayAction = orderData => async (dispatch, getState) => {
   console.log("molliePayAction: orderData:", orderData)
   try {
@@ -178,10 +180,8 @@ export const molliePayAction = orderData => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-
     console.log("molliePayAction: orderData.orderId: ", orderData.orderId)
     const { data } = await axios.put(`/api/orders/${orderData.orderId}/molliepay`, orderData, config)
-
     console.log("molliePayAction: data: ", data)
     dispatch({ type: ORDER_MOLLIE_PAY_SUCCESS, payload: data })
     window.location.href = data
@@ -192,4 +192,29 @@ export const molliePayAction = orderData => async (dispatch, getState) => {
     }
     dispatch({ type: ORDER_MOLLIE_PAY_FAIL, payload: message })
   }
+}
+
+export const orderRemoveItemsFromStockAction = order => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_REMOVE_ITEMS_FROM_STOCK_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const { data } = await axios.post(`/api/products/removefromdb`, order, config)
+    if (data) {
+      console.log("=========================REMOVEProductsFromDBAction:data: ", data)
+      dispatch({ type: ORDER_REMOVE_ITEMS_FROM_STOCK_SUCCESS, payload: data })
+    }
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    console.error(message)
+    dispatch({ type: ORDER_REMOVE_ITEMS_FROM_STOCK_FAIL, payload: message })
+  }
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }

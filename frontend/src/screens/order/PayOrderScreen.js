@@ -8,8 +8,8 @@ import { getOrderDetailsAction, molliePayAction, payOrderAction } from "../../ac
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import { ORDER_CREATE_RESET, ORDER_PAY_RESET } from "../../constants/orderConstants"
-import { USER_DETAILS_RESET } from "../../constants/userConstants"
-import { CART_CLEAR_ITEMS } from "../../constants/cartConstants"
+// import { USER_DETAILS_RESET } from "../../constants/userConstants"
+// import { CART_CLEAR_ITEMS } from "../../constants/cartConstants"
 import "./PayOrderScreen.css"
 import { cartClearAction } from "../../actions/cartActions"
 
@@ -27,8 +27,7 @@ const PayOrderScreen = ({ match, history }) => {
   useEffect(() => {
     if (!order) {
       dispatch(getOrderDetailsAction(orderId))
-    }
-    if (order) {
+    } else {
       console.log("order: ", order)
 
       if (order && order.paymentMethod === "PayPal") {
@@ -47,7 +46,8 @@ const PayOrderScreen = ({ match, history }) => {
         }
 
         console.log("order.paymentMethod: ", order.paymentMethod)
-        if (!successPay && !order.isPaid) {
+
+        if (!successPay && !(order && order.isPaid)) {
           if (!window.paypal) {
             addPayPalScript()
           } else {
@@ -72,7 +72,7 @@ const PayOrderScreen = ({ match, history }) => {
         dispatch(molliePayAction(data))
       }
     }
-  }, [order, history, successPay, dispatch])
+  }, [order, history, successPay, dispatch, orderId])
 
   useEffect(() => {
     console.log("--------------sdkReady: ", sdkReady)
