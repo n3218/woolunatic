@@ -142,11 +142,16 @@ export const molliePay = asyncHandler(async (req, res) => {
     metadata: { order_id: String(orderId) }
   }
   console.log("molliePay: params:", params)
-  await mollieClient.payments.create(params).then(payment => {
-    console.log("molliePay: payment: ", payment)
-    console.log("molliePay: payment.getPaymentUrl(): ", payment.getPaymentUrl())
-    res.send(payment.getPaymentUrl())
-  })
+  await mollieClient.payments
+    .create(params)
+    .then(payment => {
+      console.log("molliePay: payment.id: ", payment.id)
+      console.log("molliePay: payment.getPaymentUrl(): ", payment.getPaymentUrl())
+      res.send(payment.getPaymentUrl())
+    })
+    .catch(err => {
+      console.error("Error on sending Mollie Payment URL: ", err)
+    })
 })
 
 // @desc get Order status from MOLLIE
