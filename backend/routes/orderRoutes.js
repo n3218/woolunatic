@@ -13,6 +13,7 @@ import {
 } from "../controllers/orderControllers.js"
 import { protect, admin } from "../middleware/authMiddleware.js"
 
+// "/api/orders"
 router //
   .route("/")
   .post(protect, createNewOrder)

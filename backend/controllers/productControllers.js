@@ -269,48 +269,48 @@ export const createProductReview = asyncHandler(async (req, res) => {
 // @desc   Check Products in Stock
 // @route  POST /api/products/check
 // @access Private
-export const checkProductsInStock = asyncHandler(async (req, res) => {
-  const cartItems = req.body
-  const checkItem = async item => {
-    const product = await Product.findById(item.product)
-    if (product) {
-      if (product.outOfStock) {
-        return { ...item, message: "Product out of Stock" }
-      } else if (product.inStock) {
-        const arr = product.inStock
-          .split(",")
-          .map(el => Number(el.trim()))
-          .sort((a, b) => a - b)
-        if (arr.includes(item.qty)) {
-          return { ...item, message: "" }
-        } else {
-          if (product.minimum > 0) {
-            let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
-            let maxVal = arr[arr.length - 1] - minLeftover
-            if (item.qty >= product.minimum && item.qty <= maxVal) {
-              return item
-            } else {
-              return { ...item, message: "Weight not found" }
-            }
-          } else {
-            return { ...item, message: "Weight not found" }
-          }
-        }
-      }
-    } else {
-      return { ...item, message: "Product not Found" }
-    }
-  }
-  const checkedItems = cartItems.map(item => checkItem(item))
-  const results = await Promise.all(checkedItems)
-  console.log("=================checkProductsInStock:results: ", results)
-  if (results) {
-    res.status(200).json(results)
-  } else {
-    res.status(404)
-    throw new Error("Checking items in stock failed")
-  }
-})
+// export const checkProductsInStock = asyncHandler(async (req, res) => {
+//   const cartItems = req.body
+//   const checkItem = async item => {
+//     const product = await Product.findById(item.product)
+//     if (product) {
+//       if (product.outOfStock) {
+//         return { ...item, message: "Product out of Stock" }
+//       } else if (product.inStock) {
+//         const arr = product.inStock
+//           .split(",")
+//           .map(el => Number(el.trim()))
+//           .sort((a, b) => a - b)
+//         if (arr.includes(item.qty)) {
+//           return { ...item, message: "" }
+//         } else {
+//           if (product.minimum > 0) {
+//             let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
+//             let maxVal = arr[arr.length - 1] - minLeftover
+//             if (item.qty >= product.minimum && item.qty <= maxVal) {
+//               return item
+//             } else {
+//               return { ...item, message: "Weight not found" }
+//             }
+//           } else {
+//             return { ...item, message: "Weight not found" }
+//           }
+//         }
+//       }
+//     } else {
+//       return { ...item, message: "Product not Found" }
+//     }
+//   }
+//   const checkedItems = cartItems.map(item => checkItem(item))
+//   const results = await Promise.all(checkedItems)
+//   console.log("=================checkProductsInStock:results: ", results)
+//   if (results) {
+//     res.status(200).json(results)
+//   } else {
+//     res.status(404)
+//     throw new Error("Checking items in stock failed")
+//   }
+// })
 
 // @desc   Remove Product from Stock or DB
 // @route  POST /api/products/removefromdb
@@ -399,10 +399,10 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
 })
 
 // @desc   Delete All Products from DB
-// @route  DELETE /api/products/delete/bulk
+// @route  DELETE /api/products
 // @access Private/+Admin
-export const deleteAllProductsData = asyncHandler(async (req, res) => {
-  console.log("deleteAllProductsData")
+export const deleteAllProducts = asyncHandler(async (req, res) => {
+  console.log("deleteAllProducts")
   try {
     await Product.deleteMany({})
     console.log("Data Destroyed!")
@@ -410,6 +410,6 @@ export const deleteAllProductsData = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error(error)
     res.status(404)
-    throw new Error("Problem with deleting Products from DB")
+    throw new Error("Problem with deleting all Products from DB")
   }
 })

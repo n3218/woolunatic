@@ -248,7 +248,7 @@ export const deleteAllProductsDataAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    await axios.delete(`/api/products/delete/bulk`, config)
+    await axios.delete(`/api/products`, config)
     dispatch({ type: DELETE_ALL_PRODUCTS_DATA_SUCCESS })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message

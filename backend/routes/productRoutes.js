@@ -1,13 +1,15 @@
 import express from "express"
 const router = express.Router()
 
-import { createProduct, createProductReview, deleteProduct, getProductById, getProducts, updateProduct, getTopProducts, checkProductsInStock, removeItemsFromDB, deleteProductImage, deleteAllProductsData } from "../controllers/productControllers.js"
+import { createProduct, createProductReview, deleteProduct, getProductById, getProducts, updateProduct, getTopProducts, removeItemsFromDB, deleteProductImage, deleteAllProducts } from "../controllers/productControllers.js"
 import { protect, admin } from "../middleware/authMiddleware.js"
 
+// "/api/products"
 router //
   .route("/")
   .get(getProducts)
   .post(protect, admin, createProduct)
+  .delete(protect, admin, deleteAllProducts)
 router //
   .get("/top", getTopProducts)
 router //
@@ -19,16 +21,10 @@ router //
   .route("/:id/reviews")
   .post(protect, createProductReview)
 router //
-  .route("/check")
-  .post(protect, checkProductsInStock)
-router //
   .route("/removefromdb")
   .post(protect, admin, removeItemsFromDB)
 router //
   .route("/deleteimage/:img")
   .delete(protect, admin, deleteProductImage)
-router //
-  .route("/delete/bulk")
-  .delete(protect, admin, deleteAllProductsData)
 
 export default router

@@ -11,6 +11,7 @@ import CheckoutSteps from "../../components/CheckoutSteps"
 import OrderWeightsSummary from "../../components/OrderWeightsSummary"
 import Loader from "../../components/Loader"
 import { createOrderAction } from "../../actions/orderActions"
+import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
 
 const CartLayout = ({ history, redirect, checkoutStep, title, children, loading, error }) => {
   const dispatch = useDispatch()
@@ -85,9 +86,10 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
   useEffect(() => {
     if (success && order) {
+      dispatch({ type: ORDER_CREATE_RESET })
       history.push(`/checkout/payorder/${order._id}`)
     }
-  }, [order, history, success])
+  }, [order, history, success, dispatch])
 
   // ----------------------------------------------------------------------- Handlers
   const checkoutHandler = () => {
