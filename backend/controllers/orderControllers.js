@@ -159,31 +159,36 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let orderToUpdate = {}
-  const getPayment = async id =>
-    await mollieClient.payments.get(id).then(payment => {
-      console.log("=============================mollieHook:payment: ", payment) //---- mollieHook:payment
-      orderToUpdate = {
-        id: payment.metadata.order_id,
-        paymentMethod: payment.method,
-        paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
-        isPaid: true,
-        paymentResult: {
-          id: id,
-          update_time: Date.now(),
-          status: payment.status,
-          email_address: payment.billingEmail || "",
-          links: JSON.stringify(payment._links)
+  const getPayment = async id => {
+    try {
+      await mollieClient.payments.get(id).then(payment => {
+        console.log("=============================mollieHook:payment: ", payment) //---- mollieHook:payment
+        orderToUpdate = {
+          id: payment.metadata.order_id,
+          paymentMethod: payment.method,
+          paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
+          isPaid: true,
+          paymentResult: {
+            id: id,
+            update_time: Date.now(),
+            status: payment.status,
+            email_address: payment.billingEmail || "",
+            links: JSON.stringify(payment._links)
+          }
         }
-      }
-      if (payment.isPaid()) {
-        orderToUpdate.isPaid = true
-        console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-      } else if (!payment.isOpen()) {
-        console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-      }
-      console.log("=============================payment.status: ", payment.status) // PAYMENT STATUS
-      getOrderToUpdate(orderToUpdate.id)
-    })
+        if (payment.isPaid()) {
+          orderToUpdate.isPaid = true
+          console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
+        } else if (!payment.isOpen()) {
+          console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
+        }
+        console.log("=============================payment.status: ", payment.status) // PAYMENT STATUS
+        getOrderToUpdate(orderToUpdate.id)
+      })
+    } catch (err) {
+      console.warn("Error on Mollie Hook: ", err)
+    }
+  }
   const getOrderToUpdate = async orderId => {
     console.log("getOrderToUpdate") //---------------------------getOrderToUpdate
     console.log("orderId: ", orderId) //--------------------------------- orderId
