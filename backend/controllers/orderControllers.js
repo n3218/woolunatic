@@ -143,6 +143,8 @@ export const molliePay = asyncHandler(async (req, res) => {
   }
   console.log("molliePay: params:", params)
   await mollieClient.payments.create(params).then(payment => {
+    console.log("molliePay: payment: ", payment)
+    console.log("molliePay: payment.getPaymentUrl(): ", payment.getPaymentUrl())
     res.send(payment.getPaymentUrl())
   })
 })
@@ -199,13 +201,14 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       throw new Error("Order not found")
     }
   }
+
   let body = ""
   await req
     .on("data", chunk => {
       body += chunk.toString()
     })
     .on("end", () => {
-      // console.log("mollieWebHook: req.body", body)
+      console.log("mollieWebHook: req.body", body)
       const id = querystring.parse(body).id
       console.log("=============================req.body.id: ", id) //----------ID
       getPayment(id)
