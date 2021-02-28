@@ -117,7 +117,7 @@ const OrderScreen = ({ match, history }) => {
             {!order.isPaid && order.paymentMethod && (
               <ListGroup.Item>
                 <Button className="btn-success btn-block" onClick={() => history.push(`/checkout/payorder/${order._id}`)}>
-                  Place order and pay
+                  Pay Order
                 </Button>
               </ListGroup.Item>
             )}
