@@ -208,7 +208,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
             console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
 
             if (updatedOrder) {
-              saveOrderToMollie(updatedOrder)
+              // saveOrderToMollie(updatedOrder)
               actionsAfterOrderPay(updatedOrder)
             }
           } catch (err) {
