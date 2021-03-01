@@ -234,15 +234,15 @@ export const actionsAfterOrderPay = async order => {
           console.log("IF ", hold.user, " = ", order.user._id, " && ", hold.qty, " == ", item.qty)
           if (String(hold.user) === String(order.user._id) && Number(hold.qty) === Number(item.qty)) {
             console.log("++++++++++++++++++++++++++++++IF")
-            let index = product.onHold.indexOf(hold)
+            let index = productsMap[product._id].onHold.indexOf(hold)
             console.log("index: ", index)
             productsMap[product._id].onHold.splice(index, 1)
             console.log("V1=", productsMap[product._id].onHold)
-            productsMap[product._id].onHold.filter(hl => String(hl._id) !== String(hold._id))
-            console.log("V2=", productsMap[product._id].onHold)
+            // productsMap[product._id].onHold.filter(hl => String(hl._id) !== String(hold._id))
+            // console.log("V2=", productsMap[product._id].onHold)
           }
         })
-        console.log("actionsAfterOrderPay: AFTER filter productsMap[product._id]: ", productsMap[product._id].onHold)
+        console.log("actionsAfterOrderPay: AFTER filter productsMap[product._id].onHold: ", productsMap[product._id].onHold)
       } else {
         console.error("Product not found")
       }
