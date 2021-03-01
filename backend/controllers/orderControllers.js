@@ -193,8 +193,8 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
             links: JSON.stringify(payment._links)
           }
         }
-        console.log("mollieWebHook: payment.status: ", payment.status) // PAYMENT STATUS
-        console.log("mollieWebHook: payment.isPaid(): ", payment.isPaid()) // PAYMENT ISPAID
+        console.log("============================= mollieWebHook: payment.status: ", payment.status) // PAYMENT STATUS
+        console.log("============================= mollieWebHook: payment.isPaid(): ", payment.isPaid()) // PAYMENT ISPAID
 
         const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email")
         if (order) {
@@ -208,8 +208,8 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
             console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
 
             if (updatedOrder) {
-              saveOrderToMollie(updatedOrder)
               actionsAfterOrderPay(updatedOrder)
+              saveOrderToMollie(updatedOrder)
             }
           } catch (err) {
             res.status(404)
@@ -230,6 +230,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   }
 
   const saveOrderToMollie = async updatedOrder => {
+    console.log("---------------------mollieWebHook: updatedOrder:, updatedOrder")
     const vat = Number(21.0)
     try {
       const mollieItems = updatedOrder.orderItems.map(it => ({
