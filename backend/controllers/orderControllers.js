@@ -174,7 +174,6 @@ export const molliePay = asyncHandler(async (req, res) => {
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let orderToUpdate = {}
   let id = req.body.id
-
   try {
     await mollieClient.payments
       .get(id)
@@ -195,18 +194,14 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
         }
         console.log("============================= mollieWebHook: payment.status: ", payment.status) // PAYMENT STATUS
         console.log("============================= mollieWebHook: payment.isPaid(): ", payment.isPaid()) // PAYMENT ISPAID
-
         const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email")
         if (order) {
           order.paymentMethod = orderToUpdate.paymentMethod
           order.paidAt = orderToUpdate.paidAt
           order.paymentResult = orderToUpdate.paymentResult
           order.isPaid = orderToUpdate.isPaid
-
           try {
             const updatedOrder = await order.save()
-            console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
-
             if (updatedOrder) {
               actionsAfterOrderPay(updatedOrder)
               saveOrderToMollie(updatedOrder)
@@ -230,8 +225,9 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   }
 
   const saveOrderToMollie = async updatedOrder => {
-    console.log("---------------------mollieWebHook: updatedOrder:, updatedOrder")
+    console.log("/////////////saveOrderToMollie: updatedOrder: ", updatedOrder)
     const vat = Number(21.0)
+
     try {
       const mollieItems = updatedOrder.orderItems.map(it => ({
         type: "",
@@ -305,7 +301,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
         lines: []
       })
 
-      console.log("mollieOrder: ", mollieOrder)
+      console.log("//////////////////////////mollieOrder: ", mollieOrder)
     } catch (err) {
       console.warn("Error on create MollieOrder: ", err)
     }
@@ -316,7 +312,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 //
 // @desc Actions after Order Pay
 export const actionsAfterOrderPay = async order => {
-  // console.log("======================================actionsAfterOrderPay: order: ", order)
+  console.log("-------------------------------- actionsAfterOrderPay")
   const productsMap = {}
   await Promise.all(
     order.orderItems.map(async item => {
@@ -342,7 +338,6 @@ export const actionsAfterOrderPay = async order => {
     })
   )
     .then(async () => {
-      // console.log("--------------productsMap: ", productsMap)
       await Promise.all(
         Object.keys(productsMap).map(async key => {
           let updatedProduct = await Product.findByIdAndUpdate(productsMap[key]._id, productsMap[key])
