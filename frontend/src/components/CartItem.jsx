@@ -27,7 +27,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
   }
   useEffect(() => {
     if (item.image) {
-      return checkImg(item.image)
+      checkImg(item.image)
     }
   }, [item])
 

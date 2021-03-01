@@ -8,6 +8,7 @@ const Product = ({ product }) => {
   const noimage = "/uploads/noimage/noimage.webp"
   const [imgSrc, setImgSrc] = useState(noimage)
   const thumbPath = "/uploads/thumbs/thumb-"
+
   const checkImg = async img => {
     await fetch(thumbPath + img).then(res => {
       if (res.ok) {
@@ -17,9 +18,10 @@ const Product = ({ product }) => {
       }
     })
   }
+
   useEffect(() => {
     if (product.image && product.image[0]) {
-      return checkImg(product.image[0])
+      checkImg(product.image[0])
     }
   }, [product])
 
