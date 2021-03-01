@@ -192,7 +192,9 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
           try {
             const updatedOrder = await order.save()
             console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
+
             if (updatedOrder) {
+              saveOrderToMollie(updatedOrder)
               actionsAfterOrderPay(updatedOrder)
             }
           } catch (err) {
@@ -212,6 +214,84 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   } catch (err) {
     console.warn("Error on mollieClient.payments.get: ", err)
   }
+
+  const saveOrderToMollie = async updatedOrder => {
+    const vat = "21.00"
+    try {
+      const mollieItems = updatedOrder.orderItems.map(it => ({
+        type: "",
+        sku: "",
+        name: it.art + " " + it.brand + " " + it.name + " " + it.color,
+        productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
+        imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
+        quantity: it.qty / 100,
+        vatRate: vat,
+        unitPrice: {
+          currency: "EUR",
+          value: (it.price * it.qty) / 100
+        },
+        totalAmount: {
+          currency: "EUR",
+          value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
+        },
+        discountAmount: {
+          currency: "EUR",
+          value: ""
+        },
+        vatAmount: {
+          currency: "EUR",
+          value: ((it.price * it.qty) / 100) * 0.21
+        }
+      }))
+
+      const mollieOrder = await mollieClient.orders.create({
+        amount: {
+          value: updatedOrder.totalPrice,
+          currency: "EUR"
+        },
+        billingAddress: {
+          organizationName: updatedOrder.user.name,
+          streetAndNumber: updatedOrder.shippingAddress.address,
+          city: updatedOrder.shippingAddress.city,
+          region: "",
+          postalCode: updatedOrder.shippingAddress.zipCode,
+          country: updatedOrder.shippingAddress.country,
+          title: "",
+          givenName: updatedOrder.user.name,
+          familyName: "",
+          email: updatedOrder.user.email,
+          phone: ""
+        },
+        shippingAddress: {
+          organizationName: updatedOrder.user.name,
+          streetAndNumber: updatedOrder.shippingAddress.address,
+          city: updatedOrder.shippingAddress.city,
+          region: "",
+          postalCode: updatedOrder.shippingAddress.zipCode,
+          country: updatedOrder.shippingAddress.country,
+          title: "",
+          givenName: updatedOrder.user.name,
+          familyName: "",
+          email: updatedOrder.user.email
+        },
+        metadata: {
+          order_id: updatedOrder._id,
+          description: "Woolunatics.Nl order"
+        },
+        consumerDateOfBirth: "",
+        locale: updatedOrder.shippingAddress.country,
+        orderNumber: updatedOrder._id,
+        redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(updatedOrder._id)}`,
+        webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
+        method: updatedOrder.paymentMethod,
+        lines: mollieItems
+      })
+
+      console.log("mollieOrder: ", mollieOrder)
+    } catch (error) {
+      console.warn(error)
+    }
+  }
 }) // https://www.mollie.com/dashboard/org_11322007/payments
 
 //
@@ -224,22 +304,17 @@ export const actionsAfterOrderPay = async order => {
     order.orderItems.map(async item => {
       const product = await Product.findById(item.product)
       if (product) {
-        console.log("actionsAfterOrderPay: product: ", product)
         if (!productsMap[product._id]) {
           productsMap[product._id] = product
         }
-
         console.log("actionsAfterOrderPay: BEFORE filter productsMap[product._id]: ", productsMap[product._id].onHold)
         product.onHold.map(hold => {
           console.log("IF ", hold.user, " = ", order.user._id, " && ", hold.qty, " == ", item.qty)
           if (String(hold.user) === String(order.user._id) && Number(hold.qty) === Number(item.qty)) {
             console.log("++++++++++++++++++++++++++++++IF")
             let index = productsMap[product._id].onHold.indexOf(hold)
-            console.log("index: ", index)
+            console.log("index: ", hold.qty, index)
             productsMap[product._id].onHold.splice(index, 1)
-            console.log("V1=", productsMap[product._id].onHold)
-            // productsMap[product._id].onHold.filter(hl => String(hl._id) !== String(hold._id))
-            // console.log("V2=", productsMap[product._id].onHold)
           }
         })
         console.log("actionsAfterOrderPay: AFTER filter productsMap[product._id].onHold: ", productsMap[product._id].onHold)
@@ -261,7 +336,7 @@ export const actionsAfterOrderPay = async order => {
           }
         })
       )
-        .then(doc => console.log("doc: ", doc))
+        .then(results => console.log("results: ", results))
         .catch(err => console.error("Error on updating Products: ", err))
     })
     .catch(err => console.error("Error on sendMail: ", err))
