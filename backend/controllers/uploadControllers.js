@@ -73,17 +73,20 @@ export const deleteImages = asyncHandler(async (req, res) => {
   const minithumbs = fs.readdirSync("uploads/minithumbs/")
 
   const filesPromise = files.forEach(async file => {
-    if (file.name !== "file.txt") {
+    console.log("file: ", file)
+    if (file !== "file.txt") {
       await fs.unlinkSync("uploads/products/" + file)
     }
   })
   const thumbsPromise = thumbs.forEach(async file => {
-    if (file.name !== "file.txt") {
+    console.log("file: ", file)
+    if (file !== "file.txt") {
       await fs.unlinkSync("uploads/thumbs/" + file)
     }
   })
   const minithumbsPromise = minithumbs.forEach(async file => {
-    if (file.name !== "file.txt") {
+    console.log("file: ", file)
+    if (file !== "file.txt") {
       await fs.unlinkSync("uploads/minithumbs/" + file)
     }
   })

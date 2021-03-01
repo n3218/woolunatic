@@ -288,8 +288,8 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       })
 
       console.log("mollieOrder: ", mollieOrder)
-    } catch (error) {
-      console.warn(error)
+    } catch (err) {
+      console.warn("Error on create MollieOrder: ", err)
     }
   }
 }) // https://www.mollie.com/dashboard/org_11322007/payments
