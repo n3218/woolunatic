@@ -159,6 +159,7 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let orderToUpdate = {}
+
   const getPayment = async id => {
     try {
       await mollieClient.payments.get(id).then(payment => {
@@ -189,6 +190,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       console.warn("Error on Mollie Hook: ", err)
     }
   }
+
   const getOrderToUpdate = async orderId => {
     console.log("getOrderToUpdate") //---------------------------getOrderToUpdate
     console.log("orderId: ", orderId) //--------------------------------- orderId
@@ -205,7 +207,6 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
       if (updatedOrder) {
         actionsAfterOrderPay(updatedOrder)
       }
-      res.status(200).send("200 OK")
     } else {
       res.status(404)
       throw new Error("Order not found")
@@ -213,16 +214,27 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   }
 
   let body = ""
-  await req
+  let result = await req
     .on("data", chunk => {
       body += chunk.toString()
     })
     .on("end", () => {
       console.log("mollieWebHook: req.body", body)
-      const id = querystring.parse(body).id
+      // const id = querystring.parse(body).id
+      const id = body.id
+
       console.log("=============================req.body.id: ", id) //----------ID
-      getPayment(id)
+      // getPayment(id)
+      console.log("id: ", id)
+      return body.id
     })
+
+  // res.status(200).send(req.body.id)
+
+  if (result) {
+    console.log("req.body.id: ", req.body.id)
+    res.status(200).send(req.body.id)
+  }
 }) // https://www.mollie.com/dashboard/org_11322007/payments
 
 //
