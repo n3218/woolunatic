@@ -208,7 +208,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
             console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
 
             if (updatedOrder) {
-              // saveOrderToMollie(updatedOrder)
+              saveOrderToMollie(updatedOrder)
               actionsAfterOrderPay(updatedOrder)
             }
           } catch (err) {
@@ -315,7 +315,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 //
 // @desc Actions after Order Pay
 export const actionsAfterOrderPay = async order => {
-  console.log("======================================actionsAfterOrderPay: order: ", order)
+  // console.log("======================================actionsAfterOrderPay: order: ", order)
   const productsMap = {}
   await Promise.all(
     order.orderItems.map(async item => {
@@ -324,7 +324,7 @@ export const actionsAfterOrderPay = async order => {
         if (!productsMap[product._id]) {
           productsMap[product._id] = product
         }
-        console.log("actionsAfterOrderPay: BEFORE filter productsMap[product._id]: ", productsMap[product._id].onHold)
+        console.log("actionsAfterOrderPay: BEFORE filter product.onHold: ", productsMap[product._id].onHold)
         product.onHold.map(hold => {
           console.log("IF ", hold.user, " = ", order.user._id, " && ", hold.qty, " == ", item.qty)
           if (String(hold.user) === String(order.user._id) && Number(hold.qty) === Number(item.qty)) {
@@ -334,15 +334,14 @@ export const actionsAfterOrderPay = async order => {
             productsMap[product._id].onHold.splice(index, 1)
           }
         })
-        console.log("actionsAfterOrderPay: AFTER filter productsMap[product._id].onHold: ", productsMap[product._id].onHold)
+        console.log("actionsAfterOrderPay: AFTER filter product.onHold: ", productsMap[product._id].onHold)
       } else {
         console.error("Product not found")
       }
     })
   )
     .then(async () => {
-      console.log("--------------productsMap: ", productsMap)
-
+      // console.log("--------------productsMap: ", productsMap)
       await Promise.all(
         Object.keys(productsMap).map(async key => {
           let updatedProduct = await Product.findByIdAndUpdate(productsMap[key]._id, productsMap[key])
@@ -353,7 +352,7 @@ export const actionsAfterOrderPay = async order => {
           }
         })
       )
-        .then(results => console.log("results: ", results))
+        .then(results => console.log("Successfully updated Products: ", results.length))
         .catch(err => console.error("Error on updating Products: ", err))
     })
     .catch(err => console.error("Error on sendMail: ", err))
