@@ -29,19 +29,19 @@ const OrderScreen = ({ match, history }) => {
   const { userInfo } = userLogin
 
   useEffect(() => {
+    if (successDeliver || successPay) dispatch(getOrderDetailsAction(orderId))
+    if (successDeliver) dispatch({ type: ORDER_DELIVER_RESET })
+    if (successPay) dispatch({ type: ORDER_PAY_RESET })
+  }, [successPay])
+
+  useEffect(() => {
     if (!userInfo) {
       history.pushState("/login")
     }
-    if (!order || order._id !== orderId || successDeliver || successPay) {
+    if (!order || order._id !== orderId) {
       dispatch(getOrderDetailsAction(orderId))
     }
-    if (successDeliver) {
-      dispatch({ type: ORDER_DELIVER_RESET })
-    }
-    if (successPay) {
-      dispatch({ type: ORDER_PAY_RESET })
-    }
-  }, [dispatch, order, orderId, successDeliver, successPay, history, userInfo])
+  }, [dispatch, order, orderId, history, userInfo])
 
   const deliverHandler = () => {
     dispatch(deliverOrderAction(order))
