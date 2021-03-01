@@ -237,7 +237,9 @@ export const actionsAfterOrderPay = async order => {
             let index = product.onHold.indexOf(hold)
             console.log("index: ", index)
             productsMap[product._id].onHold.splice(index, 1)
+            console.log("V1=", productsMap[product._id].onHold)
             productsMap[product._id].onHold.filter(hl => String(hl._id) !== String(hold._id))
+            console.log("V2=", productsMap[product._id].onHold)
           }
         })
         console.log("actionsAfterOrderPay: AFTER filter productsMap[product._id]: ", productsMap[product._id].onHold)
@@ -246,9 +248,7 @@ export const actionsAfterOrderPay = async order => {
       }
     })
   )
-    .then(async result => {
-      console.log("--------------result: ", result)
-
+    .then(async () => {
       console.log("--------------productsMap: ", productsMap)
 
       await Promise.all(
@@ -266,7 +266,5 @@ export const actionsAfterOrderPay = async order => {
     })
     .catch(err => console.error("Error on sendMail: ", err))
 
-  await sendMail(order)
-    .then(doc => console.log("doc: ", doc))
-    .catch(err => console.error("Error on sendMail: ", err))
+  await sendMail(order).catch(err => console.error("Error on sendMail: ", err))
 }
