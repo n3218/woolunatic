@@ -5,7 +5,7 @@ dotenv.config()
 
 export const sendMail = async orderData => {
   const order = new Object(orderData)
-  console.log("=============================sendMail: order: ", order)
+  console.log("=============================sendMail: order._id: ", order._id)
 
   const GMAIL_EMAIL = process.env.GMAIL_EMAIL
   const GMAIL_PASSWORD = String(process.env.GMAIL_PASSWORD)
