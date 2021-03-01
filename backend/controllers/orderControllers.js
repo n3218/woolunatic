@@ -229,31 +229,31 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     const vat = Number(21.0)
 
     try {
-      const mollieItems = updatedOrder.orderItems.map(it => ({
-        type: "",
-        name: it.art + " " + it.brand + " " + it.name + " " + it.color,
-        productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
-        imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
-        quantity: it.qty / 100,
-        vatRate: vat,
-        unitPrice: {
-          currency: "EUR",
-          value: ((it.price * it.qty) / 100).toFixed(2)
-        },
-        totalAmount: {
-          currency: "EUR",
-          value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
-        },
-        discountAmount: {
-          currency: "EUR",
-          value: ""
-        },
-        vatAmount: {
-          currency: "EUR",
-          // value: ((it.price * it.qty) / 100) * 0.21
-          value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21) * (vat / (100 + vat))
-        }
-      }))
+      // const mollieItems = updatedOrder.orderItems.map(it => ({
+      //   type: "",
+      //   name: it.art + " " + it.brand + " " + it.name + " " + it.color,
+      //   productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
+      //   imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
+      //   quantity: it.qty / 100,
+      //   vatRate: vat,
+      //   unitPrice: {
+      //     currency: "EUR",
+      //     value: ((it.price * it.qty) / 100).toFixed(2)
+      //   },
+      //   totalAmount: {
+      //     currency: "EUR",
+      //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
+      //   },
+      //   discountAmount: {
+      //     currency: "EUR",
+      //     value: ""
+      //   },
+      //   vatAmount: {
+      //     currency: "EUR",
+      //     // value: ((it.price * it.qty) / 100) * 0.21
+      //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21) * (vat / (100 + vat))
+      //   }
+      // }))
 
       const mollieOrder = await mollieClient.orders.create({
         testmode: true,
@@ -265,12 +265,12 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
         redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(updatedOrder._id)}`,
         webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
         locale: "nl_NL",
-        method: updatedOrder.paymentMethod,
+        // method: updatedOrder.paymentMethod,
         metadata: {
           order_id: updatedOrder._id,
           description: "Woolunatics.Nl order"
         },
-        customerId: updatedOrder.user._id,
+        // customerId: updatedOrder.user._id,
         // billingAddress: {
         //   organizationName: updatedOrder.user.name,
         //   streetAndNumber: updatedOrder.shippingAddress.address,
