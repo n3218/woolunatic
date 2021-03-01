@@ -8,6 +8,7 @@ import { sendMail } from "../mailer/mailer.js"
 import { createMollieClient } from "@mollie/api-client"
 import { json } from "express"
 import Product from "../models/productModel.js"
+import Cart from "../models/cartModel.js"
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
 
@@ -42,8 +43,21 @@ export const createNewOrder = asyncHandler(async (req, res) => {
       itemsWeight,
       totalWeight
     })
-    const createdOrder = await order.save()
-    res.status(201).json(createdOrder)
+    try {
+      const createdOrder = await order.save()
+      if (createdOrder) {
+        try {
+          await Cart.findAndUpdate({ user: req.user._id }, { items: [] })
+        } catch (err) {
+          console.error("Error on updating Cart after creating Order: ", err)
+        }
+        res.status(201).json(createdOrder)
+      }
+    } catch (err) {
+      console.error("Error on saving new Order: ", err)
+      res.status(400)
+      throw new Error("Error on saving new Order")
+    }
   }
 })
 
@@ -218,72 +232,75 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   const saveOrderToMollie = async updatedOrder => {
     const vat = "21.00"
     try {
-      // const mollieItems = updatedOrder.orderItems.map(it => ({
-      //   type: "",
-      //   sku: "",
-      //   name: it.art + " " + it.brand + " " + it.name + " " + it.color,
-      //   productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
-      //   imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
-      //   quantity: it.qty / 100,
-      //   vatRate: vat,
-      //   unitPrice: {
-      //     currency: "EUR",
-      //     value: (it.price * it.qty) / 100
-      //   },
-      //   totalAmount: {
-      //     currency: "EUR",
-      //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
-      //   },
-      //   discountAmount: {
-      //     currency: "EUR",
-      //     value: ""
-      //   },
-      //   vatAmount: {
-      //     currency: "EUR",
-      //     value: ((it.price * it.qty) / 100) * 0.21
-      //   }
-      // }))
+      const mollieItems = updatedOrder.orderItems.map(it => ({
+        type: "",
+        name: it.art + " " + it.brand + " " + it.name + " " + it.color,
+        productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
+        imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
+        quantity: it.qty / 100,
+        vatRate: vat,
+        unitPrice: {
+          currency: "EUR",
+          value: ((it.price * it.qty) / 100).toFixed(2)
+        },
+        totalAmount: {
+          currency: "EUR",
+          value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
+        },
+        discountAmount: {
+          currency: "EUR",
+          value: ""
+        },
+        vatAmount: {
+          currency: "EUR",
+          // value: ((it.price * it.qty) / 100) * 0.21
+          value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21) * (vat / (100 + vat))
+        }
+      }))
 
       const mollieOrder = await mollieClient.orders.create({
+        testmode: true,
         amount: {
           value: updatedOrder.totalPrice,
           currency: "EUR"
         },
-        billingAddress: {
-          organizationName: updatedOrder.user.name,
-          streetAndNumber: updatedOrder.shippingAddress.address,
-          city: updatedOrder.shippingAddress.city,
-          region: "",
-          postalCode: updatedOrder.shippingAddress.zipCode,
-          country: updatedOrder.shippingAddress.country,
-          title: "",
-          givenName: updatedOrder.user.name,
-          familyName: "",
-          email: updatedOrder.user.email,
-          phone: ""
-        },
-        shippingAddress: {
-          organizationName: updatedOrder.user.name,
-          streetAndNumber: updatedOrder.shippingAddress.address,
-          city: updatedOrder.shippingAddress.city,
-          region: "",
-          postalCode: updatedOrder.shippingAddress.zipCode,
-          country: updatedOrder.shippingAddress.country,
-          title: "",
-          givenName: updatedOrder.user.name,
-          familyName: "",
-          email: updatedOrder.user.email
-        },
+        description: `Order #${updatedOrder._id}`,
+        redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(updatedOrder._id)}`,
+        webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
+        locale: "nl_NL",
+        method: updatedOrder.paymentMethod,
         metadata: {
           order_id: updatedOrder._id,
           description: "Woolunatics.Nl order"
         },
-        consumerDateOfBirth: "",
-        locale: updatedOrder.shippingAddress.country,
-        orderNumber: updatedOrder._id,
-        redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(updatedOrder._id)}`,
-        webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
-        method: updatedOrder.paymentMethod,
+        customerId: updatedOrder.user._id,
+        // billingAddress: {
+        //   organizationName: updatedOrder.user.name,
+        //   streetAndNumber: updatedOrder.shippingAddress.address,
+        //   city: updatedOrder.shippingAddress.city,
+        //   region: "",
+        //   postalCode: updatedOrder.shippingAddress.zipCode,
+        //   country: updatedOrder.shippingAddress.country,
+        //   givenName: updatedOrder.user.name,
+        //   familyName: "",
+        //   email: updatedOrder.user.email,
+        //   phone: ""
+        // },
+        // shippingAddress: {
+        //   organizationName: updatedOrder.user.name,
+        //   streetAndNumber: updatedOrder.shippingAddress.address,
+        //   city: updatedOrder.shippingAddress.city,
+        //   region: "",
+        //   postalCode: updatedOrder.shippingAddress.zipCode,
+        //   country: updatedOrder.shippingAddress.country,
+        //   givenName: updatedOrder.user.name,
+        //   familyName: "",
+        //   email: updatedOrder.user.email
+        // },
+        // consumerDateOfBirth: "",
+
+        // orderNumber: updatedOrder._id,
+
         lines: []
       })
 
