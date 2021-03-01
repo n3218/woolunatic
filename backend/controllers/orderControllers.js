@@ -159,77 +159,52 @@ export const molliePay = asyncHandler(async (req, res) => {
 // @access Public
 export const mollieWebHook = asyncHandler(async (req, res) => {
   let orderToUpdate = {}
+  let id = req.body.id
 
-  const getPayment = async id => {
-    try {
-      await mollieClient.payments.get(id).then(payment => {
-        console.log("=============================mollieHook:payment: ", payment) //---- mollieHook:payment
-        orderToUpdate = {
-          id: payment.metadata.order_id,
-          paymentMethod: payment.method,
-          paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
-          isPaid: true,
-          paymentResult: {
-            id: id,
-            update_time: Date.now(),
-            status: payment.status,
-            email_address: payment.billingEmail || "",
-            links: JSON.stringify(payment._links)
-          }
+  try {
+    await mollieClient.payments.get(id).then(async payment => {
+      console.log("============================= mollieHook: payment: ", payment) //---- mollieHook:payment
+      orderToUpdate = {
+        orderId: payment.metadata.order_id,
+        paymentMethod: payment.method,
+        paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
+        isPaid: true,
+        paymentResult: {
+          id: id,
+          update_time: Date.now(),
+          status: payment.status,
+          email_address: payment.billingEmail || "",
+          links: JSON.stringify(payment._links)
         }
-        if (payment.isPaid()) {
-          orderToUpdate.isPaid = true
-          console.log("payment.isPaid(): Hooray, you've received a payment! You can start shipping to the consumer.")
-        } else if (!payment.isOpen()) {
-          console.log("!payment.isOpen(): The payment isn't paid and has expired. We can assume it was aborted.")
-        }
-        console.log("=============================payment.status: ", payment.status) // PAYMENT STATUS
-        getOrderToUpdate(orderToUpdate.id)
-      })
-    } catch (err) {
-      console.warn("Error on Mollie Hook: ", err)
-    }
-  }
-
-  const getOrderToUpdate = async orderId => {
-    console.log("getOrderToUpdate") //---------------------------getOrderToUpdate
-    console.log("orderId: ", orderId) //--------------------------------- orderId
-    const order = await Order.findById(orderId).populate("user", "name email")
-    if (order) {
-      order.paymentMethod = orderToUpdate.paymentMethod
-      order.paidAt = orderToUpdate.paidAt
-      order.paymentResult = orderToUpdate.paymentResult
-      order.isPaid = orderToUpdate.isPaid
-
-      const updatedOrder = await order.save()
-      console.log("updatedOrder: ", updatedOrder) //--------------- UPDATED ORDER
-
-      if (updatedOrder) {
-        actionsAfterOrderPay(updatedOrder)
       }
-    } else {
-      res.status(404)
-      throw new Error("Order not found")
-    }
+      console.log("mollieWebHook: payment.status: ", payment.status) // PAYMENT STATUS
+      console.log("mollieWebHook: payment.isPaid(): ", payment.isPaid()) // PAYMENT ISPAID
+
+      const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email")
+      if (order) {
+        order.paymentMethod = orderToUpdate.paymentMethod
+        order.paidAt = orderToUpdate.paidAt
+        order.paymentResult = orderToUpdate.paymentResult
+        order.isPaid = orderToUpdate.isPaid
+
+        try {
+          const updatedOrder = await order.save()
+          console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
+          if (updatedOrder) {
+            actionsAfterOrderPay(updatedOrder)
+          }
+        } catch (err) {
+          res.status(404)
+          throw new Error("Error on update Product after Mollie Payment: ", err)
+        }
+      } else {
+        res.status(404)
+        throw new Error("Order not found")
+      }
+    })
+  } catch (err) {
+    console.warn("Error on mollieClient.payments.get: ", err)
   }
-
-  let body = ""
-  let result = await req
-    .on("data", chunk => {
-      body += chunk.toString()
-    })
-    .on("end", () => {
-      console.log("mollieWebHook: req.body", body)
-      // const id = querystring.parse(body).id
-      const id = body.id
-
-      console.log("=============================req.body.id: ", id) //----------ID
-      // getPayment(id)
-      console.log("id: ", id)
-      return body.id
-    })
-
-  // res.status(200).send(req.body.id)
 
   if (result) {
     console.log("req.body.id: ", req.body.id)
