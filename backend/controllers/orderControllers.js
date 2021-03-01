@@ -230,7 +230,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   }
 
   const saveOrderToMollie = async updatedOrder => {
-    const vat = "21.00"
+    const vat = Number(21.0)
     try {
       const mollieItems = updatedOrder.orderItems.map(it => ({
         type: "",
