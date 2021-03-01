@@ -162,53 +162,55 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
   let id = req.body.id
 
   try {
-    await mollieClient.payments.get(id).then(async payment => {
-      console.log("============================= mollieHook: payment: ", payment) //---- mollieHook:payment
-      orderToUpdate = {
-        orderId: payment.metadata.order_id,
-        paymentMethod: payment.method,
-        paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
-        isPaid: true,
-        paymentResult: {
-          id: id,
-          update_time: Date.now(),
-          status: payment.status,
-          email_address: payment.billingEmail || "",
-          links: JSON.stringify(payment._links)
-        }
-      }
-      console.log("mollieWebHook: payment.status: ", payment.status) // PAYMENT STATUS
-      console.log("mollieWebHook: payment.isPaid(): ", payment.isPaid()) // PAYMENT ISPAID
-
-      const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email")
-      if (order) {
-        order.paymentMethod = orderToUpdate.paymentMethod
-        order.paidAt = orderToUpdate.paidAt
-        order.paymentResult = orderToUpdate.paymentResult
-        order.isPaid = orderToUpdate.isPaid
-
-        try {
-          const updatedOrder = await order.save()
-          console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
-          if (updatedOrder) {
-            actionsAfterOrderPay(updatedOrder)
+    await mollieClient.payments
+      .get(id)
+      .then(async payment => {
+        console.log("============================= mollieHook: payment: ", payment) //---- mollieHook:payment
+        orderToUpdate = {
+          orderId: payment.metadata.order_id,
+          paymentMethod: payment.method,
+          paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
+          isPaid: true,
+          paymentResult: {
+            id: id,
+            update_time: Date.now(),
+            status: payment.status,
+            email_address: payment.billingEmail || "",
+            links: JSON.stringify(payment._links)
           }
-        } catch (err) {
-          res.status(404)
-          throw new Error("Error on update Product after Mollie Payment: ", err)
         }
-      } else {
-        res.status(404)
-        throw new Error("Order not found")
-      }
-    })
+        console.log("mollieWebHook: payment.status: ", payment.status) // PAYMENT STATUS
+        console.log("mollieWebHook: payment.isPaid(): ", payment.isPaid()) // PAYMENT ISPAID
+
+        const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email")
+        if (order) {
+          order.paymentMethod = orderToUpdate.paymentMethod
+          order.paidAt = orderToUpdate.paidAt
+          order.paymentResult = orderToUpdate.paymentResult
+          order.isPaid = orderToUpdate.isPaid
+
+          try {
+            const updatedOrder = await order.save()
+            console.log("---------------------mollieWebHook: updatedOrder: ", updatedOrder) //  UPDATED ORDER
+            if (updatedOrder) {
+              actionsAfterOrderPay(updatedOrder)
+            }
+          } catch (err) {
+            res.status(404)
+            throw new Error("Error on update Product after Mollie Payment: ", err)
+          }
+        } else {
+          res.status(404)
+          throw new Error("Order not found")
+        }
+      })
+      .then(result => {
+        console.log("result: ", result)
+        console.log("req.body.id: ", req.body.id)
+        res.status(200).send("200 OK")
+      })
   } catch (err) {
     console.warn("Error on mollieClient.payments.get: ", err)
-  }
-
-  if (result) {
-    console.log("req.body.id: ", req.body.id)
-    res.status(200).send(req.body.id)
   }
 }) // https://www.mollie.com/dashboard/org_11322007/payments
 
