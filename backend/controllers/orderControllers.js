@@ -279,19 +279,14 @@ export const actionsAfterOrderPay = async order => {
 //
 // @desc Clear Cart
 export const clearCart = asyncHandler(async userId => {
-  try {
-    const cart = await Cart.findOne({ user: userId })
-    if (cart) {
-      cart.items = []
-      let updatedCart = await cart.save()
-      res.json(updatedCart)
-    } else {
-      res.status(200).json({ message: "Cart is empty" })
+  await Cart.findOneAndUpdate({ user: userId }, { items: [] }, { new: true }, (err, doc) => {
+    if (err) {
+      console.log("Something wrong when cleaning Cart!")
+      res.status(404)
+      throw new Error("Error on finding Cart: ", err)
     }
-  } catch {
-    res.status(404)
-    throw new Error("Can not find a Cart")
-  }
+    res.json(doc)
+  })
 })
 
 //
