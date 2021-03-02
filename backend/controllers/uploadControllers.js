@@ -30,37 +30,51 @@ export const uploadProductImages = asyncHandler(async (req, res) => {
 // @access Private/+Admin
 export const uploadBulkImages = asyncHandler(async (req, res) => {
   let productMap = {}
-  const results = await Promise.all(
-    req.files.map(async file => {
-      await sharp(file.path).resize(250, 250).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../thumbs/thumb-${file.originalname}`)
-      await sharp(file.path).resize(112, 112).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../minithumbs/minithumb-${file.originalname}`)
-      if (file.originalname) {
-        let productArt = file.originalname.split("-")[0]
-        if (productMap[productArt]) {
-          productMap[productArt].push(file.originalname)
-        } else {
-          productMap[productArt] = [file.originalname]
-        }
-      }
-    })
-  )
-  if (results) {
-    const updatedProducts = await Promise.all(
-      Object.keys(productMap).map(async key => {
-        const filter = { art: key }
-        const update = { $set: { image: productMap[key] } }
-        return await Product.findOneAndUpdate(filter, update, { new: true }, (err, doc) => {
-          if (err) {
-            console.log("Something wrong when updating data!")
+  try {
+    const results = await Promise.all(
+      req.files.map(async file => {
+        await sharp(file.path).resize(250, 250).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../thumbs/thumb-${file.originalname}`)
+        await sharp(file.path).resize(112, 112).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../minithumbs/minithumb-${file.originalname}`)
+        if (file.originalname) {
+          let productArt = file.originalname.split("-")[0]
+          if (productMap[productArt]) {
+            productMap[productArt].push(file.originalname)
+          } else {
+            productMap[productArt] = [file.originalname]
           }
-          return doc
-        })
+        }
       })
     )
-    if (updatedProducts) {
-      console.log("updatedProducts.length: ", updatedProducts.length)
+  } catch (err) {
+    console.error("Error on generating images: ", err)
+    res.status(404)
+    throw new Error("Error on generating images", err)
+  }
+  if (results) {
+    try {
+      await Promise.all(
+        Object.keys(productMap).map(async key => {
+          const filter = { art: key }
+          const update = { $set: { image: productMap[key] } }
+          return await Product.findOneAndUpdate(filter, update, { new: true }, (err, doc) => {
+            if (err) {
+              console.log("Something wrong when updating data!")
+              return err
+            } else {
+              console.log("doc: ", doc)
+              return doc
+            }
+          })
+        })
+      ).then(result => {
+        console.log(result)
+        res.json({ files: req.files, products: result })
+      })
+    } catch (err) {
+      console.error("Error on updating products after uploading images: ", err)
+      res.status(404)
+      throw new Error("Error on updating products after uploading images", err)
     }
-    res.json({ files: req.files, products: updatedProducts })
   }
 })
 

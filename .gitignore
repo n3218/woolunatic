@@ -27,6 +27,9 @@ yarn-error.log*
 tmp
 tmp/
 /tmp
-uploads/products
-uploads/thumbs
-uploads/minithumbs
+uploads/products/*.jpg
+uploads/products/*.jpeg
+uploads/thumbs/*.jpg
+uploads/thumbs/*.jpeg
+uploads/minithumbs/*.jpg
+uploads/minithumbs/*.jpeg
