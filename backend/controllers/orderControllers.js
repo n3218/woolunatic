@@ -4,6 +4,7 @@ import Order from "../models/orderModel.js"
 import querystring from "querystring"
 import colors from "colors"
 import { sendMail } from "../mailer/mailer.js"
+import { sendMailToManager } from "../mailer/sendMailToManager.js"
 import { createMollieClient } from "@mollie/api-client"
 import { json } from "express"
 import Product from "../models/productModel.js"
@@ -11,6 +12,7 @@ import Cart from "../models/cartModel.js"
 
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
+const DOMAIN_NAME = process.env.DOMAIN_NAME
 
 // @desc Create new order
 // @route POST /api/orders
@@ -47,7 +49,7 @@ export const createNewOrder = asyncHandler(async (req, res) => {
       const createdOrder = await order.save()
       if (createdOrder) {
         try {
-          await Cart.findAndUpdate({ user: req.user._id }, { items: [] })
+          await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] })
         } catch (err) {
           console.error("Error on updating Cart after creating Order: ", err)
         }
@@ -151,8 +153,8 @@ export const molliePay = asyncHandler(async (req, res) => {
   const params = {
     amount: { value: Number(totalPrice).toFixed(2), currency: String(currency) },
     description: description,
-    redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(orderId)}`,
-    webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
+    redirectUrl: `${DOMAIN_NAME}/orders/${String(orderId)}`,
+    webhookUrl: `${DOMAIN_NAME}/api/orders/molliewebhook`,
     metadata: { order_id: String(orderId) }
   }
   console.log("molliePay: params:", params)
@@ -200,7 +202,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
           order.isPaid = orderToUpdate.isPaid
           try {
             const updatedOrder = await order.save()
-            if (updatedOrder) {
+            if (updatedOrder && updatedOrder.isPaid) {
               actionsAfterOrderPay(updatedOrder)
             }
           } catch (err) {
@@ -227,6 +229,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 export const actionsAfterOrderPay = async order => {
   console.log("-------------------------------- actionsAfterOrderPay")
   const productsMap = {}
+
   // 1. Remove holds from ordered Products
   await Promise.all(
     order.orderItems.map(async item => {
@@ -270,7 +273,10 @@ export const actionsAfterOrderPay = async order => {
   // 2. Send Email Confirmation to customer
   await sendMail(order).catch(err => console.error("Error on sendMail: ", err))
 
-  // 3. Remove All Items from Cart
+  // 3. Send Email to Manager
+  await sendMailToManager(order).catch(err => console.error("Error on sendMailToManager: ", err))
+
+  // 4. Remove All Items from Cart
   await clearCart(order.user._id).catch(err => console.error("Error on clearCart: ", err))
 }
 
@@ -298,8 +304,8 @@ const saveOrderToMollie = async updatedOrder => {
     // const mollieItems = updatedOrder.orderItems.map(it => ({
     //   type: "",
     //   name: it.art + " " + it.brand + " " + it.name + " " + it.color,
-    //   productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
-    //   imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
+    //   productUrl: `${DOMAIN_NAME}/products/${it._id}`,
+    //   imageUrl: it.image ? `${DOMAIN_NAME}/uploads/tuhmbs/${it.image}` : "",
     //   quantity: it.qty / 100,
     //   vatRate: vat,
     //   unitPrice: {
@@ -327,8 +333,8 @@ const saveOrderToMollie = async updatedOrder => {
         currency: "EUR"
       },
       description: `Order #${updatedOrder._id}`,
-      redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(updatedOrder._id)}`,
-      webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
+      redirectUrl: `${DOMAIN_NAME}/orders/${String(updatedOrder._id)}`,
+      webhookUrl: `${DOMAIN_NAME}/api/orders/molliewebhook`,
       locale: "nl_NL",
       // method: updatedOrder.paymentMethod,
       metadata: {
