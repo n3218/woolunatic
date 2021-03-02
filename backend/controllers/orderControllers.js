@@ -271,7 +271,7 @@ export const actionsAfterOrderPay = async order => {
   await sendMail(order).catch(err => console.error("Error on sendMail: ", err))
 
   // 3. Remove All Items from Cart
-  clearCart(order.user._id)
+  await clearCart(order.user._id).catch(err => console.error("Error on clearCart: ", err))
 }
 
 //
@@ -281,11 +281,10 @@ export const actionsAfterOrderPay = async order => {
 export const clearCart = asyncHandler(async userId => {
   await Cart.findOneAndUpdate({ user: userId }, { items: [] }, { new: true }, (err, doc) => {
     if (err) {
-      console.log("Something wrong when cleaning Cart!")
-      res.status(404)
-      throw new Error("Error on finding Cart: ", err)
+      console.log("Something wrong when cleaning Cart: ", err)
+      return err
     }
-    res.json(doc)
+    return doc
   })
 })
 
