@@ -5,12 +5,13 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-export const sendMail = asyncHandler(async orderData => {
+export const sendMailToManager = asyncHandler(async orderData => {
   const order = new Object(orderData)
-  console.log("=============================sendMail: order._id: ", order._id)
+  console.log("=============================sendMailToManager: order._id: ", order._id)
 
   const GMAIL_EMAIL = process.env.GMAIL_EMAIL
   const GMAIL_PASSWORD = String(process.env.GMAIL_PASSWORD)
+  const MANAGER_EMAIL = process.env.MANAGER_EMAIL
   const DOMAIN_NAME = process.env.DOMAIN_NAME
 
   const transporter = nodemailer.createTransport({
@@ -22,24 +23,22 @@ export const sendMail = asyncHandler(async orderData => {
   })
 
   const row = item => {
-    return `<tr style="border: 1px solid #9AABBD">
-    <td style="text-align: center">
+    return `<tr style="border: 1px solid #9AABBD;">
+    <td style="text-align: center;">
       <div>
         <a target="_blank" rel="noreferrer" href="${DOMAIN_NAME}/products/${item.product}" style="text-decoration:none; color:#417d97; font-weight: bold">
           <img src="${DOMAIN_NAME}/uploads/minithumbs/minithumb-${item.image}" alt=${item.art} width="80" height"80" />
         </a>
       </div>
-    </td>
-    <td style="text-align: center">
       <div>
         <a target="_blank" rel="noreferrer" href="${DOMAIN_NAME}/products/${item.product}" style="text-decoration:none; color:#417d97; font-weight: bold">
           ${item.art}
         </a>
       </div>
-      <div>${item.brand}</div>
-      <div>${item.name}</div>
-      <div>${item.color.replace(/_+/g, " ")}</div>
     </td>
+    <td style="text-align: center;">${item.brand}</td>
+    <td style="text-align: center;">${item.name}</td>
+    <td style="text-align: center;">${item.color.replace(/_+/g, " ")}</a></td>
     <td style="text-align: center;">${item.fibers}</td>
     <td style="text-align: center;">${item.qty}</td>
     <td style="text-align: center;">${item.meterage}</td>
@@ -56,22 +55,17 @@ export const sendMail = asyncHandler(async orderData => {
   }
 
   const mailOptions = {
-    from: `WOOLUNATICS <${GMAIL_EMAIL}>`,
-    to: `${order.user.email}`,
-    subject: `Thank you for your order!`,
+    from: `#${order._id} <${GMAIL_EMAIL}>`,
+    to: `${MANAGER_EMAIL}`,
+    subject: `New order #${order._id} received`,
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
-        <div style="font-size: 30px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
-          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="50" width="150" /></a>
-        </div>
+        <div style="font-size: 18px; font-weight: 300; margin-bottom: 10px;">New order placed</div>
         <div style="font-size: 20px; margin-bottom: 10px;">
           <a href="${DOMAIN_NAME}/orders/${order._id}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">#${order._id}</a>
         </div>
-        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Order confirmation</div>
-        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Hello ${order.user.name}</div> 
-        <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">Just to let you know, we've received your order. Thanks for shopping with us.</div>
-        
+        <div style="font-size: 18px; font-weight: 300; margin-bottom: 10px;">${order.paidAt}</div>
         <hr style="border-top: 2px solid #81869c;" />
 
         <div>
@@ -113,11 +107,13 @@ export const sendMail = asyncHandler(async orderData => {
 
         <div>
           <div style="font-size: 18px; font-weight: 300; margin-bottom: 20px;" align="left">ORDER DETAILS (total ${order.orderItems.length} items):</div>
-          <table style="width: 100%; border: 2px solid gray; font-weight: 300">
+          <table style="width: 100%; border: 2px solid gray; font-weight: 300;">
             <thead>
-              <tr style="border-bottom: 2px solid gray; height: 24px">
-                <th><i></i></th>
+              <tr>
                 <th><i>art.</i></th>
+                <th><i>brand</i></th>
+                <th><i>name</i></th>
+                <th><i>color</i></th>
                 <th><i>fibers,%</i></th>
                 <th><i>weight,g</i></th>
                 <th><i>m/100gr</i></th>
@@ -157,8 +153,8 @@ export const sendMail = asyncHandler(async orderData => {
             <table cellpadding="15">
               <tbody>
                 <tr>
-                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/orders/${order.id}" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to your Order</a></div></td>
-                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/profile" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to your Profile</a></div></td>
+                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/orders/${order.id}" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Order Details</a></div></td>
+                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/admin/orderlist" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Orders List</a></div></td>
                 </tr>
               </tbody>
             </table>  
