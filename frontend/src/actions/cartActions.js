@@ -14,10 +14,10 @@ import {
   //
   CART_SAVE_SHIPPING_ADDRESS,
   CART_SAVE_PAYMENT_METHOD,
-  CART_CLEAN_ITEMS,
-  CART_CLEAR_REQUEST,
-  CART_CLEAR_SUCCESS,
-  CART_CLEAR_FAIL
+  CART_CLEAN_ITEMS
+  // CART_CLEAR_REQUEST,
+  // CART_CLEAR_SUCCESS,
+  // CART_CLEAR_FAIL
 } from "../constants/cartConstants"
 import axios from "axios"
 
@@ -165,26 +165,26 @@ export const savePaymentMethodAction = data => async dispatch => {
 //   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 // }
 
-export const cartClearAction = () => async (dispatch, getState) => {
-  try {
-    dispatch({ type: CART_CLEAR_REQUEST })
-    const {
-      userLogin: { userInfo }
-    } = getState()
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`
-      }
-    }
-    const { data } = await axios.put(`/api/cart/${userInfo._id}/clear`, {}, config)
-    localStorage.setItem("cartItems", JSON.stringify([])) // save to Local Storage
-    dispatch({ type: CART_CLEAR_SUCCESS, payload: data })
-  } catch (error) {
-    const message = error.response && error.response.data.message ? error.response.data.message : error.message
-    dispatch({ type: CART_CLEAR_FAIL, payload: message })
-  }
-}
+// export const cartClearAction = () => async (dispatch, getState) => {
+//   try {
+//     dispatch({ type: CART_CLEAR_REQUEST })
+//     const {
+//       userLogin: { userInfo }
+//     } = getState()
+//     const config = {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${userInfo.token}`
+//       }
+//     }
+//     const { data } = await axios.put(`/api/cart/${userInfo._id}/clear`, {}, config)
+//     localStorage.setItem("cartItems", JSON.stringify([])) // save to Local Storage
+//     dispatch({ type: CART_CLEAR_SUCCESS, payload: data })
+//   } catch (error) {
+//     const message = error.response && error.response.data.message ? error.response.data.message : error.message
+//     dispatch({ type: CART_CLEAR_FAIL, payload: message })
+//   }
+// }
 
 export const cartCleanItemsAction = () => async (dispatch, getState) => {
   dispatch({

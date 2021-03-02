@@ -4,11 +4,11 @@ import Order from "../models/orderModel.js"
 import querystring from "querystring"
 import colors from "colors"
 import { sendMail } from "../mailer/mailer.js"
-
 import { createMollieClient } from "@mollie/api-client"
 import { json } from "express"
 import Product from "../models/productModel.js"
 import Cart from "../models/cartModel.js"
+
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
 
@@ -178,7 +178,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
     await mollieClient.payments
       .get(id)
       .then(async payment => {
-        console.log("============================= mollieHook: payment: ", payment) //---- mollieHook:payment
+        console.log("============================= mollieHook: payment: ", payment)
         orderToUpdate = {
           orderId: payment.metadata.order_id,
           paymentMethod: payment.method,
@@ -192,8 +192,6 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
             links: JSON.stringify(payment._links)
           }
         }
-        console.log("============================= mollieWebHook: payment.status: ", payment.status) // PAYMENT STATUS
-        console.log("============================= mollieWebHook: payment.isPaid(): ", payment.isPaid()) // PAYMENT ISPAID
         const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email")
         if (order) {
           order.paymentMethod = orderToUpdate.paymentMethod
@@ -204,7 +202,6 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
             const updatedOrder = await order.save()
             if (updatedOrder) {
               actionsAfterOrderPay(updatedOrder)
-              saveOrderToMollie(updatedOrder)
             }
           } catch (err) {
             res.status(404)
@@ -216,95 +213,11 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
         }
       })
       .then(result => {
-        console.log("result: ", result)
         console.log("req.body.id: ", req.body.id)
         res.status(200).send("200 OK")
       })
   } catch (err) {
     console.warn("Error on mollieClient.payments.get: ", err)
-  }
-
-  const saveOrderToMollie = async updatedOrder => {
-    console.log("/////////////saveOrderToMollie: updatedOrder: ", updatedOrder)
-    const vat = Number(21.0)
-
-    try {
-      // const mollieItems = updatedOrder.orderItems.map(it => ({
-      //   type: "",
-      //   name: it.art + " " + it.brand + " " + it.name + " " + it.color,
-      //   productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
-      //   imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
-      //   quantity: it.qty / 100,
-      //   vatRate: vat,
-      //   unitPrice: {
-      //     currency: "EUR",
-      //     value: ((it.price * it.qty) / 100).toFixed(2)
-      //   },
-      //   totalAmount: {
-      //     currency: "EUR",
-      //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
-      //   },
-      //   discountAmount: {
-      //     currency: "EUR",
-      //     value: ""
-      //   },
-      //   vatAmount: {
-      //     currency: "EUR",
-      //     // value: ((it.price * it.qty) / 100) * 0.21
-      //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21) * (vat / (100 + vat))
-      //   }
-      // }))
-
-      const mollieOrder = await mollieClient.orders.create({
-        testmode: true,
-        amount: {
-          value: updatedOrder.totalPrice,
-          currency: "EUR"
-        },
-        description: `Order #${updatedOrder._id}`,
-        redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(updatedOrder._id)}`,
-        webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
-        locale: "nl_NL",
-        // method: updatedOrder.paymentMethod,
-        metadata: {
-          order_id: updatedOrder._id,
-          description: "Woolunatics.Nl order"
-        },
-        // customerId: updatedOrder.user._id,
-        // billingAddress: {
-        //   organizationName: updatedOrder.user.name,
-        //   streetAndNumber: updatedOrder.shippingAddress.address,
-        //   city: updatedOrder.shippingAddress.city,
-        //   region: "",
-        //   postalCode: updatedOrder.shippingAddress.zipCode,
-        //   country: updatedOrder.shippingAddress.country,
-        //   givenName: updatedOrder.user.name,
-        //   familyName: "",
-        //   email: updatedOrder.user.email,
-        //   phone: ""
-        // },
-        // shippingAddress: {
-        //   organizationName: updatedOrder.user.name,
-        //   streetAndNumber: updatedOrder.shippingAddress.address,
-        //   city: updatedOrder.shippingAddress.city,
-        //   region: "",
-        //   postalCode: updatedOrder.shippingAddress.zipCode,
-        //   country: updatedOrder.shippingAddress.country,
-        //   givenName: updatedOrder.user.name,
-        //   familyName: "",
-        //   email: updatedOrder.user.email
-        // },
-        // consumerDateOfBirth: "",
-
-        // orderNumber: updatedOrder._id,
-
-        lines: []
-      })
-
-      console.log("//////////////////////////mollieOrder: ", mollieOrder)
-    } catch (err) {
-      console.warn("Error on create MollieOrder: ", err)
-    }
   }
 }) // https://www.mollie.com/dashboard/org_11322007/payments
 
@@ -314,6 +227,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 export const actionsAfterOrderPay = async order => {
   console.log("-------------------------------- actionsAfterOrderPay")
   const productsMap = {}
+  // 1. Remove holds from ordered Products
   await Promise.all(
     order.orderItems.map(async item => {
       const product = await Product.findById(item.product)
@@ -353,5 +267,111 @@ export const actionsAfterOrderPay = async order => {
     })
     .catch(err => console.error("Error on sendMail: ", err))
 
+  // 2. Send Email Confirmation to customer
   await sendMail(order).catch(err => console.error("Error on sendMail: ", err))
+
+  // 3. Remove All Items from Cart
+  clearCart(order.user._id)
+}
+
+//
+//
+//
+// @desc Clear Cart
+export const clearCart = asyncHandler(async userId => {
+  try {
+    const cart = await Cart.findOne({ user: userId })
+    if (cart) {
+      cart.items = []
+      let updatedCart = await cart.save()
+      res.json(updatedCart)
+    } else {
+      res.status(200).json({ message: "Cart is empty" })
+    }
+  } catch {
+    res.status(404)
+    throw new Error("Can not find a Cart")
+  }
+})
+
+//
+//
+// Save Mollie Order
+const saveOrderToMollie = async updatedOrder => {
+  console.log("/////////////saveOrderToMollie: updatedOrder: ", updatedOrder)
+  const vat = Number(21.0)
+  try {
+    // const mollieItems = updatedOrder.orderItems.map(it => ({
+    //   type: "",
+    //   name: it.art + " " + it.brand + " " + it.name + " " + it.color,
+    //   productUrl: `https://woolunatic.herokuapp.com/products/${it._id}`,
+    //   imageUrl: it.image ? `https://woolunatic.herokuapp.com/uploads/tuhmbs/${it.image}` : "",
+    //   quantity: it.qty / 100,
+    //   vatRate: vat,
+    //   unitPrice: {
+    //     currency: "EUR",
+    //     value: ((it.price * it.qty) / 100).toFixed(2)
+    //   },
+    //   totalAmount: {
+    //     currency: "EUR",
+    //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
+    //   },
+    //   discountAmount: {
+    //     currency: "EUR",
+    //     value: ""
+    //   },
+    //   vatAmount: {
+    //     currency: "EUR",
+    //     // value: ((it.price * it.qty) / 100) * 0.21
+    //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21) * (vat / (100 + vat))
+    //   }
+    // }))
+    const mollieOrder = await mollieClient.orders.create({
+      testmode: true,
+      amount: {
+        value: updatedOrder.totalPrice,
+        currency: "EUR"
+      },
+      description: `Order #${updatedOrder._id}`,
+      redirectUrl: `https://woolunatic.herokuapp.com/orders/${String(updatedOrder._id)}`,
+      webhookUrl: `https://woolunatic.herokuapp.com/api/orders/molliewebhook`,
+      locale: "nl_NL",
+      // method: updatedOrder.paymentMethod,
+      metadata: {
+        order_id: updatedOrder._id,
+        description: "Woolunatics.Nl order"
+      },
+      // customerId: updatedOrder.user._id,
+      // billingAddress: {
+      //   organizationName: updatedOrder.user.name,
+      //   streetAndNumber: updatedOrder.shippingAddress.address,
+      //   city: updatedOrder.shippingAddress.city,
+      //   region: "",
+      //   postalCode: updatedOrder.shippingAddress.zipCode,
+      //   country: updatedOrder.shippingAddress.country,
+      //   givenName: updatedOrder.user.name,
+      //   familyName: "",
+      //   email: updatedOrder.user.email,
+      //   phone: ""
+      // },
+      // shippingAddress: {
+      //   organizationName: updatedOrder.user.name,
+      //   streetAndNumber: updatedOrder.shippingAddress.address,
+      //   city: updatedOrder.shippingAddress.city,
+      //   region: "",
+      //   postalCode: updatedOrder.shippingAddress.zipCode,
+      //   country: updatedOrder.shippingAddress.country,
+      //   givenName: updatedOrder.user.name,
+      //   familyName: "",
+      //   email: updatedOrder.user.email
+      // },
+      // consumerDateOfBirth: "",
+      // orderNumber: updatedOrder._id,
+      lines: []
+    })
+    console.log("//////////////////////////mollieOrder: ", mollieOrder)
+    return mollieOrder
+  } catch (err) {
+    console.warn("Error on create MollieOrder: ", err)
+  }
 }

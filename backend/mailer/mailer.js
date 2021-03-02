@@ -1,9 +1,11 @@
 import nodemailer from "nodemailer"
+import asyncHandler from "express-async-handler"
 import { json } from "express"
 import dotenv from "dotenv"
+
 dotenv.config()
 
-export const sendMail = async orderData => {
+export const sendMail = asyncHandler(async orderData => {
   const order = new Object(orderData)
   console.log("=============================sendMail: order._id: ", order._id)
 
@@ -174,4 +176,4 @@ export const sendMail = async orderData => {
       return info.response
     }
   })
-}
+})
