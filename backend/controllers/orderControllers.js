@@ -185,7 +185,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
           orderId: payment.metadata.order_id,
           paymentMethod: payment.method,
           paidAt: payment.paidAt || payment.authorizedAt || payment.createdAt,
-          isPaid: true,
+          isPaid: payment.status === "paid" && true,
           paymentResult: {
             id: id,
             update_time: Date.now(),
