@@ -45,36 +45,36 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
         }
       })
     )
+    if (results) {
+      try {
+        await Promise.all(
+          Object.keys(productMap).map(async key => {
+            const filter = { art: key }
+            const update = { $set: { image: productMap[key] } }
+            return await Product.findOneAndUpdate(filter, update, { new: true }, (err, doc) => {
+              if (err) {
+                console.log("Something wrong when updating data!")
+                return err
+              } else {
+                console.log("doc: ", doc)
+                return doc
+              }
+            })
+          })
+        ).then(result => {
+          console.log(result)
+          res.json({ files: req.files, products: result })
+        })
+      } catch (err) {
+        console.error("Error on updating products after uploading images: ", err)
+        res.status(404)
+        throw new Error("Error on updating products after uploading images", err)
+      }
+    }
   } catch (err) {
     console.error("Error on generating images: ", err)
     res.status(404)
     throw new Error("Error on generating images", err)
-  }
-  if (results) {
-    try {
-      await Promise.all(
-        Object.keys(productMap).map(async key => {
-          const filter = { art: key }
-          const update = { $set: { image: productMap[key] } }
-          return await Product.findOneAndUpdate(filter, update, { new: true }, (err, doc) => {
-            if (err) {
-              console.log("Something wrong when updating data!")
-              return err
-            } else {
-              console.log("doc: ", doc)
-              return doc
-            }
-          })
-        })
-      ).then(result => {
-        console.log(result)
-        res.json({ files: req.files, products: result })
-      })
-    } catch (err) {
-      console.error("Error on updating products after uploading images: ", err)
-      res.status(404)
-      throw new Error("Error on updating products after uploading images", err)
-    }
   }
 })
 
