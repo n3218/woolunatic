@@ -11,7 +11,7 @@ import { ORDER_CREATE_RESET, ORDER_PAY_RESET } from "../../constants/orderConsta
 // import { USER_DETAILS_RESET } from "../../constants/userConstants"
 // import { CART_CLEAR_ITEMS } from "../../constants/cartConstants"
 import "./PayOrderScreen.css"
-import { cartClearAction } from "../../actions/cartActions"
+// import { cartClearAction } from "../../actions/cartActions"
 
 const PayOrderScreen = ({ match, history }) => {
   const dispatch = useDispatch()
@@ -55,7 +55,7 @@ const PayOrderScreen = ({ match, history }) => {
           }
         }
         if (successPay) {
-          dispatch(cartClearAction())
+          // dispatch(cartClearAction())
           dispatch({ type: ORDER_CREATE_RESET })
           history.push(`/orders/${order._id}`)
         }
