@@ -16,6 +16,7 @@ import "./PayOrderScreen.css"
 const PayOrderScreen = ({ match, history }) => {
   const dispatch = useDispatch()
   const orderId = match.params.id
+  const paymentMethod = match.params.paymentmethod
 
   const orderDetails = useSelector(state => state.orderDetails)
   const { order, loading, error, success } = orderDetails
@@ -30,7 +31,7 @@ const PayOrderScreen = ({ match, history }) => {
     } else {
       console.log("order: ", order)
 
-      if (order && order.paymentMethod === "PayPal") {
+      if (order && paymentMethod === "PayPal") {
         const addPayPalScript = async () => {
           console.log("addPayPalScript")
           const { data: clientId } = await axios.get("/api/config/paypal")
@@ -45,7 +46,7 @@ const PayOrderScreen = ({ match, history }) => {
           document.body.appendChild(script)
         }
 
-        console.log("order.paymentMethod: ", order.paymentMethod)
+        console.log("paymentMethod: ", paymentMethod)
 
         if (!successPay && !(order && order.isPaid)) {
           if (!window.paypal) {
@@ -61,7 +62,7 @@ const PayOrderScreen = ({ match, history }) => {
         }
       }
 
-      if (order && order.paymentMethod === "Mollie") {
+      if (order && paymentMethod === "Mollie") {
         const data = {
           totalPrice: order.totalPrice,
           currency: "EUR",
@@ -87,12 +88,12 @@ const PayOrderScreen = ({ match, history }) => {
   return (
     <FormContainer className="hide-container pt-6">
       {error && <Message variant="danger">{error}</Message>}
-      {success && order && order.paymentMethod === "mollie" && <Loader />}
+      {/* {success && order && paymentMethod === "mollie" && <Loader />} */}
 
       <Row>
         <Col md={3}></Col>
         <Col md={6}>
-          {(loading || loadingPay || !sdkReady) && <Loader />}
+          {(loading || loadingPay || paymentMethod === "mollie" || !sdkReady) && <Loader />}
           {sdkReady && <PayPalButton amount={order.totalPrice} onSuccess={payPalPaymentHandler} />}
         </Col>
         <Col md={3}></Col>

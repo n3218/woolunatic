@@ -41,7 +41,7 @@ const App = () => {
             <Route path="/cart/:id?/:qty?" component={CartScreen} exact />
             <Route path="/checkout/shipping" component={ShippingScreen} />
             <Route path="/checkout/payment" component={PaymentScreen} />
-            <Route path="/checkout/payorder/:id?" exact component={PayOrderScreen} />
+            <Route path="/checkout/payorder/:id?/:paymentmethod?" exact component={PayOrderScreen} />
 
             <Route path="/orders/:id" component={OrderScreen} />
 

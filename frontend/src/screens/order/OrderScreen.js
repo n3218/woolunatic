@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, ListGroup, Button, Table } from "react-bootstrap"
@@ -19,20 +19,20 @@ const OrderScreen = ({ match, history }) => {
 
   const orderDetails = useSelector(state => state.orderDetails)
   const { order, loading, error } = orderDetails
-
   const orderPay = useSelector(state => state.orderPay)
   const { loading: loadingPay, success: successPay } = orderPay
-
   const orderDeliver = useSelector(state => state.orderDeliver)
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
+  const method = useSelector(state => state.paymentMethod)
+  const [paymentMethod, setPaymentMethod] = useState(method || "")
 
   useEffect(() => {
     if (successDeliver || successPay) dispatch(getOrderDetailsAction(orderId))
     if (successDeliver) dispatch({ type: ORDER_DELIVER_RESET })
     if (successPay) dispatch({ type: ORDER_PAY_RESET })
-  }, [successPay])
+  }, [successPay, successDeliver, dispatch, orderId])
 
   useEffect(() => {
     if (!userInfo) {
@@ -47,7 +47,7 @@ const OrderScreen = ({ match, history }) => {
     dispatch(deliverOrderAction(order))
   }
 
-  return loading ? (
+  return loading || loadingPay ? (
     <Loader />
   ) : error ? (
     <Message variant="danger">{error}</Message>
@@ -59,8 +59,7 @@ const OrderScreen = ({ match, history }) => {
         <Col md={9} xs={12}>
           <ListGroup variant="flush">
             <ShippingSection cart={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
-            <PaymentSection order={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
-
+            <PaymentSection order={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
             <ListGroup.Item>
               <h4>ORDER ITEMS</h4>
             </ListGroup.Item>
@@ -114,9 +113,9 @@ const OrderScreen = ({ match, history }) => {
         </Col>
         <Col>
           <OrderSummary cart={order} items={order.orderItems} error={error}>
-            {!order.isPaid && order.paymentMethod && (
+            {!order.isPaid && paymentMethod && (
               <ListGroup.Item>
-                <Button className="btn-success btn-block" onClick={() => history.push(`/checkout/payorder/${order._id}`)}>
+                <Button className="btn-success btn-block" onClick={() => history.push(`/checkout/payorder/${order._id}/${paymentMethod}`)}>
                   Pay Order
                 </Button>
               </ListGroup.Item>

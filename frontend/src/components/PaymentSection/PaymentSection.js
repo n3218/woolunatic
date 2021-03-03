@@ -6,9 +6,8 @@ import Message from "../Message"
 import { PaymentStatus } from "../Utils"
 import "./PaymentSection.css"
 
-const PaymentSection = ({ order, checkoutStep, userInfo }) => {
+const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPaymentMethod }) => {
   const dispatch = useDispatch()
-  const [paymentMethod, setPaymentMethod] = useState(order.paymentMethod || "")
 
   const onSelectPaymentMethod = e => {
     setPaymentMethod(e.target.value)

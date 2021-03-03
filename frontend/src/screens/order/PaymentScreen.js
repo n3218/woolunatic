@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { useSelector } from "react-redux"
 import { ListGroup } from "react-bootstrap"
 import CartLayout from "./CartLayout"
@@ -10,12 +10,14 @@ const CartScreen = ({ history }) => {
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
+  const method = useSelector(state => state.paymentMethod)
+  const [paymentMethod, setPaymentMethod] = useState(method || "")
 
   return (
     <CartLayout history={history} checkoutStep={checkoutStep} title="Payment">
       <ListGroup variant="flush">
         <ShippingSection cart={cart} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
-        <PaymentSection order={cart} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
+        <PaymentSection order={cart} history={history} checkoutStep={checkoutStep} userInfo={userInfo} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
       </ListGroup>
     </CartLayout>
   )
