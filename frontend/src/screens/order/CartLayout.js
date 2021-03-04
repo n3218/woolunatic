@@ -87,7 +87,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   useEffect(() => {
     if (success && order) {
       dispatch({ type: ORDER_CREATE_RESET })
-      history.push(`/checkout/payorder/${order._id}`)
+      history.push(`/checkout/payorder/${order._id}/${order.paymentMethod}`)
     }
   }, [order, history, success, dispatch])
 
