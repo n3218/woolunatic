@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { Form, Col, Row, ListGroup } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { savePaymentMethodAction } from "../../actions/cartActions"
@@ -70,12 +70,6 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
                   </Col>
                 </Row>
 
-                {/* {!order.isPaid && paymentMethod === "Mollie" && checkoutStep !== "payment" && (
-                    <Col md={6}>
-                      <Button onClick={proceedMollyPayment}>Mollie Pay</Button>
-                    </Col>
-                  )} */}
-
                 <Row>
                   <Col xs={3} lg={2} xl={2}>
                     {radioButton("PayPal", "PayPal")}
@@ -90,8 +84,6 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
               </Form.Group>
             </Form>
           )}
-          {/* {!order.isPaid && paymentMethod === "PayPal" && checkoutStep !== "payment" && <Col md={6}>{!sdkReady ? <Loader /> : <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />}</Col>} */}
-
           {order.isPaid && (
             <>
               <Message variant="success">Paid on {new Date(order.paidAt).toString()}</Message>

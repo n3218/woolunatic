@@ -5,7 +5,7 @@ import { Row, Col, ListGroup, Button, Table } from "react-bootstrap"
 import Loader from "../../components/Loader"
 import Message from "../../components/Message"
 import { getOrderDetailsAction, deliverOrderAction } from "../../actions/orderActions"
-import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from "../../constants/orderConstants"
+import { ORDER_PAY_RESET, ORDER_DELIVER_RESET, ORDER_DETAILS_RESET } from "../../constants/orderConstants"
 import Meta from "../../components/Meta"
 import OrderSummary from "../../components/OrderSummary"
 import OrderWeightsSummary from "../../components/OrderWeightsSummary"
@@ -29,19 +29,18 @@ const OrderScreen = ({ match, history }) => {
   const [paymentMethod, setPaymentMethod] = useState(method || "")
 
   useEffect(() => {
-    if (successDeliver || successPay) dispatch(getOrderDetailsAction(orderId))
-    if (successDeliver) dispatch({ type: ORDER_DELIVER_RESET })
-    if (successPay) dispatch({ type: ORDER_PAY_RESET })
-  }, [successPay, successDeliver, dispatch, orderId])
-
-  useEffect(() => {
     if (!userInfo) {
       history.pushState("/login")
     }
-    if (!order || order._id !== orderId) {
+  }, [history, userInfo])
+
+  useEffect(() => {
+    if (!order || order._id !== orderId || successDeliver || successPay) {
       dispatch(getOrderDetailsAction(orderId))
     }
-  }, [dispatch, order, orderId, history, userInfo])
+    if (successDeliver) dispatch({ type: ORDER_DELIVER_RESET })
+    if (successPay) dispatch({ type: ORDER_PAY_RESET })
+  }, [dispatch, order, orderId, successDeliver, successPay])
 
   const deliverHandler = () => {
     dispatch(deliverOrderAction(order))
@@ -64,7 +63,7 @@ const OrderScreen = ({ match, history }) => {
               <h4>ORDER ITEMS</h4>
             </ListGroup.Item>
           </ListGroup>
-          {order.orderItems.length === 0 ? (
+          {order && order.orderItems && order.orderItems.length === 0 ? (
             <Message>Order is empty.</Message>
           ) : (
             <>
@@ -82,22 +81,24 @@ const OrderScreen = ({ match, history }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {order.orderItems.map((item, i) => (
-                    <tr key={i}>
-                      <td>{item.brand}</td>
-                      <td>
-                        <Link target="_blank" rel="noreferrer" to={`/products/${item.product}`} className="text-capitalize">
-                          {item.name}
-                        </Link>
-                      </td>
-                      <td className="text-capitalize">{item.color.replace(/_+/g, " ")}</td>
-                      <td>{item.fibers}</td>
-                      <td>{item.qty}</td>
-                      <td>{item.meterage}</td>
-                      <td>€{item.price.toFixed(2)}</td>
-                      <td>€{((item.qty * item.price) / 100).toFixed(2)}</td>
-                    </tr>
-                  ))}
+                  {order &&
+                    order.orderItems &&
+                    order.orderItems.map((item, i) => (
+                      <tr key={i}>
+                        <td>{item.brand}</td>
+                        <td>
+                          <Link target="_blank" rel="noreferrer" to={`/products/${item.product}`} className="text-capitalize">
+                            {item.name}
+                          </Link>
+                        </td>
+                        <td className="text-capitalize">{item.color.replace(/_+/g, " ")}</td>
+                        <td>{item.fibers}</td>
+                        <td>{item.qty}</td>
+                        <td>{item.meterage}</td>
+                        <td>€{item.price.toFixed(2)}</td>
+                        <td>€{((item.qty * item.price) / 100).toFixed(2)}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
 

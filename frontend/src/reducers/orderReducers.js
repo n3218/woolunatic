@@ -24,7 +24,8 @@ import {
   ORDER_MOLLIE_PAY_REQUEST,
   ORDER_MOLLIE_PAY_SUCCESS,
   ORDER_MOLLIE_PAY_FAIL,
-  ORDER_MOLLIE_PAY_RESET
+  ORDER_MOLLIE_PAY_RESET,
+  ORDER_DETAILS_RESET
 } from "../constants/orderConstants"
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -51,7 +52,7 @@ export const orderCreateReducer = (state = {}, action) => {
   }
 }
 
-export const orderDetailsReducer = (state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
+export const orderDetailsReducer = (state = { order: {} }, action) => {
   switch (action.type) {
     case ORDER_DETAILS_REQUEST:
       return {
@@ -67,6 +68,10 @@ export const orderDetailsReducer = (state = { loading: true, orderItems: [], shi
       return {
         loading: false,
         error: action.payload
+      }
+    case ORDER_DETAILS_RESET:
+      return {
+        order: {}
       }
     default:
       return state

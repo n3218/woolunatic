@@ -77,12 +77,16 @@ const ShippingSection = ({ history, checkoutStep, userInfo, cart }) => {
               <div>
                 <a href={`mailto:${userInfo.email}`}>{userInfo.email}</a>
               </div>
-              <div>{userInfo.name}</div>
-              <div>{cart.shippingAddress.address}</div>
-              <div>
-                {cart.shippingAddress.city}, {cart.shippingAddress.zipCode}, {cart.shippingAddress.country}
-              </div>
-              {checkoutStep === "order" && <div className="my-3">{cart.isDelivered ? <Message variant="success">Shipped on {new Date(cart.deliveredAt).toString()}</Message> : <Message variant="warning">Not shipped</Message>}</div>}
+              {cart && cart.shippingAddress && (
+                <>
+                  <div>{userInfo.name}</div>
+                  <div>{cart.shippingAddress.address}</div>
+                  <div>
+                    {cart.shippingAddress.city}, {cart.shippingAddress.zipCode}, {cart.shippingAddress.country}
+                  </div>
+                  {checkoutStep === "order" && <div className="my-3">{cart.isDelivered ? <Message variant="success">Shipped on {new Date(cart.deliveredAt).toString()}</Message> : <Message variant="warning">Not shipped</Message>}</div>}
+                </>
+              )}
             </>
           )}
         </Col>
