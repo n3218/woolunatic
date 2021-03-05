@@ -61,6 +61,8 @@ export const sendMail = asyncHandler(async orderData => {
           <td style="text-align: right; font-size: 12px; font-weight: 300;">store credit used: </td>
           <td style="font-size: 12px; font-weight: 300;"> -€${storecredit.toFixed(2)}</td>
         </tr>`
+    } else {
+      return ``
     }
   }
 
