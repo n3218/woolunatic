@@ -30,7 +30,7 @@ const OrderScreen = ({ match, history }) => {
 
   useEffect(() => {
     if (!userInfo) {
-      history.pushState("/login")
+      history.push("/login")
     }
   }, [history, userInfo])
 
