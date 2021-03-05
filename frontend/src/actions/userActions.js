@@ -78,6 +78,8 @@ export const getUserDetails = id => async (dispatch, getState) => {
     }
     const { data } = await axios.get(`/api/users/${id}`, config)
     dispatch({ type: USER_DETAILS_SUCCESS, payload: data })
+    console.log("getUserDetails: ", data)
+    localStorage.setItem("userInfo", JSON.stringify(data))
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     if (message === "Not authorized, token failed") {
@@ -181,7 +183,6 @@ export const updateUserAction = user => async (dispatch, getState) => {
       }
     }
     const { data } = await axios.put(`/api/users/${user._id}`, user, config)
-
     dispatch({ type: USER_UPDATE_SUCCESS })
     dispatch({ type: USER_DETAILS_SUCCESS, payload: data })
     dispatch({ type: USER_DETAILS_RESET })

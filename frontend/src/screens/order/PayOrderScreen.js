@@ -26,7 +26,7 @@ const PayOrderScreen = ({ match, history }) => {
   const [sdkReady, setSdkReady] = useState(false)
 
   useEffect(() => {
-    if (!order) {
+    if ((!success && !order) || order._id !== orderId) {
       dispatch(getOrderDetailsAction(orderId))
     } else {
       console.log("order: ", order)

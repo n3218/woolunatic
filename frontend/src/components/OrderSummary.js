@@ -2,7 +2,7 @@ import React from "react"
 import { Row, Col, Card, ListGroup } from "react-bootstrap"
 import Message from "../components/Message"
 
-const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
+const OrderSummary = ({ cart, items, error, checkoutStep, children, userInfo }) => {
   return (
     <Card className="mx-1">
       <Card.Header className="card-header text-center">
@@ -13,7 +13,7 @@ const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
         <ListGroup.Item>
           <Row>
             <Col className="text-center">
-              <h4>Total ({items.length}) items</h4>
+              <h4>Total ({items && items.length}) items</h4>
             </Col>
           </Row>
           <Row>
@@ -38,6 +38,14 @@ const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
 
         {cart.totalPrice && (
           <ListGroup.Item>
+            {cart.storecredit > 0 && (
+              <Row>
+                <Col>
+                  <strong>Store credit:</strong>
+                </Col>
+                <Col className="text-right">- €{Number(cart.storecredit).toFixed(2)}</Col>
+              </Row>
+            )}
             <Row>
               <Col>
                 <h5>Total price:</h5>

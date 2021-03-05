@@ -14,6 +14,7 @@ export const authUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      storecredit: user.storecredit,
       token: generateToken(user._id)
     })
   } else {

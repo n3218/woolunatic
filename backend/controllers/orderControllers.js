@@ -1,14 +1,15 @@
 import dotenv from "dotenv"
 import asyncHandler from "express-async-handler"
-import Order from "../models/orderModel.js"
 import querystring from "querystring"
 import colors from "colors"
 import { sendMail } from "../mailer/mailer.js"
 import { sendMailToManager } from "../mailer/sendMailToManager.js"
 import { createMollieClient } from "@mollie/api-client"
 import { json } from "express"
+import Order from "../models/orderModel.js"
 import Product from "../models/productModel.js"
 import Cart from "../models/cartModel.js"
+import User from "../models/userModel.js"
 
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
@@ -25,6 +26,7 @@ export const createNewOrder = asyncHandler(async (req, res) => {
     itemsPrice,
     taxPrice,
     shippingPrice,
+    storecredit,
     totalPrice,
     itemsWeight,
     totalWeight
@@ -41,6 +43,7 @@ export const createNewOrder = asyncHandler(async (req, res) => {
       itemsPrice,
       taxPrice,
       shippingPrice,
+      storecredit,
       totalPrice,
       itemsWeight,
       totalWeight
@@ -278,7 +281,26 @@ export const actionsAfterOrderPay = async order => {
 
   // 4. Remove All Items from Cart
   await clearCart(order.user._id).catch(err => console.error("Error on clearCart: ", err))
+
+  // 5. Remove userStore Credit
+  await removeStoreCredit(order.user._id).catch(err => console.error("Error on removeStoreCredit: ", err))
 }
+
+//
+//
+//
+// @desc Remove Store Credit
+export const removeStoreCredit = asyncHandler(async userId => {
+  await User.findByIdAndUpdate(userId, { storecredit: 0 }, { new: true }, (err, doc) => {
+    if (err) {
+      console.log("Something wrong when removing StoreCredit: ", err)
+      return err
+    } else {
+      console.log("StoreCredit has been removed... " + doc)
+      return doc
+    }
+  })
+})
 
 //
 //
@@ -289,8 +311,10 @@ export const clearCart = asyncHandler(async userId => {
     if (err) {
       console.log("Something wrong when cleaning Cart: ", err)
       return err
+    } else {
+      console.log("Cart has been cleaned... " + doc)
+      return doc
     }
-    return doc
   })
 })
 

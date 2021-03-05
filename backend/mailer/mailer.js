@@ -55,6 +55,15 @@ export const sendMail = asyncHandler(async orderData => {
     COMPLETED: "#3fb618"
   }
 
+  const storecredit = storecredit => {
+    if (storecredit) {
+      return `<tr>
+          <td style="text-align: right; font-size: 12px; font-weight: 300;">store credit used: </td>
+          <td style="font-size: 12px; font-weight: 300;"> -€${storecredit.toFixed(2)}</td>
+        </tr>`
+    }
+  }
+
   const mailOptions = {
     from: `WOOLUNATICS <${GMAIL_EMAIL}>`,
     to: `${order.user.email}`,
@@ -147,6 +156,7 @@ export const sendMail = asyncHandler(async orderData => {
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">items price: </td><td style="font-size: 12px; font-weight: 300;"> €${order.itemsPrice.toFixed(2)}</td></tr>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">taxes: </td><td style="font-size: 12px; font-weight: 300;"> €${order.taxPrice.toFixed(2)}</td></tr>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">shipping price: </td><td style="font-size: 12px; font-weight: 300;"> €${order.shippingPrice.toFixed(2)}</td></tr>
+              ${storecredit(order.storecredit)}
               <tr><td style="text-align: right; font-size: 16px; font-weight: 600; height: 30px;">total price: </td><td style="font-size: 16px; font-weight: 600; height: 30px;"> €${order.totalPrice.toFixed(2)}</td></tr>
             </tbody>
           </table>

@@ -26,7 +26,7 @@ const UserEditScreen = ({ history, match }) => {
       dispatch({ type: USER_UPDATE_RESET })
       history.push("/admin/userList")
     } else {
-      if (!user.name || user._id !== userId) {
+      if ((user && !user.name) || user._id !== userId) {
         dispatch(getUserDetails(userId))
       } else {
         setName(user.name)
