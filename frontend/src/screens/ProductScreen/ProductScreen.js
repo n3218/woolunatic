@@ -12,6 +12,7 @@ import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DELETE_RESET } from "../../constan
 import Meta from "../../components/Meta"
 import { TranslateToWeight } from "../../components/Utils"
 import "./ProductScreen.css"
+import { UPLOADS } from "../../constants/commonConstans"
 
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
@@ -27,8 +28,8 @@ const ProductScreen = ({ history, match }) => {
   const { loading, error, product } = productDetails
   const productCreateReview = useSelector(state => state.productCreateReview)
   const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview
-  const noimage = "/uploads/noimage/noimage.webp"
-  const imgPath = "/uploads/products/"
+  const noimage = `${UPLOADS}/noimage/noimage.webp`
+  const imgPath = `${UPLOADS}/products/`
 
   const imagesForGallery = imageArray => {
     let currentImages = []

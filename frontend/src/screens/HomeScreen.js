@@ -31,6 +31,7 @@ const HomeScreen = () => {
           <Meta />
           <Row>
             {products &&
+              products.length > 0 &&
               products.map(product => (
                 <Col key={product._id} xs={4} sm={3} md={3} lg={2} xl={2} className="product-card-block">
                   <Product product={product} />

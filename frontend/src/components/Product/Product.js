@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { Card } from "react-bootstrap"
 import { Link } from "react-router-dom"
+import { UPLOADS } from "../../constants/commonConstans"
 import Rating from "../Rating/Rating"
 import "./Product.css"
 
 const Product = ({ product }) => {
-  const noimage = "/uploads/noimage/noimage.webp"
+  const noimage = `${UPLOADS}/noimage/noimage.webp`
   const [imgSrc, setImgSrc] = useState(noimage)
-  const thumbPath = "/uploads/thumbs/thumb-"
+  const thumbPath = `${UPLOADS}/thumbs/thumb-`
 
   const checkImg = async img => {
     await fetch(thumbPath + img).then(res => {

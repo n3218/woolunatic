@@ -1,8 +1,9 @@
 import React from "react"
 import { Image, Row, Col } from "react-bootstrap"
+import { UPLOADS } from "../constants/commonConstans"
 
 const ImageLarge = ({ image, name }) => {
-  const imgPath = "/uploads/products/"
+  const imgPath = `${UPLOADS}/products/`
 
   return (
     <>
