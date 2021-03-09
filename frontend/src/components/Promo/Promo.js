@@ -3,17 +3,18 @@ import { Link } from "react-router-dom"
 import { Image, Jumbotron } from "react-bootstrap"
 import "./Promo.css"
 import FormContainer from "../FormContainer"
+import { UPLOADS } from "../../constants/commonConstans"
 
 const Promo = () => {
   return (
     <>
       <div className="promo-block">
         <div id="promo-1" className="overflow-hidden">
-          <Image src="/uploads/promo/80331473_184683979321816_1434081165030083279_n.webp" alt="Promo Block" />
+          <Image src={`${UPLOADS}/promo/80331473_184683979321816_1434081165030083279_n.webp`} alt="Promo Block" />
         </div>
         <div id="promo-2" className="promo-block-button-container overflow-hidden">
           <Link to="/products/5fe6eb0e187920f33697b6dd" target="_blank">
-            <Image src="/uploads/promo/image-1608969334624.jpg" alt="Promo Block" />
+            <Image src={`${UPLOADS}/promo/image-1608969334624.jpg`} alt="Promo Block" />
             <div className="promo-block-text-container">
               <div className="promo-block-text">
                 <div>B.Modesto</div>
@@ -25,7 +26,7 @@ const Promo = () => {
         </div>
         <div id="promo-3" className="promo-block-button-container overflow-hidden">
           <Link to="/products/5fd9c80930203c1975431952" target="_blank">
-            <Image src="/uploads/promo/image-1608189301093.jpg" alt="Promo Block" />
+            <Image src={`${UPLOADS}/promo/image-1608189301093.jpg`} alt="Promo Block" />
             <div className="promo-block-text">
               <div>
                 <nobr>Monteluce (Japan)</nobr>
@@ -36,11 +37,11 @@ const Promo = () => {
           </Link>
         </div>
         <div id="promo-4" className="overflow-hidden">
-          <Image src="/uploads/promo/76877129_631712434302829_2274931547804815072_n.webp" alt="Promo Block" />
+          <Image src={`${UPLOADS}/promo/76877129_631712434302829_2274931547804815072_n.webp`} alt="Promo Block" />
         </div>
         <div id="promo-5" className="promo-block-button-container overflow-hidden">
           <Link to="/products/5fe6e7e760af6cf2331164c9" target="_blank">
-            <Image src="/uploads/promo/image-1608968725901.jpg" alt="Millefili COUSCOUS" />
+            <Image src={`${UPLOADS}/promo/image-1608968725901.jpg`} alt="Millefili COUSCOUS" />
             <div className="promo-block-text">
               <div>Millefili</div>
               <div>COUSCOUS</div>
@@ -50,7 +51,7 @@ const Promo = () => {
         </div>
         <div id="promo-6" className="promo-block-button-container overflow-hidden">
           <Link to="/products/5fe8146bef583024233dbd5e" target="_blank">
-            <Image src="/uploads/promo/image-1609045453112.jpg" alt="Lineapiu Ghost" />
+            <Image src={`${UPLOADS}/promo/image-1609045453112.jpg`} alt="Lineapiu Ghost" />
             <div className="promo-block-text">
               <div className="text-center">
                 <small>Filati Naturali</small>
@@ -63,12 +64,12 @@ const Promo = () => {
           </Link>
         </div>
         <div id="promo-7" className="overflow-hidden">
-          <Image src="/uploads/promo/79645455_172311820520261_3764907917497880995_n.webp" alt="Promo Block" />
+          <Image src={`${UPLOADS}/promo/79645455_172311820520261_3764907917497880995_n.webp`} alt="Promo Block" />
         </div>
 
         <div id="promo-8" className="promo-block-button-container overflow-hidden">
           <Link to="/products/5fe7f934be9ee90017f179c4" target="_blank">
-            <Image src="/uploads/promo/image-1608189301100.jpg" alt="Lineapiu Ghost" />
+            <Image src={`${UPLOADS}/promo/image-1608189301100.jpg`} alt="Lineapiu Ghost" />
             <div className="promo-block-text">
               <div>Lineapiu</div>
               <div>GHOST</div>
@@ -77,7 +78,7 @@ const Promo = () => {
           </Link>
         </div>
         <div id="promo-9" className="overflow-hidden">
-          <Image src="/uploads/promo/image-1609038711626.jpg" alt="Promo Block" />
+          <Image src={`${UPLOADS}/promo/image-1609038711626.jpg`} alt="Promo Block" />
         </div>
       </div>
       <Jumbotron>

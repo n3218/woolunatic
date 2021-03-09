@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
 import { cartRemoveItemAction } from "../actions/cartActions"
+import "../constants/commonConstans"
+import { UPLOADS } from "../constants/commonConstans"
 
 const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
   const dispatch = useDispatch()
@@ -13,9 +15,9 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
     setCheckout(false)
   }
 
-  const noimage = "/uploads/noimage/noimage.webp"
+  const noimage = `${UPLOADS}/noimage/noimage.webp`
   const [imgSrc, setImgSrc] = useState(noimage)
-  const thumbPath = "/uploads/thumbs/thumb-"
+  const thumbPath = `${UPLOADS}/thumbs/thumb-`
   const checkImg = async img => {
     await fetch(thumbPath + img).then(res => {
       if (res.ok) {
