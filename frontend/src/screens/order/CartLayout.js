@@ -12,8 +12,6 @@ import OrderWeightsSummary from "../../components/OrderWeightsSummary"
 import Loader from "../../components/Loader"
 import { createOrderAction } from "../../actions/orderActions"
 import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
-import { USER_DETAILS_REQUEST } from "../../constants/userConstants"
-import { getUserDetails } from "../../actions/userActions"
 
 const CartLayout = ({ history, redirect, checkoutStep, title, children, loading, error }) => {
   const dispatch = useDispatch()
@@ -38,8 +36,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       } else {
         history.push(`/login`)
       }
-    } else {
-      dispatch(getUserDetails(userInfo._id))
     }
   }, [cart, history, redirect, userInfo, dispatch])
 

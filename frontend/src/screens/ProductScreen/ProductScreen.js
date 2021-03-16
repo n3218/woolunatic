@@ -12,7 +12,7 @@ import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DELETE_RESET } from "../../constan
 import Meta from "../../components/Meta"
 import { TranslateToWeight } from "../../components/Utils"
 import "./ProductScreen.css"
-import { UPLOADS } from "../../constants/commonConstans"
+import { noimage, imagePath, thumbPath } from "../../constants/commonConstans"
 
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
@@ -28,25 +28,6 @@ const ProductScreen = ({ history, match }) => {
   const { loading, error, product } = productDetails
   const productCreateReview = useSelector(state => state.productCreateReview)
   const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview
-  const noimage = `${UPLOADS}/noimage/noimage.webp`
-  const imgPath = `${UPLOADS}/products/`
-
-  const imagesForGallery = imageArray => {
-    let currentImages = []
-    imageArray.map(img => currentImages.push({ original: img, thumbnail: img }))
-    return currentImages
-  }
-
-  const checkImg = async (img, checkedImgArr) => {
-    await fetch(imgPath + img).then(res => {
-      if (res.ok) {
-        checkedImgArr.push(imgPath + img)
-      } else {
-        checkedImgArr.push(noimage)
-      }
-    })
-    setInitialImages([...imagesForGallery(checkedImgArr)])
-  }
 
   useEffect(() => {
     if (successCreateReview) {
@@ -70,10 +51,13 @@ const ProductScreen = ({ history, match }) => {
       }
     }
     if (product && Array.isArray(product.image) && product.image.length > 0) {
-      let checkedImgArr = []
-      product.image.map(img => checkImg(img, checkedImgArr))
+      let imagesArray = []
+      console.log("product.image: ", product.image)
+      product.image.map(img => imagesArray.push({ original: imagePath + img, thumbnail: thumbPath + img }))
+      console.log("imagesArray: ", imagesArray)
+      setInitialImages([...imagesArray])
     } else {
-      setInitialImages([...imagesForGallery([noimage])])
+      setInitialImages([{ original: noimage, thumbnail: noimage }])
     }
   }, [dispatch, successCreateReview, productId, product])
 
@@ -128,7 +112,7 @@ const ProductScreen = ({ history, match }) => {
             {/* ---------------------------Gallery--------------------------- */}
 
             <div id="product-gallery">
-              <ImageGallery items={initialImages} showPlayButton={false} showIndex={true} thumbnailPosition="left" />
+              <ImageGallery onErrorImageURL={noimage} items={initialImages} showPlayButton={false} showIndex={true} thumbnailPosition="bottom" />
             </div>
 
             {/* ---------------------------Title--------------------------- */}

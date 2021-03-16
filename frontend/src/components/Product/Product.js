@@ -1,43 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Card } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import { UPLOADS } from "../../constants/commonConstans"
+import { thumbPath } from "../../constants/commonConstans"
 import Rating from "../Rating/Rating"
 import "./Product.css"
 
 const Product = ({ product }) => {
-  const noimage = `${UPLOADS}/noimage/noimage.webp`
-  const [imgSrc, setImgSrc] = useState(noimage)
-  const thumbPath = `${UPLOADS}/thumbs/thumb-`
-
-  const checkImg = async img => {
-    await fetch(thumbPath + img).then(res => {
-      if (res.ok) {
-        setImgSrc(thumbPath + img)
-      } else {
-        setImgSrc(noimage)
-      }
-    })
-  }
-
-  useEffect(() => {
-    if (product.image && product.image[0]) {
-      checkImg(product.image[0])
-    }
-  }, [product])
-
-  // const getImageOrFallback = (path, fallback) => {
-  //   return new Promise(resolve => {
-  //     const img = new Image()
-  //     img.src = path
-  //     img.onload = () => resolve(setImgSrc(path))
-  //     img.onerror = () => resolve(setImgSrc(fallback))
-  //   })
-  // }
-  // if (product.image && product.image[0]) {
-  //   return getImageOrFallback(product.image[0], noimage).then(result => result)
-  // }
-
   return (
     <Card className="product-card">
       <div className="product-card_badges">
@@ -48,7 +16,7 @@ const Product = ({ product }) => {
       </div>
       <div className="product-card_img-container">
         <Link to={`/products/${product._id}`}>
-          <Card.Img src={imgSrc} variant="top" alt={product.name} className="product-card_img" />
+          <Card.Img src={thumbPath + product.image[0]} variant="top" alt={product.name} className="product-card_img" />
         </Link>
       </div>
 

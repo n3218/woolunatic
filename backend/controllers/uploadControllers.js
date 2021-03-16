@@ -1,7 +1,72 @@
 import asyncHandler from "express-async-handler"
 import Product from "../models/productModel.js"
 import sharp from "sharp"
-import fs from "fs"
+import { Storage } from "@google-cloud/storage"
+import dotenv from "dotenv"
+dotenv.config()
+
+const storage = new Storage({
+  projectId: process.env.GCLOUD_PROJECT,
+  credentials: {
+    client_email: process.env.GCLOUD_CLIENT_EMAIL,
+    private_key: process.env.GCLOUD_PRIVATE_KEY
+  }
+})
+
+const bucket = storage.bucket(process.env.GCLOUD_BUCKET)
+
+const blobAction = async (size, fileData) => {
+  const blob = bucket.file(`${size}/${fileData.originalname}`)
+  const blobStream = blob.createWriteStream()
+  const newFilePath = `${process.env.GCLOUD_STORAGE_URL}/${process.env.GCLOUD_BUCKET}`
+  await blobStream
+    .on("error", err => console.log("Error on blobStream.on: ", err))
+    .on("finish", () => {
+      const publicUrl = `${newFilePath}/${blob.name}`
+      const imageDetails = fileData
+      imageDetails.image = publicUrl
+      return imageDetails
+    })
+    .end(fileData.buffer)
+}
+
+const uploadResizedImages = async file => {
+  blobAction("fullsize", file)
+
+  await sharp(file.buffer)
+    .resize(250, 250)
+    .toFormat("jpeg")
+    .jpeg({ quality: 80 })
+    .toBuffer((err, data, info) => {
+      if (err) {
+        console.log("Error on thumbs: ", err)
+        return err
+      }
+      const result = {
+        ...info,
+        buffer: data,
+        originalname: file.originalname
+      }
+      return blobAction("thumbs", result)
+    })
+
+  await sharp(file.buffer)
+    .resize(80, 80)
+    .toFormat("jpeg")
+    .jpeg({ quality: 80 })
+    .toBuffer((err, data, info) => {
+      if (err) {
+        console.log("Error on minithumbs: ", err)
+        return err
+      }
+      const result = {
+        ...info,
+        buffer: data,
+        originalname: file.originalname
+      }
+      return blobAction("minithumbs", result)
+    })
+}
 
 // @desc   Upload Images for single Product
 // @route  POST /api/upload/
@@ -9,17 +74,17 @@ import fs from "fs"
 export const uploadProductImages = asyncHandler(async (req, res) => {
   const results = await Promise.all(
     req.files.map(async file => {
-      console.log("Promise.all.file: ", file)
-      let thumb = await sharp(file.path).resize(250, 250).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../thumbs/thumb-${file.originalname}`)
-      let minithumb = await sharp(file.path).resize(112, 112).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../minithumbs/minithumb-${file.originalname}`)
-      console.log("thumb, minithumb: ", thumb, minithumb)
-      return { file, thumb, minithumb }
+      uploadResizedImages(file)
     })
   )
   if (results) {
-    console.log("results: ", results)
-    res.json(req.files)
+    setTimeout(() => {
+      console.log("uploadProductImages: req.files.length: ", req.files.length)
+      console.log("uploadProductImages: results.length: ", results.length)
+      res.json(req.files)
+    }, 9000)
   } else {
+    console.error("Error on uploading Images")
     res.status(404)
     throw new Error("Problem with uploading Images")
   }
@@ -33,8 +98,8 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
   try {
     const results = await Promise.all(
       req.files.map(async file => {
-        await sharp(file.path).resize(250, 250).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../thumbs/thumb-${file.originalname}`)
-        await sharp(file.path).resize(112, 112).toFormat("jpeg").jpeg({ quality: 80 }).toFile(`${file.destination}../minithumbs/minithumb-${file.originalname}`)
+        uploadResizedImages(file)
+
         if (file.originalname) {
           let productArt = file.originalname.split("-")[0]
           if (productMap[productArt]) {
@@ -56,13 +121,12 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
                 console.log("Something wrong when updating data!")
                 return err
               } else {
-                console.log("doc: ", doc)
                 return doc
               }
             })
           })
         ).then(result => {
-          console.log(result)
+          console.log("uploadBulkImages: result.length: ", result.length)
           res.json({ files: req.files, products: result })
         })
       } catch (err) {
@@ -78,34 +142,33 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
   }
 })
 
+const deleteAllFilesInFolder = async folder => {
+  console.log("deleteAllFilesInFolder: folder: ", folder)
+  try {
+    let [files] = await bucket.getFiles({ prefix: folder })
+    console.log("deleteAllFilesInFolder: folder-files.length: ", folder, "-", files.length)
+    // Filter only files that belong to "folder" album-1, aka their file.id (name) begins with "album-1/"
+    let dirFiles = files.filter(f => f.name.includes(folder) && !f.name.includes("undefined"))
+    // Delete the files
+    dirFiles.forEach(async file => {
+      try {
+        await file.delete()
+      } catch (err) {
+        console.log("Error on deleting file: ", err)
+      }
+    })
+  } catch (err) {
+    console.log("Error: ", err)
+  }
+}
+
 // @desc   Delete All Images (FullSize, Thumbs, Minithumbs)
 // @route  DELETE /api/upload/bulk
 // @access Private/+Admin
 export const deleteImages = asyncHandler(async (req, res) => {
-  const files = fs.readdirSync("uploads/products/")
-  const thumbs = fs.readdirSync("uploads/thumbs/")
-  const minithumbs = fs.readdirSync("uploads/minithumbs/")
+  console.log("deleteImages")
 
-  const filesPromise = files.forEach(async file => {
-    console.log("file: ", file)
-    if (file !== "file.txt") {
-      await fs.unlinkSync("uploads/products/" + file)
-    }
-  })
-  const thumbsPromise = thumbs.forEach(async file => {
-    console.log("file: ", file)
-    if (file !== "file.txt") {
-      await fs.unlinkSync("uploads/thumbs/" + file)
-    }
-  })
-  const minithumbsPromise = minithumbs.forEach(async file => {
-    console.log("file: ", file)
-    if (file !== "file.txt") {
-      await fs.unlinkSync("uploads/minithumbs/" + file)
-    }
-  })
-
-  await Promise.all([filesPromise, thumbsPromise, minithumbsPromise])
+  await Promise.all([deleteAllFilesInFolder("fullsize"), deleteAllFilesInFolder("thumbs"), deleteAllFilesInFolder("minithumbs")])
     .then(() => {
       console.log("OK")
       res.send("OK")

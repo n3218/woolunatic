@@ -3,7 +3,7 @@ import { Image, Row, Col } from "react-bootstrap"
 import { UPLOADS } from "../constants/commonConstans"
 
 const ImageLarge = ({ image, name }) => {
-  const imgPath = `${UPLOADS}/products/`
+  const imgPath = `${UPLOADS}/fullsize/`
 
   return (
     <>

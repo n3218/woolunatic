@@ -247,8 +247,6 @@ export const startCheckout = asyncHandler(async (req, res) => {
           })
           .catch(err => console.error(`Failed to update the item: ${err}`))
       })
-      console.log("startCheckout: updatedProducts: ", updatedProducts)
-
       res.status(201).json(cart)
     }
   } else {

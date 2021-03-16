@@ -7,8 +7,6 @@ dotenv.config()
 
 export const sendMailToManager = asyncHandler(async orderData => {
   const order = new Object(orderData)
-  console.log("=============================sendMailToManager: order._id: ", order._id)
-
   const GMAIL_EMAIL = process.env.GMAIL_EMAIL
   const GMAIL_PASSWORD = String(process.env.GMAIL_PASSWORD)
   const MANAGER_EMAIL = process.env.MANAGER_EMAIL
@@ -27,7 +25,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
     <td style="text-align: center;">
       <div>
         <a target="_blank" rel="noreferrer" href="${DOMAIN_NAME}/products/${item.product}" style="text-decoration:none; color:#417d97; font-weight: bold">
-          <img src="${DOMAIN_NAME}/uploads/minithumbs/minithumb-${item.image}" alt=${item.art} width="80" height"80" />
+          <img src="${process.env.GCLOUD_STORAGE_URL}/${process.env.GCLOUD_BUCKET}/minithumbs/${item.image}" alt=${item.art} width="80" height"80" />
         </a>
       </div>
       <div>

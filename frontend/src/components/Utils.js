@@ -40,9 +40,9 @@ export const TranslateToWeight = val => {
 export const checkImage = async (img, size) => {
   const noimage = `${UPLOADS}/noimage/noimage.webp`
   const path = {
-    fullsize: `${UPLOADS}/products/`,
-    thumb: `${UPLOADS}/thumbs/thumb-`,
-    minithumb: `${UPLOADS}/minithumbs/minithumb-`
+    fullsize: `${UPLOADS}/fullsize/`,
+    thumb: `${UPLOADS}/thumbs/`,
+    minithumb: `${UPLOADS}/minithumbs/`
   }
   await fetch(path[size] + img).then(res => {
     if (res.ok) {

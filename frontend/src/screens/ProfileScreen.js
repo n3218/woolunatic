@@ -30,7 +30,7 @@ const ProfileScreen = ({ history, location }) => {
   useEffect(() => {
     dispatch(getUserDetails("profile"))
     dispatch(listMyOrdersAction())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (!userInfo) {
