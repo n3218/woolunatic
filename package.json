@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "MERN shop app",
   "engines": {
-    "node": "v14.15.1"
+    "node": "14.x.x"
   },
   "main": "server.js",
   "type": "module",
