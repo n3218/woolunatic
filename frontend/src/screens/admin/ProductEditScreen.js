@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { Form, Button, Row, Col } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
@@ -43,6 +43,13 @@ const ProductEditScreen = ({ history, match }) => {
   const productDelete = useSelector(state => state.productDelete)
   const { loading: loadingProductDelete, error: errorProductDelete, success: successProductDelete, message: messageProductDelete } = productDelete
 
+  const successDeleteProductHandler = useCallback(() => {
+    setTimeout(() => {
+      dispatch({ type: PRODUCT_DELETE_RESET })
+      history.push(`/yarns`)
+    }, 5000)
+  }, [dispatch, history])
+
   useEffect(() => {
     if (successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_RESET })
@@ -74,7 +81,7 @@ const ProductEditScreen = ({ history, match }) => {
         setRegular(product.regular)
       }
     }
-  }, [product, dispatch, productId, history, successUpdate, successProductDelete])
+  }, [product, dispatch, productId, history, successUpdate, successProductDelete, successDeleteProductHandler])
 
   const submitHandler = e => {
     e.preventDefault()
@@ -107,13 +114,6 @@ const ProductEditScreen = ({ history, match }) => {
     if (window.confirm("Are you sure?")) {
       dispatch(productDeleteAction(id))
     }
-  }
-
-  const successDeleteProductHandler = () => {
-    setTimeout(() => {
-      dispatch({ type: PRODUCT_DELETE_RESET })
-      history.push(`/yarns`)
-    }, 5000)
   }
 
   return (

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
 import { cartRemoveItemAction } from "../actions/cartActions"
-import "../constants/commonConstans"
-import { UPLOADS } from "../constants/commonConstans"
+import { thumbPath } from "../constants/commonConstans"
 
 const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
   const dispatch = useDispatch()
@@ -14,24 +13,6 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
     dispatch(cartRemoveItemAction(productId, qty))
     setCheckout(false)
   }
-
-  const noimage = `${UPLOADS}/noimage/noimage.webp`
-  const [imgSrc, setImgSrc] = useState(noimage)
-  const thumbPath = `${UPLOADS}/thumbs/thumb-`
-  const checkImg = async img => {
-    await fetch(thumbPath + img).then(res => {
-      if (res.ok) {
-        setImgSrc(thumbPath + img)
-      } else {
-        setImgSrc(noimage)
-      }
-    })
-  }
-  useEffect(() => {
-    if (item.image) {
-      checkImg(item.image)
-    }
-  }, [item])
 
   return (
     <ListGroup.Item className={item.message && "bg-light"}>
@@ -46,7 +27,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
             </div>
           )}
           <Link to={`/products/${productId}`} className="text-capitalize">
-            <Image src={imgSrc} alt={item.name} fluid thumbnail />
+            <Image src={thumbPath + item.image} alt={item.name} fluid thumbnail />
           </Link>
         </Col>
         <Col>

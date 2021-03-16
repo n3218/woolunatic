@@ -6,9 +6,9 @@ import { Link } from "react-router-dom"
 import Loader from "./Loader"
 import imageCompression from "browser-image-compression"
 import Message from "./Message"
+import { minithumbPath } from "../constants/commonConstans"
 
 const ImagesBulkUpload = () => {
-  const minithumbPath = "/uploads/minithumbs/minithumb-"
   const [uploading, setUploading] = useState(false)
   const [images, setImages] = useState([])
   const [updatedProducts, setUpdatedProducts] = useState([])
@@ -44,9 +44,11 @@ const ImagesBulkUpload = () => {
       }
       const { data } = await axios.post("/api/upload/bulk", formData, config)
       console.log("data: ", data)
-      setImages(data.files)
-      setUpdatedProducts(data.products)
-      setUploading(false)
+      setTimeout(() => {
+        setImages(data.files)
+        setUpdatedProducts(data.products)
+        setUploading(false)
+      }, 9000)
     } catch (error) {
       console.error(error)
       setUploading(false)

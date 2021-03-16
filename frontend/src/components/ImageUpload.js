@@ -7,10 +7,11 @@ import imageCompression from "browser-image-compression"
 import { productImageDeleteAction } from "../actions/productActions"
 import { PRODUCT_IMAGE_DELETE_RESET } from "../constants/productConstants"
 import Message from "./Message"
+import { UPLOADS } from "../constants/commonConstans"
 
 const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
   const dispatch = useDispatch()
-  const thumbPath = "/uploads/thumbs/thumb-"
+  const thumbPath = `${UPLOADS}/thumbs/`
   const productImageDelete = useSelector(state => state.productImageDelete)
   const { loading: loadingImageDelete, error: errorImageDelete, success: successImageDelete } = productImageDelete
   const userLogin = useSelector(state => state.userLogin)
@@ -53,7 +54,11 @@ const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
       }
       const { data } = await axios.post("/api/upload", formData, config)
       console.log("data: ", data)
-      setImage([...image, ...data.map(img => `${img.filename}`)])
+      const imageSet = new Set([...image])
+
+      data.map(img => imageSet.add(img.originalname))
+      console.log("[...imageSet]: ", [...imageSet])
+      setImage([...imageSet])
       setUploading(false)
     } catch (error) {
       console.error(error)

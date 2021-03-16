@@ -27,6 +27,12 @@ yarn-error.log*
 tmp
 tmp/
 /tmp
+
 uploads/products
 uploads/thumbs
 uploads/minithumbs
+
+env_vars.yaml
+/env_vars.yaml
+
+.gcloudignore
