@@ -134,7 +134,7 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
       }
       if (updatedProducts + newlyAddedProducts === totalRows) {
         console.log("Updated totalRows, updatedProducts, newlyAddedProducts: ", totalRows, updatedProducts, newlyAddedProducts)
-        res.json({ success: true, fileName: req.file.path, updatedProducts, newlyAddedProducts, totalRows })
+        res.json({ success: true, fileName: req.file.originalname, updatedProducts, newlyAddedProducts, totalRows })
       }
     })
     .on("end", async rowCount => {
