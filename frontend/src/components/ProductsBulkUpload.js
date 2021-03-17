@@ -59,11 +59,15 @@ const ProductsBulkUpload = () => {
       {!uploading && data.success && (
         <Message variant="success" onClose={() => setData({})}>
           <div>
-            File "{data.fileName}" successfully uploaded and{" "}
+            File{" "}
+            <span className="h5">
+              <mark>{data.fileName}</mark>
+            </span>{" "}
+            with{" "}
             <span className="h5">
               <mark>{data.totalRows}</mark>
             </span>{" "}
-            rows parsed!
+            rows successfully parsed!
           </div>
           <div>
             newly added Products:{" "}
