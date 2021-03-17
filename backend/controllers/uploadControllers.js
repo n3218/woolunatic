@@ -1,20 +1,14 @@
 import asyncHandler from "express-async-handler"
-import Product from "../models/productModel.js"
 import sharp from "sharp"
-import { Storage } from "@google-cloud/storage"
+import Product from "../models/productModel.js"
+import bucket from "../config/bucket.js"
+
 import dotenv from "dotenv"
 dotenv.config()
 
-const storage = new Storage({
-  projectId: process.env.GCLOUD_PROJECT,
-  credentials: {
-    client_email: process.env.GCLOUD_CLIENT_EMAIL,
-    private_key: process.env.GCLOUD_PRIVATE_KEY
-  }
-})
-
-export const bucket = storage.bucket(process.env.GCLOUD_BUCKET)
-
+//
+//
+// upload single file to GCloud Bucket
 const blobAction = async (size, fileData) => {
   const blob = bucket.file(`${size}/${fileData.originalname}`)
   const blobStream = blob.createWriteStream()
@@ -30,8 +24,11 @@ const blobAction = async (size, fileData) => {
     .end(fileData.buffer)
 }
 
+//
+//
+// render and upload to GCloud all images for single product (fullsize, thumb amd minithumb)
 const uploadResizedImages = async file => {
-  blobAction("fullsize", file)
+  blobAction("fullsize", file) // fullsize image
 
   await sharp(file.buffer)
     .resize(250, 250)
@@ -41,13 +38,14 @@ const uploadResizedImages = async file => {
       if (err) {
         console.log("Error on thumbs: ", err)
         return err
+      } else {
+        const result = {
+          ...info,
+          buffer: data,
+          originalname: file.originalname
+        }
+        return blobAction("thumbs", result) // thumb image
       }
-      const result = {
-        ...info,
-        buffer: data,
-        originalname: file.originalname
-      }
-      return blobAction("thumbs", result)
     })
 
   await sharp(file.buffer)
@@ -58,13 +56,14 @@ const uploadResizedImages = async file => {
       if (err) {
         console.log("Error on minithumbs: ", err)
         return err
+      } else {
+        const result = {
+          ...info,
+          buffer: data,
+          originalname: file.originalname
+        }
+        return blobAction("minithumbs", result) // minithumb image
       }
-      const result = {
-        ...info,
-        buffer: data,
-        originalname: file.originalname
-      }
-      return blobAction("minithumbs", result)
     })
 }
 
@@ -142,6 +141,9 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
   }
 })
 
+//
+//
+// delete all files in folder exept undefined
 const deleteAllFilesInFolder = async folder => {
   console.log("deleteAllFilesInFolder: folder: ", folder)
   try {
@@ -160,7 +162,7 @@ const deleteAllFilesInFolder = async folder => {
   }
 }
 
-// @desc   Delete All Images (FullSize, Thumbs, Minithumbs)
+// @desc   Delete All Images in product images derectories(FullSize, Thumbs, Minithumbs)
 // @route  DELETE /api/upload/bulk
 // @access Private/+Admin
 export const deleteImages = asyncHandler(async (req, res) => {

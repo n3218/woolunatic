@@ -1,21 +1,12 @@
 import path from "path"
 import express from "express"
 import multer from "multer"
-import fs from "fs"
 import csv from "fast-csv"
 import Product from "../models/productModel.js"
-// "/api/importdata"
 
 const router = express.Router()
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "uploads/imports")
-  },
-  filename(req, file, cb) {
-    cb(null, `data-${new Date().toISOString().slice(0, 13)}${path.extname(file.originalname)}`)
-  }
-})
+const storage = multer.memoryStorage()
 
 function checkFileType(file, cb) {
   const filetypes = /csv/
@@ -33,19 +24,20 @@ function checkFileType(file, cb) {
 const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
-    console.log("csvUploadRoutes.const.upload")
+    console.log("importDataRoutes: upload. ")
     checkFileType(file, cb)
   }
 })
 
+// "/api/importdata"
 router.post("/", upload.single("csv-file"), async (req, res) => {
   console.log("req.file: ", req.file)
   let totalRows = 0
   let updatedProducts = 0
   let newlyAddedProducts = 0
 
-  fs.createReadStream(req.file.path)
-    .pipe(csv.parse({ headers: true }))
+  const stream = csv
+    .parse({ headers: true })
     .on("error", error => console.error(error))
     .on("data", async row => {
       let newData = {}
@@ -147,8 +139,9 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
     })
     .on("end", async rowCount => {
       totalRows = rowCount
-      fs.unlinkSync(req.file.path) // remove temp file
     })
+  stream.write(req.file.buffer)
+  stream.end()
 })
 
 export default router
