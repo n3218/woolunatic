@@ -193,7 +193,8 @@ main {
   font-size: 0.8em;
 }
 
-h1 {
+h1,
+.h1 {
   font-family: "Dancing Script";
 }
 
@@ -321,9 +322,12 @@ th:first-of-type {
   top: 10px;
 }
 
+.promo-new-in-collection {
+  margin: 40px 10% 10px 10%;
+}
+
 .product-card-block {
-  padding-right: 4px;
-  padding-left: 4px;
+  padding: 15px;
 }
 
 .card-body {

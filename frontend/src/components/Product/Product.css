@@ -81,11 +81,12 @@
 .product-card_badges {
   position: absolute;
   z-index: 200;
-  top: 0;
+  top: 10px;
   left: 0;
 }
 .badge {
-  margin: 2px;
+  margin: 0px;
+  padding: 5px 10px;
 }
 .badge-secondary {
   background-color: var(--secondary);

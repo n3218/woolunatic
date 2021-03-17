@@ -6,6 +6,7 @@ import Message from "../components/Message"
 import Loader from "../components/Loader"
 import { productTopAction } from "../actions/productActions"
 import Promo from "../components/Promo/Promo"
+import Promo2 from "../components/Promo/Promo-2"
 import Meta from "../components/Meta"
 import { Link } from "react-router-dom"
 
@@ -26,23 +27,28 @@ const HomeScreen = () => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
-          <Promo />
-          <h1>Latest from my Yarn Collection</h1>
           <Meta />
-          <Row>
-            {products &&
-              products.length > 0 &&
-              products.map(product => (
-                <Col key={product._id} xs={4} sm={3} md={3} lg={2} xl={2} className="product-card-block">
-                  <Product product={product} />
-                </Col>
-              ))}
-          </Row>
-          <Row className="justify-content-center my-5">
-            <Link to="/yarns" className="btn btn-success px-5 py-2">
-              SEE COLLECTION
-            </Link>
-          </Row>
+          <Promo />
+
+          <div className="promo-new-in-collection">
+            <h3>New in Collection</h3>
+            <Row>
+              {products &&
+                products.length > 0 &&
+                products.map(product => (
+                  <Col key={product._id} xs={4} sm={4} md={2} lg={2} xl={2} className="product-card-block">
+                    <Product product={product} />
+                  </Col>
+                ))}
+            </Row>
+            <Row className="justify-content-center my-5">
+              <Link to="/yarns" className="btn btn-success px-5 py-2">
+                SHOP NEW
+              </Link>
+            </Row>
+          </div>
+
+          <Promo2 />
         </>
       )}
     </div>

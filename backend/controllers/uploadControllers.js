@@ -13,7 +13,7 @@ const storage = new Storage({
   }
 })
 
-const bucket = storage.bucket(process.env.GCLOUD_BUCKET)
+export const bucket = storage.bucket(process.env.GCLOUD_BUCKET)
 
 const blobAction = async (size, fileData) => {
   const blob = bucket.file(`${size}/${fileData.originalname}`)
@@ -147,9 +147,7 @@ const deleteAllFilesInFolder = async folder => {
   try {
     let [files] = await bucket.getFiles({ prefix: folder })
     console.log("deleteAllFilesInFolder: folder-files.length: ", folder, "-", files.length)
-    // Filter only files that belong to "folder" album-1, aka their file.id (name) begins with "album-1/"
     let dirFiles = files.filter(f => f.name.includes(folder) && !f.name.includes("undefined"))
-    // Delete the files
     dirFiles.forEach(async file => {
       try {
         await file.delete()
@@ -167,7 +165,6 @@ const deleteAllFilesInFolder = async folder => {
 // @access Private/+Admin
 export const deleteImages = asyncHandler(async (req, res) => {
   console.log("deleteImages")
-
   await Promise.all([deleteAllFilesInFolder("fullsize"), deleteAllFilesInFolder("thumbs"), deleteAllFilesInFolder("minithumbs")])
     .then(() => {
       console.log("OK")
