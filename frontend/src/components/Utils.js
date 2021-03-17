@@ -1,5 +1,4 @@
 import React from "react"
-import { UPLOADS } from "../constants/commonConstans"
 
 export const PaymentStatus = ({ paymentStatus }) => {
   const badges = {
@@ -35,20 +34,4 @@ export const TranslateToWeight = val => {
   if (val >= 150 && val < 200) return weightValues[150]
   if (val >= 100 && val < 150) return weightValues[100]
   if (val >= 50 && val < 100) return weightValues[50]
-}
-
-export const checkImage = async (img, size) => {
-  const noimage = `${UPLOADS}/noimage/noimage.webp`
-  const path = {
-    fullsize: `${UPLOADS}/fullsize/`,
-    thumb: `${UPLOADS}/thumbs/`,
-    minithumb: `${UPLOADS}/minithumbs/`
-  }
-  await fetch(path[size] + img).then(res => {
-    if (res.ok) {
-      return path[size] + img
-    } else {
-      return noimage
-    }
-  })
 }

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
 import { cartRemoveItemAction } from "../actions/cartActions"
-import { thumbPath } from "../constants/commonConstans"
+import { noimage, thumbPath } from "../constants/commonConstans"
 
 const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
   const dispatch = useDispatch()
@@ -27,7 +27,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
             </div>
           )}
           <Link to={`/products/${productId}`} className="text-capitalize">
-            <Image src={thumbPath + item.image} alt={item.name} fluid thumbnail />
+            {item.image.length === 0 ? <Image src={noimage} alt={item.name} fluid thumbnail /> : <Image src={thumbPath + item.image} alt={item.name} fluid thumbnail />}
           </Link>
         </Col>
         <Col>

@@ -4,10 +4,9 @@ import { Button, Image } from "react-bootstrap"
 import { productDeleteAction } from "../../actions/productActions"
 import "./ProductListItem.css"
 import { PRODUCT_DELETE_RESET } from "../../constants/productConstants"
+import { minithumbPath, noimage } from "../../constants/commonConstans"
 
 const ProductListItem = ({ product, history }) => {
-  const noimage = "/uploads/noimage/noimage.webp"
-  const miniPath = "/uploads/minithumbs/minithumb-"
   const dispatch = useDispatch()
 
   const deleteHandler = id => {
@@ -25,7 +24,7 @@ const ProductListItem = ({ product, history }) => {
     <tr key={product._id} className={`product-list-item ${product.outOfStock && "font-weight-light"}`}>
       <td onClick={detailsHandler}>{product.art}</td>
       <td onClick={detailsHandler} className="product-list-item_image">
-        {product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={miniPath + product.image[0]} alt={product.name} fluid className="product-list-image" />}
+        {product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={minithumbPath + product.image[0]} alt={product.name} fluid className="product-list-image" />}
       </td>
       <td onClick={detailsHandler}>{product.brand}</td>
       <td onClick={detailsHandler}>{product.name}</td>

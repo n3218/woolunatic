@@ -30,7 +30,14 @@ const Header = ({ location }) => {
         <Col className="p-0">
           <LinkContainer to="/">
             <Navbar.Brand>
-              <img className="logo" alt="Logo" src="/assets/logo.png" />
+              <Row>
+                <Col>
+                  <img className="logo" alt="Logo" src="/assets/logo.png" />
+                </Col>
+                <Col>
+                  <div className="h1">Woolunatics</div>
+                </Col>
+              </Row>
             </Navbar.Brand>
           </LinkContainer>
         </Col>

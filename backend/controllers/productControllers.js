@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler"
 import Product from "../models/productModel.js"
 import fs from "fs"
+import { bucket } from "./uploadControllers.js"
 
 const holdTime = 300000
 
@@ -82,7 +83,7 @@ export const getProducts = asyncHandler(async (req, res) => {
 // @route  GET /api/products/top
 // @access Public
 export const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ outOfStock: 1, novelty: -1, updatedAt: -1 }).limit(12)
+  const products = await Product.find({}).sort({ outOfStock: 1, novelty: -1, updatedAt: -1 }).limit(6)
   res.json(products)
 })
 
@@ -386,10 +387,20 @@ export const removeItemsFromDB = asyncHandler(async (req, res) => {
 // @access Private/+Admin
 export const deleteProductImage = asyncHandler(async (req, res) => {
   console.log("deleteProductImage: req.params.img: ", req.params.img)
+  const img = req.params.img
+  console.log("deleteProductImage: img: ", img)
   try {
-    fs.unlinkSync(`uploads/products/${req.params.img}`) // remove fullsize file
-    fs.unlinkSync(`uploads/thumbs/thumb-${req.params.img}`) // remove thumb file
-    fs.unlinkSync(`uploads/minithumbs/minithumb-${req.params.img}`) // remove minithumb file
+    let [files] = await bucket.getFiles({ prefix: img })
+    let dirFiles = files.filter(f => f.name.includes(img))
+
+    dirFiles.forEach(async file => {
+      try {
+        await file.delete()
+      } catch (err) {
+        console.log("Error on deleting single image: ", err)
+      }
+    })
+
     res.json({ message: "Image deleted from Disk" })
   } catch (err) {
     console.log(err)
