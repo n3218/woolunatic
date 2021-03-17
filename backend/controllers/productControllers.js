@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import Product from "../models/productModel.js"
 import fs from "fs"
-import { bucket } from "./uploadControllers.js"
+import bucket from "../config/bucket.js"
 
 const holdTime = 300000
 
@@ -415,9 +415,9 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
 export const deleteAllProducts = asyncHandler(async (req, res) => {
   console.log("deleteAllProducts")
   try {
-    await Product.deleteMany({})
-    console.log("Data Destroyed!")
-    res.json({ message: "All Products deleted from DB" })
+    const result = await Product.deleteMany({})
+    console.log("Data Destroyed!: ", result)
+    res.json({ message: "All Products deleted from DB: " + result.deletedCount + " total" })
   } catch (error) {
     console.error(error)
     res.status(404)
