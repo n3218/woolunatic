@@ -145,18 +145,20 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
 //
 // delete all files in folder exept undefined
 const deleteAllFilesInFolder = async folder => {
-  console.log("deleteAllFilesInFolder: folder: ", folder)
   try {
     let [files] = await bucket.getFiles({ prefix: folder })
-    console.log("deleteAllFilesInFolder: folder-files.length: ", folder, "-", files.length)
+    console.log("deleteAllFilesInFolder: ", folder, "-", files.length)
     let dirFiles = files.filter(f => f.name.includes(folder) && !f.name.includes("undefined"))
+    console.log("deleteAllFilesInFolder: filteredFilesToDelete: ", folder, "-", dirFiles.length)
+
     dirFiles.forEach(async file => {
       try {
-        await file.delete()
+        return await file.delete()
       } catch (err) {
         console.log("Error on deleting file: ", err)
       }
     })
+    return " Deleted " + dirFiles.length + " files in folder " + folder
   } catch (err) {
     console.log("Error: ", err)
   }
@@ -168,9 +170,12 @@ const deleteAllFilesInFolder = async folder => {
 export const deleteImages = asyncHandler(async (req, res) => {
   console.log("deleteImages")
   await Promise.all([deleteAllFilesInFolder("fullsize"), deleteAllFilesInFolder("thumbs"), deleteAllFilesInFolder("minithumbs")])
-    .then(() => {
+    .then(results => {
+      console.log("results: ", results)
       console.log("OK")
-      res.send("OK")
+      const message = results.toString()
+      console.log("message: ", message)
+      res.json({ message: message })
     })
     .catch(err => {
       res.status(404)
