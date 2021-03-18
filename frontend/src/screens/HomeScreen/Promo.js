@@ -1,8 +1,8 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { Image } from "react-bootstrap"
-import "./Promo.css"
 import { UPLOADS } from "../../constants/commonConstans"
+import "./Promo.css"
 
 const Promo = () => {
   return (

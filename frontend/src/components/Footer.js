@@ -1,6 +1,7 @@
 import React from "react"
-import { Row, Col, Nav } from "react-bootstrap"
+import { Row, Col } from "react-bootstrap"
 import * as Icon from "react-bootstrap-icons"
+import { Link } from "react-router-dom"
 import { UPLOADS } from "../constants/commonConstans"
 
 const Footer = () => {
@@ -21,7 +22,6 @@ const Footer = () => {
                   <Icon.Envelope className="text-light h3" />
                 </a>
               </div>
-
               <div>
                 <small>Groningen, Netherlands</small>
               </div>
@@ -29,61 +29,84 @@ const Footer = () => {
           </Col>
           <Col className="pl-5">
             <h5>COLLECTION</h5>
-            <Nav className="flex-column">
-              <Nav.Link href="/yarns" className="text-light">
+            <div className="mb-1">
+              <Link to="/yarns" className="text-light">
                 All Yarns
-              </Nav.Link>
-              <Nav.Link href="/yarns/cashmere" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/cashmere" className="text-light">
                 Cashmere
-              </Nav.Link>
-              <Nav.Link href="/yarns/cashmix" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/cashmix" className="text-light">
                 Cashmere mix
-              </Nav.Link>
-              <Nav.Link href="/yarns/merino-wool-lambswool" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/merino-wool-lambswool" className="text-light">
                 Merino/Wool
-              </Nav.Link>
-              <Nav.Link href="/yarns/angora" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/angora" className="text-light">
                 Angora
-              </Nav.Link>
-              <Nav.Link href="/yarns/mohair-alpaca" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/mohair-alpaca" className="text-light">
                 Mohair/Alpaca
-              </Nav.Link>
-              <Nav.Link href="/yarns/camel-yak" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/camel-yak" className="text-light">
                 Camel/Yak
-              </Nav.Link>
-              <Nav.Link href="/yarns/silk-viscose" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/silk-viscose" className="text-light">
                 Silk
-              </Nav.Link>
-              <Nav.Link href="/yarns/cotton-linen" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/cotton-linen" className="text-light">
                 Linen/Cotton
-              </Nav.Link>
-              <Nav.Link href="/yarns/fantasy-pailettes" className="text-light">
+              </Link>
+            </div>
+            <div className="mb-1">
+              <Link to="/yarns/fantasy-pailettes" className="text-light">
                 Fantasy Yarns
-              </Nav.Link>
-            </Nav>
+              </Link>
+            </div>
           </Col>
-          <Col className="text-light">
-            <h5>SUPPORT</h5>
-            <Nav className="flex-column">
-              <Nav.Link href="/about" className="text-light">
-                About
-              </Nav.Link>
-              <Nav.Link href="/how-to" className="text-light">
-                How To Order
-              </Nav.Link>
-            </Nav>
+          <Col>
+            <div>
+              <h5>SUPPORT</h5>
+              <div className="mb-1">
+                <Link to="/about" className="text-light">
+                  About
+                </Link>
+              </div>
+              <div className="mb-1">
+                <Link to="/how-to" className="text-light">
+                  How To Order
+                </Link>
+              </div>
+            </div>
+          </Col>
+        </Row>
+
+        <hr />
+        <Row>
+          <Col className="text-center">
+            <small>© 2021 All rights reserved.</small>
+          </Col>
+          <Col className="text-center">
+            <img src={`${UPLOADS}/payments.png`} alt="payment methods" />
           </Col>
         </Row>
       </div>
-      <hr />
-      <Row>
-        <Col className="text-center">
-          <small>© 2021 All rights reserved.</small>
-        </Col>
-        <Col className="text-center">
-          <img src={`${UPLOADS}/payments.png`} alt="payment methods" />
-        </Col>
-      </Row>
     </footer>
   )
 }
