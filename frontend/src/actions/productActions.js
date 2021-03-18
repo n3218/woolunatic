@@ -222,8 +222,8 @@ export const deleteAllProductsImagesAction = () => async (dispatch, getState) =>
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    await axios.delete(`/api/upload/bulk`, config)
-    dispatch({ type: DELETE_ALL_PRODUCTS_IMAGES_SUCCESS })
+    const result = await axios.delete(`/api/upload/bulk`, config)
+    dispatch({ type: DELETE_ALL_PRODUCTS_IMAGES_SUCCESS, payload: result.data.message })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     if (message === "Not authorized, token failed") {
@@ -248,8 +248,8 @@ export const deleteAllProductsDataAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    await axios.delete(`/api/products`, config)
-    dispatch({ type: DELETE_ALL_PRODUCTS_DATA_SUCCESS })
+    const result = await axios.delete(`/api/products`, config)
+    dispatch({ type: DELETE_ALL_PRODUCTS_DATA_SUCCESS, payload: result.data.message })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     if (message === "Not authorized, token failed") {

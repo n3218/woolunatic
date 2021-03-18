@@ -16,9 +16,9 @@ const AdminScreen = ({ history }) => {
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const deleteAllProductsImages = useSelector(state => state.deleteAllProductsImages)
-  const { success: deleteAllProductsImagesSuccess, loading: deleteAllProductsImagesLoading, error: deleteAllProductsImagesError } = deleteAllProductsImages
+  const { success: deleteAllProductsImagesSuccess, loading: deleteAllProductsImagesLoading, error: deleteAllProductsImagesError, message: deleteAllProductsImagesMessage } = deleteAllProductsImages
   const deleteAllProductsData = useSelector(state => state.deleteAllProductsData)
-  const { success: deleteAllProductsSuccess, loading: deleteAllProductsLoading, error: deleteAllProductsError } = deleteAllProductsData
+  const { success: deleteAllProductsSuccess, loading: deleteAllProductsLoading, error: deleteAllProductsError, message: deleteAllProductsMessage } = deleteAllProductsData
 
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
@@ -28,7 +28,7 @@ const AdminScreen = ({ history }) => {
 
   const deleteAllProductsImagesHandler = () => {
     dispatch(deleteAllProductsImagesAction())
-    setTimeout(() => dispatch({ type: DELETE_ALL_PRODUCTS_IMAGES_RESET }), 5000)
+    setTimeout(() => dispatch({ type: DELETE_ALL_PRODUCTS_IMAGES_RESET }), 15000)
   }
 
   const deleteAllProductsDataHandler = () => {
@@ -65,10 +65,10 @@ const AdminScreen = ({ history }) => {
 
           {deleteAllProductsImagesLoading && <Loader />}
           {deleteAllProductsImagesError && <Message variant="danger">{deleteAllProductsImagesError}</Message>}
-          {deleteAllProductsImagesSuccess && <Message variant="success">All Images were successfully deleted</Message>}
+          {deleteAllProductsImagesSuccess && <Message variant="success">{deleteAllProductsImagesMessage}</Message>}
           {deleteAllProductsLoading && <Loader />}
           {deleteAllProductsError && <Message variant="danger">{deleteAllProductsError}</Message>}
-          {deleteAllProductsSuccess && <Message variant="success">All Products Data were successfully deleted</Message>}
+          {deleteAllProductsSuccess && <Message variant="success">{deleteAllProductsMessage}</Message>}
 
           <div className="submenu">
             <Button onClick={deleteAllProductsImagesHandler} className="btn btn-danger bg-red my-3 py-3 px-4 mx-1">

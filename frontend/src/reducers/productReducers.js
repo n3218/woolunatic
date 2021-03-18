@@ -184,7 +184,7 @@ export const deleteAllProductsImagesReducer = (state = {}, action) => {
     case DELETE_ALL_PRODUCTS_IMAGES_REQUEST:
       return { loading: true }
     case DELETE_ALL_PRODUCTS_IMAGES_SUCCESS:
-      return { loading: false, success: true }
+      return { loading: false, success: true, message: action.payload }
     case DELETE_ALL_PRODUCTS_IMAGES_FAIL:
       return { loading: false, error: action.payload }
     case DELETE_ALL_PRODUCTS_IMAGES_RESET:
@@ -199,7 +199,7 @@ export const deleteAllProductsDataReducer = (state = {}, action) => {
     case DELETE_ALL_PRODUCTS_DATA_REQUEST:
       return { loading: true }
     case DELETE_ALL_PRODUCTS_DATA_SUCCESS:
-      return { loading: false, success: true }
+      return { loading: false, success: true, message: action.payload }
     case DELETE_ALL_PRODUCTS_DATA_FAIL:
       return { loading: false, error: action.payload }
     case DELETE_ALL_PRODUCTS_DATA_RESET:

@@ -48,7 +48,7 @@ const ImagesBulkUpload = () => {
         setImages(data.files)
         setUpdatedProducts(data.products)
         setUploading(false)
-      }, 9000)
+      }, 15000)
     } catch (error) {
       console.error(error)
       setUploading(false)
