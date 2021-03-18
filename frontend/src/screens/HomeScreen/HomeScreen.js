@@ -1,14 +1,14 @@
 import React, { useEffect } from "react"
+import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col } from "react-bootstrap"
-import Product from "../components/Product/Product"
-import Message from "../components/Message"
-import Loader from "../components/Loader"
-import { productTopAction } from "../actions/productActions"
-import Promo from "../components/Promo/Promo"
-import Promo2 from "../components/Promo/Promo-2"
-import Meta from "../components/Meta"
-import { Link } from "react-router-dom"
+import { productTopAction } from "../../actions/productActions"
+import Product from "../../components/Product/Product"
+import Message from "../../components/Message"
+import Loader from "../../components/Loader"
+import Meta from "../../components/Meta"
+import Promo from "./Promo"
+import Promo2 from "./Promo-2"
 
 const HomeScreen = () => {
   const dispatch = useDispatch()
@@ -28,6 +28,7 @@ const HomeScreen = () => {
       ) : (
         <>
           <Meta />
+
           <Promo />
 
           <div className="promo-new-in-collection">
@@ -36,12 +37,12 @@ const HomeScreen = () => {
               {products &&
                 products.length > 0 &&
                 products.map(product => (
-                  <Col key={product._id} xs={4} sm={4} md={2} lg={2} xl={2} className="product-card-block">
+                  <Col key={product._id} xs={4} sm={4} md={4} lg={2} xl={2} className="product-card-block">
                     <Product product={product} />
                   </Col>
                 ))}
             </Row>
-            <Row className="justify-content-center my-5">
+            <Row className="my-5">
               <Link to="/yarns" className="btn btn-success px-5 py-2">
                 SHOP NEW
               </Link>

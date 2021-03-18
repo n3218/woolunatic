@@ -31,7 +31,7 @@
 
 .product-card_body {
   position: relative;
-  padding: 10px 8px 10px 8px;
+  padding: 10px 8px 0px 0px;
 }
 
 .product-card_brand {
@@ -68,14 +68,16 @@
   font-size: 1.2em;
   font-weight: bold;
   text-align: right;
-  margin-top: -3px;
+  margin-top: -5px;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
 }
 
 .product-card_meterage {
   color: var(--gray);
-  line-height: 0.7;
   font-size: 0.8em;
   text-align: right;
+  padding-top: 5px;
 }
 
 .product-card_badges {
