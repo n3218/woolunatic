@@ -1,0 +1,93 @@
+@import "../../index.css";
+
+.promo-block {
+  display: grid;
+  gap: 20px;
+  grid-auto-rows: minmax(100px, auto);
+  max-width: 100vw;
+  font-size: 0.8rem;
+}
+
+/* Large screens */
+@media screen and (min-width: 600px) {
+  .columns-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+    height: 40vh;
+  }
+  .columns-2 {
+    grid-template-columns: 1fr 1fr;
+    height: 40vh;
+  }
+  .columns-2-block-text {
+    padding: 10% 10% 0 20%;
+  }
+}
+
+/* Small screens */
+@media screen and (max-width: 599px) {
+  .columns-3 {
+    grid-template-columns: 1fr 1fr;
+    height: 30vh;
+  }
+  .columns-3 > div:first-of-type {
+    display: none;
+  }
+  .columns-2 {
+    grid-template-columns: 1fr;
+  }
+  .columns-2-block-text {
+    padding: 10% 10% 0 10%;
+  }
+}
+
+.promo-block div img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  max-width: 100%;
+  margin: auto;
+}
+
+.promo-block > div:hover img {
+  transform: scale(1.1);
+  transition: all 0.5s cubic-bezier(0, 0, 0.44, 1.18);
+}
+
+.blured-container {
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  background-clip: padding-box;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  box-shadow: 10px 10px 10px rgba(46, 54, 68, 0.03);
+  max-width: 100%;
+  padding: 30px 20px;
+  align-items: center;
+}
+
+.blured-container-text {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  color: white;
+  font-weight: 500;
+  font-size: 1.8em;
+  line-height: 1;
+}
+
+.columns-2-block-text {
+  height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.position-relative {
+  position: relative;
+}

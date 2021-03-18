@@ -36,7 +36,7 @@ const Product = ({ product }) => {
         {product.color && (
           <Card.Subtitle as="div" className="product-card_color">
             <nobr>
-              {product.art && `art.${product.art.split(",")[0]}/`}
+              {/* {product.art && `art.${product.art.split(",")[0]}/`} */}
               <span className="text-capitalize">{product.color}</span>
             </nobr>
           </Card.Subtitle>

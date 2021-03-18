@@ -34,7 +34,7 @@ const Header = ({ location }) => {
                 <Col>
                   <img className="logo" alt="Logo" src="/assets/logo.png" />
                 </Col>
-                <Col>
+                <Col className="mt-2">
                   <div className="h1">Woolunatics</div>
                 </Col>
               </Row>

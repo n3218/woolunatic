@@ -40,12 +40,12 @@
 .admin-menu a {
   margin: 0 5px;
   padding: 0 18px;
-  background-color: var(--gray);
+  background-color: var(--medium-gray);
   color: white;
-  border-radius: 0 0 10px 10px;
+  /* border-radius: 0 0 5px 5px; */
 }
 .admin-menu a:hover {
-  background-color: var(--medium-gray);
+  background-color: var(--gray);
 }
 
 /* ------- INFO MENU ------- */
