@@ -14,7 +14,10 @@ const blobAction = async (size, fileData) => {
   const blobStream = blob.createWriteStream()
   const newFilePath = `${process.env.GCLOUD_STORAGE_URL}/${process.env.GCLOUD_BUCKET}`
   await blobStream
-    .on("error", err => console.log("Error on blobStream.on: ", err))
+    .on("error", err => {
+      console.log("Error on blobStream: ", err)
+      return err
+    })
     .on("finish", () => {
       const publicUrl = `${newFilePath}/${blob.name}`
       const imageDetails = fileData
@@ -28,64 +31,71 @@ const blobAction = async (size, fileData) => {
 //
 // render and upload to GCloud all images for single product (fullsize, thumb amd minithumb)
 const uploadResizedImages = async file => {
-  blobAction("fullsize", file) // fullsize image
+  try {
+    blobAction("fullsize", file) // fullsize image
 
-  await sharp(file.buffer)
-    .resize(250, 250)
-    .toFormat("jpeg")
-    .jpeg({ quality: 80 })
-    .toBuffer((err, data, info) => {
-      if (err) {
-        console.log("Error on thumbs: ", err)
-        return err
-      } else {
-        const result = {
-          ...info,
-          buffer: data,
-          originalname: file.originalname
+    await sharp(file.buffer)
+      .resize(250, 250)
+      .toFormat("jpeg")
+      .jpeg({ quality: 80 })
+      .toBuffer((err, data, info) => {
+        if (err) {
+          console.log("Error on thumbs: ", err)
+          return err
+        } else {
+          const result = {
+            ...info,
+            buffer: data,
+            originalname: file.originalname
+          }
+          return blobAction("thumbs", result) // thumb image
         }
-        return blobAction("thumbs", result) // thumb image
-      }
-    })
+      })
 
-  await sharp(file.buffer)
-    .resize(80, 80)
-    .toFormat("jpeg")
-    .jpeg({ quality: 80 })
-    .toBuffer((err, data, info) => {
-      if (err) {
-        console.log("Error on minithumbs: ", err)
-        return err
-      } else {
-        const result = {
-          ...info,
-          buffer: data,
-          originalname: file.originalname
+    await sharp(file.buffer)
+      .resize(80, 80)
+      .toFormat("jpeg")
+      .jpeg({ quality: 80 })
+      .toBuffer((err, data, info) => {
+        if (err) {
+          console.log("Error on minithumbs: ", err)
+          return err
+        } else {
+          const result = {
+            ...info,
+            buffer: data,
+            originalname: file.originalname
+          }
+          return blobAction("minithumbs", result) // minithumb image
         }
-        return blobAction("minithumbs", result) // minithumb image
-      }
-    })
+      })
+  } catch (err) {
+    console.log("Error in uploadResizedImages: ", err)
+    return err
+  }
 }
 
 // @desc   Upload Images for single Product
 // @route  POST /api/upload/
 // @access Private/+Admin
 export const uploadProductImages = asyncHandler(async (req, res) => {
-  const results = await Promise.all(
-    req.files.map(async file => {
-      uploadResizedImages(file)
-    })
-  )
-  if (results) {
-    setTimeout(() => {
-      console.log("uploadProductImages: req.files.length: ", req.files.length)
-      console.log("uploadProductImages: results.length: ", results.length)
-      res.json(req.files)
-    }, 9000)
-  } else {
-    console.error("Error on uploading Images")
+  try {
+    const results = await Promise.all(
+      req.files.map(async file => {
+        uploadResizedImages(file)
+      })
+    )
+    if (results) {
+      setTimeout(() => {
+        console.log("uploadProductImages: req.files.length: ", req.files.length)
+        console.log("uploadProductImages: results.length: ", results.length)
+        res.json(req.files)
+      }, 9000)
+    }
+  } catch (err) {
+    console.error("Error in uploadProductImages: ", err)
     res.status(404)
-    throw new Error("Problem with uploading Images")
+    throw new Error("Problem with uploading Images: ", err)
   }
 })
 
@@ -120,6 +130,7 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
                 console.log("Something wrong when updating data!")
                 return err
               } else {
+                console.log("uploadBulkImages: doc: ", doc)
                 return doc
               }
             })
