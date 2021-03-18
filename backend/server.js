@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html")))
 } else {
   app.get("/", (req, res) => {
-    res.send("API server is running....")
+    res.send(`API server is running in ${process.env.NODE_ENV} mode....`)
   })
 }
 app.use(notFound)
