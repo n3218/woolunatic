@@ -130,7 +130,6 @@ export const uploadBulkImages = asyncHandler(async (req, res) => {
                 console.log("Something wrong when updating data!")
                 return err
               } else {
-                console.log("uploadBulkImages: doc: ", doc)
                 return doc
               }
             })
