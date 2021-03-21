@@ -19,6 +19,7 @@ export const getProducts = asyncHandler(async (req, res) => {
     parameters = {
       $or: [
         //
+        { art: { $regex: req.query.keyword, $options: "i" } },
         { name: { $regex: req.query.keyword, $options: "i" } },
         { brand: { $regex: req.query.keyword, $options: "i" } },
         { color: { $regex: req.query.keyword, $options: "i" } },

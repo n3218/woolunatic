@@ -71,7 +71,7 @@ export const sendMail = asyncHandler(async orderData => {
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
         <div style="font-size: 30px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
-          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="50" width="150" /></a>
+          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" /></a>
         </div>
         <div style="font-size: 20px; margin-bottom: 10px;">
           <a href="${DOMAIN_NAME}/orders/${order._id}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">#${order._id}</a>

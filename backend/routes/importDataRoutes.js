@@ -66,7 +66,7 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         newData.fibers = row.fibers.trim()
       }
       if (row.price) {
-        newData.price = Number(row.price.replace(/[ €]+/g, ""))
+        newData.price = Number(row.price.replace(/[,]+/g, ".").replace(/[ €Ū]+/g, ""))
       }
       if (row.nm) {
         newData.nm = row.nm.trim()
@@ -77,17 +77,17 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
       if (row.inStock) {
         newData.inStock = row.inStock.trim()
       }
-      if (Number(row.novelty) === 1) {
+      if (Number(row.novelty) === 1 || String(row.novelty).toLowerCase() === "yes") {
         newData.novelty = true
       } else {
         newData.novelty = false
       }
-      if (Number(row.regular) === 1) {
+      if (Number(row.regular) === 1 || String(row.regular).toLowerCase() === "yes") {
         newData.regular = true
       } else {
         newData.regular = false
       }
-      if (Number(row.inSale) === 1) {
+      if (Number(row.inSale) === 1 || String(row.inSale).toLowerCase() === "yes") {
         newData.inSale = true
       } else {
         newData.inSale = false
@@ -124,6 +124,7 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
           throw new Error({ message: "Can not updated Product" })
         }
       } else {
+        console.log("newData.name, newData.brand, newData.color: ", newData.name, newData.brand, newData.color)
         let newProduct = await Product.create(newData)
         if (newProduct) {
           newlyAddedProducts++
