@@ -13,8 +13,6 @@ const cartSchema = mongoose.Schema(
         brand: { type: String, required: false },
         name: { type: String, required: false },
         color: { type: String, required: false },
-        color: { type: String, required: false },
-        color: { type: String, required: false },
         fibers: { type: String, required: false },
         meterage: { type: String, required: false },
         image: { type: String, required: false },
