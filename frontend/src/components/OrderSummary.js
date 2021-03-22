@@ -24,7 +24,7 @@ const OrderSummary = ({ cart, items, error, checkoutStep, children, userInfo }) 
           </Row>
           <Row>
             <Col>
-              <strong>Tax</strong>
+              <strong>Tax included:</strong>
             </Col>
             <Col className="text-right">€{Number(cart.taxPrice).toFixed(2) || 0}</Col>
           </Row>
