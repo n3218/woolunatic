@@ -125,14 +125,6 @@ export const startCheckoutAction = () => async (dispatch, getState) => {
   }
 }
 
-export const saveShippingAddressAction = data => async dispatch => {
-  dispatch({
-    type: CART_SAVE_SHIPPING_ADDRESS,
-    payload: data
-  })
-  localStorage.setItem("shippingAddress", JSON.stringify(data))
-}
-
 export const savePaymentMethodAction = data => async dispatch => {
   dispatch({
     type: CART_SAVE_PAYMENT_METHOD,
@@ -141,54 +133,17 @@ export const savePaymentMethodAction = data => async dispatch => {
   localStorage.setItem("paymentMethod", JSON.stringify(data))
 }
 
-// export const cartCheckItemsAction = cartItems => async (dispatch, getState) => {
-//   try {
-//     dispatch({ type: CART_CHECK_ITEMS_REQUEST })
-//     const {
-//       userLogin: { userInfo }
-//     } = getState()
-//     const config = {
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${userInfo.token}`
-//       }
-//     }
-//     const { data } = await axios.post(`/api/products/check`, cartItems, config)
-//     if (data) {
-//       dispatch({ type: CART_CHECK_ITEMS_SUCCESS, payload: data })
-//     }
-//   } catch (error) {
-//     const message = error.response && error.response.data.message ? error.response.data.message : error.message
-//     console.error(message)
-//     dispatch({ type: CART_CHECK_ITEMS_FAIL, payload: message })
-//   }
-//   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
-// }
-
-// export const cartClearAction = () => async (dispatch, getState) => {
-//   try {
-//     dispatch({ type: CART_CLEAR_REQUEST })
-//     const {
-//       userLogin: { userInfo }
-//     } = getState()
-//     const config = {
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${userInfo.token}`
-//       }
-//     }
-//     const { data } = await axios.put(`/api/cart/${userInfo._id}/clear`, {}, config)
-//     localStorage.setItem("cartItems", JSON.stringify([])) // save to Local Storage
-//     dispatch({ type: CART_CLEAR_SUCCESS, payload: data })
-//   } catch (error) {
-//     const message = error.response && error.response.data.message ? error.response.data.message : error.message
-//     dispatch({ type: CART_CLEAR_FAIL, payload: message })
-//   }
-// }
-
 export const cartCleanItemsAction = () => async (dispatch, getState) => {
   dispatch({
     type: CART_CLEAN_ITEMS
   })
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+}
+
+export const saveShippingAddressAction = data => async dispatch => {
+  dispatch({
+    type: CART_SAVE_SHIPPING_ADDRESS,
+    payload: data
+  })
+  localStorage.setItem("shippingAddress", JSON.stringify(data))
 }
