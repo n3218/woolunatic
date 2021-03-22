@@ -42,16 +42,16 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   // ------------------------------------------------------------------------Calculating totals
   useEffect(() => {
     if (items && items.length > 0) {
-      let taxPrice = 0
       let shippingPrice = 0
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
       const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
+      let taxPrice = itemsPrice - itemsPrice / 1.21
+
       if (checkoutStep === "payment") {
-        taxPrice = addDecimals(Number((21.0 * itemsPrice) / 100))
         shippingPrice = addDecimals(itemsPrice > 100 ? 26 : 26)
       }
       const storecredit = userInfo.storecredit || 0
-      const totalPrice = (Number(itemsPrice) + Number(taxPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
+      const totalPrice = (Number(itemsPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
       const itemsWeight = items.reduce((acc, item) => acc + item.qty, 0)
       const totalWeight = itemsWeight + 300 + items.length * 40
       setSummary({ itemsPrice, taxPrice, shippingPrice, storecredit, totalPrice, itemsWeight, totalWeight })
