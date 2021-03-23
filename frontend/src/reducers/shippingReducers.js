@@ -6,7 +6,7 @@ import {
   GET_SHIPPING_RESET
 } from "../constants/shippingConstants"
 
-export const shippingReducer = (state = { shipping: {} }, action) => {
+export const shippingReducer = (state = { shippings: [] }, action) => {
   switch (action.type) {
     case GET_SHIPPING_REQUEST:
       return {
@@ -16,7 +16,7 @@ export const shippingReducer = (state = { shipping: {} }, action) => {
       return {
         loading: false,
         success: true,
-        ...action.payload
+        shippings: [...action.payload]
       }
     case GET_SHIPPING_FAIL:
       return {

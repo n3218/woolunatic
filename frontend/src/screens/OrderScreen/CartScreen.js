@@ -22,7 +22,7 @@ const CartScreen = ({ match, history }) => {
     }
   }, [dispatch, productId, qty])
 
-  return <CartLayout history={history} redirect={redirect} checkoutStep={checkoutStep} title="Shopping Cart"></CartLayout>
+  return <CartLayout history={history} redirect={redirect} checkoutStep={checkoutStep} title="Shopping Cart" shippingPrice={0}></CartLayout>
 }
 
 export default CartScreen

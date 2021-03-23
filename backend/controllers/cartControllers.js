@@ -36,20 +36,26 @@ const fillTheCartWithData = async cart => {
           .map(el => Number(el.trim()))
           .sort((a, b) => a - b)
 
-        if (product.outOfStock) {
-          result.message = "out of stock"
-        } else if (!arr.includes(it.qty)) {
-          if (product.minimum > 0) {
-            let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
-            let maxVal = arr[arr.length - 1] - minLeftover
-            if (it.qty >= product.minimum && it.qty <= maxVal) {
-              console.log("/////it.qty: ", `${it.qty} >= ${product.minimum} && ${it.qty} <= ${maxVal}`)
-              result.message = ""
+        const isCurrentUserHold = product.onHold.filter(hold => Number(hold.qty) === Number(it.qty) && String(hold.user) === String(cart.user))
+        console.log("isCurrentUserHold: ", isCurrentUserHold)
+        if (!isCurrentUserHold) {
+          // check in stock
+
+          if (product.outOfStock) {
+            result.message = "out of stock"
+          } else if (!arr.includes(it.qty)) {
+            if (product.minimum > 0) {
+              let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
+              let maxVal = arr[arr.length - 1] - minLeftover
+              if (it.qty >= product.minimum && it.qty <= maxVal) {
+                console.log("/////it.qty: ", `${it.qty} >= ${product.minimum} && ${it.qty} <= ${maxVal}`)
+                result.message = ""
+              } else {
+                result.message = "weight not found"
+              }
             } else {
               result.message = "weight not found"
             }
-          } else {
-            result.message = "weight not found"
           }
         }
       } else {

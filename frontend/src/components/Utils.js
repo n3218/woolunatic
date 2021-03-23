@@ -35,3 +35,16 @@ export const TranslateToWeight = val => {
   if (val >= 100 && val < 150) return weightValues[100]
   if (val >= 50 && val < 100) return weightValues[50]
 }
+
+export const calculateWeight = items => {
+  const itemsWeight = items.reduce((acc, item) => acc + item.qty, 0)
+  let totalWeight =
+    itemsWeight < 2000 //
+      ? itemsWeight + 350 + items.length * 45
+      : itemsWeight < 5000
+      ? itemsWeight + 450 + items.length * 45
+      : itemsWeight < 10000
+      ? itemsWeight + 600 + items.length * 45
+      : itemsWeight < 20000 && itemsWeight + 1200 + items.length * 45
+  return { itemsWeight, totalWeight }
+}
