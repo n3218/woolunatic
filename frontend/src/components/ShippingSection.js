@@ -6,7 +6,7 @@ const ShippingSection = ({ children, checkoutStep, userInfo, cart }) => {
   return (
     <ListGroup.Item>
       <Row>
-        <Col lg={3} md={3} sm={6}>
+        <Col lg={3} md={3} sm={3} className="pl-0">
           <h4>SHIPPING ADDRESS</h4>
         </Col>
         <Col>
