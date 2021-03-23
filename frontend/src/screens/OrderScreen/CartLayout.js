@@ -16,17 +16,14 @@ import { calculateWeight } from "../../components/Utils"
 
 const CartLayout = ({ history, redirect, checkoutStep, title, children, loading, error, shippingPrice }) => {
   const dispatch = useDispatch()
-
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
-
   const cart = useSelector(state => state.cart)
   const { loading: cartLoading, error: cartError, items, success: cartSuccess } = cart
   const [summary, setSummary] = useState({})
   const [warning, setWarning] = useState(false)
   const [checkout, setCheckout] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
-
   const orderCreate = useSelector(state => state.orderCreate)
   const { loading: orderLoading, order, success, error: orderError } = orderCreate
 
@@ -47,41 +44,28 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
       const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
       let taxPrice = itemsPrice - itemsPrice / 1.21
-
-      // shippingPrice = addDecimals(shippingPrice)
-
       const storecredit = userInfo.storecredit || 0
       const totalPrice = (Number(itemsPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
       setSummary({ itemsPrice, taxPrice, shippingPrice, storecredit, totalPrice, itemsWeight, totalWeight })
     }
   }, [items, checkoutStep, dispatch, userInfo, shippingPrice])
-  // -----------------------------------------------------------------------/Calculating totals
 
   useEffect(() => {
     if (checkoutStep === "cart") {
       if (items && items.length > 0) {
-        console.log("if (items && items.length > 0)")
         let res = items.filter(it => it.message && it.message.length > 0)
-        console.log("items.filter(it => it.message && it.message.length > 0): ", res)
-
         if (res.length > 0) {
-          console.log("-------------IF (res.length > 0)")
           setWarning(true)
-          console.log("setWarning(true)")
           setCheckout(false)
-          console.log("setCheckout(false)")
         } else {
-          console.log("-------------ELSE")
           setWarning(false)
-          console.log("setWarning(false)")
           if (checkout) {
             setIsChecked(true)
           }
-          console.log("setIsChecked(true)")
         }
       }
     }
-  }, [items])
+  }, [items, checkout, checkoutStep])
 
   useEffect(() => {
     if (cartSuccess && isChecked && checkout) {
@@ -89,7 +73,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       dispatch(startCheckoutAction())
       history.push("/checkout/shipping")
     }
-  }, [checkout, isChecked, cartSuccess])
+  }, [checkout, isChecked, cartSuccess, dispatch, history])
 
   useEffect(() => {
     if (success && order) {
@@ -100,9 +84,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
   // ----------------------------------------------------------------------- Handlers
   const checkoutHandler = () => {
-    console.log("checkoutHandler: dispatch(getCartAction())")
     dispatch(getCartAction())
-    console.log("checkoutHandler: setCheckout(true)")
     setIsChecked(false)
     setCheckout(true)
   }
@@ -155,7 +137,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
         <Row>
           <Col md={9} xs={12}>
             {/* --------------------------------------------------------------------SHIPPING/PAYMENT CONTENT */}
-            {children && children}
+            {children && checkoutStep !== "cart" && children}
 
             {/* --------------------------------------------------------------------ORDER ITEMS */}
             <ListGroup variant="flush">
@@ -169,6 +151,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
             {/* --------------------------------------------------------------------ORDER WEIGHT SUMMARY */}
             <OrderWeightsSummary order={summary} />
+            {checkoutStep === "cart" && children}
           </Col>
           <Col>
             {/* --------------------------------------------------------------------ORDER SUMMARY */}
