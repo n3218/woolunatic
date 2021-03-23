@@ -20,7 +20,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
         <Col xl={2} xs={2}>
           {typeof item.product === "object" && (
             <div className="product-card_badges ">
-              {item.product.outOfStock && <div className="badge badge-pill badge-secondary">out Of Stock</div>}
+              {/* {item.product.outOfStock && <div className="badge badge-pill badge-secondary">out Of Stock</div>} */}
               {item.product.regular && <div className="badge badge-pill badge-primary">regular</div>}
               {item.product.novelty && <div className="badge badge-pill badge-success">new</div>}
               {item.product.inSale && <div className="badge badge-pill badge-danger">sale</div>}
