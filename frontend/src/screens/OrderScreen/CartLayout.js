@@ -12,8 +12,9 @@ import OrderWeightsSummary from "../../components/OrderWeightsSummary"
 import Loader from "../../components/Loader"
 import { createOrderAction } from "../../actions/orderActions"
 import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
+import { calculateWeight } from "../../components/Utils"
 
-const CartLayout = ({ history, redirect, checkoutStep, title, children, loading, error }) => {
+const CartLayout = ({ history, redirect, checkoutStep, title, children, loading, error, shippingPrice }) => {
   const dispatch = useDispatch()
 
   const userLogin = useSelector(state => state.userLogin)
@@ -42,21 +43,18 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   // ------------------------------------------------------------------------Calculating totals
   useEffect(() => {
     if (items && items.length > 0) {
-      let shippingPrice = 0
+      const { itemsWeight, totalWeight } = calculateWeight(items)
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
       const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
       let taxPrice = itemsPrice - itemsPrice / 1.21
 
-      if (checkoutStep === "payment") {
-        shippingPrice = addDecimals(itemsPrice > 100 ? 26 : 26)
-      }
+      // shippingPrice = addDecimals(shippingPrice)
+
       const storecredit = userInfo.storecredit || 0
       const totalPrice = (Number(itemsPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
-      const itemsWeight = items.reduce((acc, item) => acc + item.qty, 0)
-      const totalWeight = itemsWeight + 300 + items.length * 40
       setSummary({ itemsPrice, taxPrice, shippingPrice, storecredit, totalPrice, itemsWeight, totalWeight })
     }
-  }, [items, checkoutStep, dispatch, userInfo])
+  }, [items, checkoutStep, dispatch, userInfo, shippingPrice])
   // -----------------------------------------------------------------------/Calculating totals
 
   useEffect(() => {

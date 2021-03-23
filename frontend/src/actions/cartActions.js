@@ -112,10 +112,10 @@ export const startCheckoutAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const item = {
+    const userId = {
       user: userInfo._id
     }
-    const { data } = await axios.put(`/api/cart/startcheckout`, item, config)
+    const { data } = await axios.put(`/api/cart/startcheckout`, userId, config)
     console.log("data: ", data)
     localStorage.setItem("startCheckout", JSON.stringify(Date.now())) // save to Local Storage
     dispatch({ type: START_CHECKOUT_SUCCESS, payload: data })
