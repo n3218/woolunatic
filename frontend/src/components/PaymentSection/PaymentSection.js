@@ -1,5 +1,5 @@
 import React from "react"
-import { Form, Col, Row, ListGroup } from "react-bootstrap"
+import { Form, Col, Row, ListGroup, Card } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { savePaymentMethodAction } from "../../actions/cartActions"
 import Message from "../Message"
@@ -48,7 +48,7 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
   return (
     <ListGroup.Item>
       <Row>
-        <Col lg={3} md={3} sm={6}>
+        <Col lg={3} md={3} sm={3} className="pl-0">
           <h4>PAYMENT METHOD</h4>
         </Col>
         <Col>
@@ -56,29 +56,21 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
             <Form className="mb-3">
               <Form.Group>
                 <Row>
-                  <Col xs={3} lg={2} xl={2}>
-                    {radioButton("Mollie", "Mollie")}
+                  <Col xs={6} xl={6}>
+                    <Card bg="light">
+                      <Card.Header className="text-center">
+                        <img src="/assets/payments/mollie-all.jpeg" alt="mollie-ideal" style={{ width: "100%" }} />
+                      </Card.Header>
+                      <Card.Body className="text-center">{radioButton("Mollie", "Mollie")}</Card.Body>
+                    </Card>
                   </Col>
-                  <Col>
-                    <img src="/assets/payments/ideal.svg" className="payment-icon" alt="ideal" />
-                    <img src="/assets/payments/sepa.svg" className="payment-icon" alt="sepa" />
-                    <img src="/assets/payments/ing.svg" className="payment-icon" alt="ing" />
-                    <img src="/assets/payments/applepay.svg" className="payment-icon" alt="applepay" />
-                    <img src="/assets/payments/visa.svg" className="payment-icon" alt="visa" />
-                    <img src="/assets/payments/mastercard.svg" className="payment-icon" alt="mastercard" />
-                    <img src="/assets/payments/amex.svg" className="payment-icon" alt="amex" />
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col xs={3} lg={2} xl={2}>
-                    {radioButton("PayPal", "PayPal")}
-                  </Col>
-                  <Col>
-                    <img src="/assets/payments/paypal.svg" className="payment-icon" alt="paypal" />
-                    <img src="/assets/payments/visa.svg" className="payment-icon" alt="visa" />
-                    <img src="/assets/payments/mastercard.svg" className="payment-icon" alt="mastercard" />
-                    <img src="/assets/payments/amex.svg" className="payment-icon" alt="amex" />
+                  <Col xs={6} xl={6}>
+                    <Card bg="light">
+                      <Card.Header className="text-center">
+                        <img src="/assets/payments/pay.png" alt="paypal" style={{ width: "100%" }} />
+                      </Card.Header>
+                      <Card.Body className="text-center">{radioButton("PayPal", "PayPal")}</Card.Body>
+                    </Card>
                   </Col>
                 </Row>
               </Form.Group>
