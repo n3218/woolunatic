@@ -7,7 +7,7 @@ import FormContainer from "../../components/FormContainer"
 import { getOrderDetailsAction, molliePayAction, payOrderAction } from "../../actions/orderActions"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
-import { ORDER_CREATE_RESET, ORDER_PAY_RESET } from "../../constants/orderConstants"
+import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
 import "./PayOrderScreen.css"
 
 const PayOrderScreen = ({ match, history }) => {
@@ -51,9 +51,7 @@ const PayOrderScreen = ({ match, history }) => {
           }
         }
         if (successPay) {
-          // dispatch(cartClearAction())
           dispatch({ type: ORDER_CREATE_RESET })
-          dispatch({ type: ORDER_PAY_RESET })
           history.push(`/orders/${order._id}`)
         }
       }
