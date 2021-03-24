@@ -58,6 +58,7 @@ const ProductsBulkUpload = () => {
         </Form.Group>
       </Form>
       {uploading && <Loader />}
+      {error && <Message variant="dander">{error}</Message>}
       {!uploading && data.success && (
         <Message variant="success" onClose={() => setData({})}>
           <div>
