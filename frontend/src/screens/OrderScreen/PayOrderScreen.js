@@ -8,19 +8,14 @@ import { getOrderDetailsAction, molliePayAction, payOrderAction } from "../../ac
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import { ORDER_CREATE_RESET, ORDER_PAY_RESET } from "../../constants/orderConstants"
-// import { USER_DETAILS_RESET } from "../../constants/userConstants"
-// import { CART_CLEAR_ITEMS } from "../../constants/cartConstants"
 import "./PayOrderScreen.css"
-// import { cartClearAction } from "../../actions/cartActions"
 
 const PayOrderScreen = ({ match, history }) => {
   const dispatch = useDispatch()
   const orderId = match.params.id
   const paymentMethod = match.params.paymentmethod
-
   const orderDetails = useSelector(state => state.orderDetails)
   const { order, loading, error, success } = orderDetails
-
   const orderPay = useSelector(state => state.orderPay)
   const { loading: loadingPay, success: successPay } = orderPay
   const [sdkReady, setSdkReady] = useState(false)
@@ -30,14 +25,14 @@ const PayOrderScreen = ({ match, history }) => {
       dispatch(getOrderDetailsAction(orderId))
     } else {
       console.log("order: ", order)
-
       if (order && paymentMethod === "PayPal") {
         const addPayPalScript = async () => {
           console.log("addPayPalScript")
           const { data: clientId } = await axios.get("/api/config/paypal")
           const script = document.createElement("script")
+          const curr = "EUR"
           script.type = "text/javascript"
-          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${curr}`
           script.async = true
           script.onload = () => {
             setSdkReady(true)
@@ -58,6 +53,7 @@ const PayOrderScreen = ({ match, history }) => {
         if (successPay) {
           // dispatch(cartClearAction())
           dispatch({ type: ORDER_CREATE_RESET })
+          dispatch({ type: ORDER_PAY_RESET })
           history.push(`/orders/${order._id}`)
         }
       }
@@ -73,7 +69,7 @@ const PayOrderScreen = ({ match, history }) => {
         dispatch(molliePayAction(data))
       }
     }
-  }, [order, history, successPay, dispatch, orderId])
+  }, [order, history, successPay, dispatch, orderId, paymentMethod, success])
 
   useEffect(() => {
     console.log("--------------sdkReady: ", sdkReady)
@@ -88,13 +84,11 @@ const PayOrderScreen = ({ match, history }) => {
   return (
     <FormContainer className="hide-container pt-6">
       {error && <Message variant="danger">{error}</Message>}
-      {/* {success && order && paymentMethod === "mollie" && <Loader />} */}
-
       <Row>
         <Col md={3}></Col>
         <Col md={6}>
           {(loading || loadingPay || paymentMethod === "mollie" || !sdkReady) && <Loader />}
-          {sdkReady && <PayPalButton amount={order.totalPrice} onSuccess={payPalPaymentHandler} />}
+          {sdkReady && <PayPalButton amount={order.totalPrice} onSuccess={payPalPaymentHandler} currency="EUR" />}
         </Col>
         <Col md={3}></Col>
       </Row>

@@ -1,20 +1,16 @@
-import React from "react"
+import React, { memo } from "react"
 import { useDispatch } from "react-redux"
 import { Button, Image } from "react-bootstrap"
 import { productDeleteAction } from "../../actions/productActions"
-import "./ProductListItem.css"
-import { PRODUCT_DELETE_RESET } from "../../constants/productConstants"
 import { minithumbPath, noimage } from "../../constants/commonConstans"
+import "./ProductListItem.css"
 
-const ProductListItem = ({ product, history }) => {
+const ProductListItem = memo(({ product, history }) => {
   const dispatch = useDispatch()
 
   const deleteHandler = id => {
     if (window.confirm("Are you sure?")) {
       dispatch(productDeleteAction(id))
-      setTimeout(() => {
-        dispatch({ type: PRODUCT_DELETE_RESET })
-      }, 5000)
     }
   }
 
@@ -64,6 +60,6 @@ const ProductListItem = ({ product, history }) => {
       <td>{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
     </tr>
   )
-}
+})
 
 export default ProductListItem
