@@ -24,27 +24,29 @@ const CollectionScreen = ({ match }) => {
   return (
     <>
       {error && <Message variant="danger">{error}</Message>}
-      <>
-        <h1>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "Cachmere Mixes" : match.params.category.split("-").join(" | ")) : "All Yarns"}</h1>
-        <Meta />
-        <div className="display-flex">
-          <div className="filter-container">
-            <Filter products={products} setFilteredProducts={setFilteredProducts} />
-          </div>
-          <div className="filtered-products-container">
-            <Row>
-              {filteredProducts.map(product => (
-                <Col key={product._id} xs={4} sm={4} md={4} lg={3} xl={2} className="product-card-block">
-                  <Product product={product} />
-                </Col>
-              ))}
-            </Row>
-            {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} className="my-3 px-5 btn-success>
+      {success && (
+        <>
+          <h1>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "Cachmere Mixes" : match.params.category.split("-").join(" | ")) : "All Yarns"}</h1>
+          <Meta />
+          <div className="display-flex">
+            <div className="filter-container">
+              <Filter products={products} setFilteredProducts={setFilteredProducts} />
+            </div>
+            <div className="filtered-products-container">
+              <Row>
+                {filteredProducts.map(product => (
+                  <Col key={product._id} xs={4} sm={4} md={4} lg={3} xl={2} className="product-card-block">
+                    <Product product={product} />
+                  </Col>
+                ))}
+              </Row>
+              {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} className="my-3 px-5 btn-success>
                   Load More
                 </Button> */}</div>}
+            </div>
           </div>
-        </div>
-      </>
+        </>
+      )}
     </>
   )
 }

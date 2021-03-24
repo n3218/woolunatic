@@ -38,7 +38,7 @@ const fillTheCartWithData = async cart => {
 
         const isCurrentUserHold = product.onHold.filter(hold => Number(hold.qty) === Number(it.qty) && String(hold.user) === String(cart.user))
         console.log("isCurrentUserHold: ", isCurrentUserHold)
-        if (!isCurrentUserHold) {
+        if (isCurrentUserHold.length === 0) {
           // check in stock
 
           if (product.outOfStock) {

@@ -68,12 +68,12 @@ const Filter = ({ products, setFilteredProducts }) => {
     })
     setFilterState({ ...initialFilter, price: priceMaxVar, length: lengthMaxVar })
     setFilteredProducts(products)
-  }, [products])
+  }, [products, setFilteredProducts])
 
   useEffect(() => {
     let newProds = multiPropsFilter(products, filterState)
     setFilteredProducts(newProds)
-  }, [products, filterState])
+  }, [products, filterState, setFilteredProducts])
 
   const multiPropsFilter = (productsToFilter, filters) => {
     const filterKeys = Object.keys(filters)
@@ -92,10 +92,13 @@ const Filter = ({ products, setFilteredProducts }) => {
         if (key === "price") return product[key] <= filters[key]
         if (key === "length") return product.meterage <= filters[key]
         if (typeof product[key] === "string" && product[key].includes(",")) {
-          return product[key].split(",").some(keyEle => filters[key].includes(keyEle))
+          console.log("product[key]: ", product[key])
+          let result = product[key].split(",").some(keyEle => filters[key].includes(keyEle.trim()))
+          console.log("result: ", result)
+          return result
         }
 
-        return filters[key].includes(product[key])
+        return filters[key].includes(product[key].trim())
       })
     })
   }

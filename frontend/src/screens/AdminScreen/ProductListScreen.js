@@ -24,16 +24,23 @@ const ProductListScreen = ({ history, match }) => {
   const { loading: loadingCreate, error: errorCreate, success: successCreate, product: createdProduct } = productCreate
 
   useEffect(() => {
-    dispatch({ type: PRODUCT_CREATE_RESET })
+    if (successDelete) {
+      setTimeout(() => {
+        dispatch({ type: PRODUCT_DELETE_RESET })
+      }, 3000)
+    }
+    dispatch(listProducts("", pageNumber))
+  }, [dispatch, pageNumber, successDelete])
+
+  useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
       history.push("/login")
     }
     if (successCreate) {
+      dispatch({ type: PRODUCT_CREATE_RESET })
       history.push(`/admin/product/${createdProduct._id}/edit`)
-    } else {
-      dispatch(listProducts("", pageNumber))
     }
-  }, [dispatch, history, userInfo, successCreate, createdProduct, pageNumber, successDelete])
+  }, [dispatch, history, userInfo, successCreate, createdProduct])
 
   const createProductHandler = () => {
     dispatch(productCreateAction())
@@ -76,7 +83,6 @@ const ProductListScreen = ({ history, match }) => {
                 <th className="product-list-max">inStock</th>
                 <th>minimum</th>
                 <th>tag</th>
-                {/* <th>edit</th> */}
                 <th>delete</th>
                 <th>outOfStock</th>
               </tr>
