@@ -12,19 +12,23 @@ function checkFileType(file, cb) {
   const filetypes = /csv/
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
   const mimetype = filetypes.test(file.mimetype)
+  console.log("path.extname(file.originalname).toLowerCase(): ", path.extname(file.originalname).toLowerCase())
+  console.log("file.mimetype: ", file.mimetype)
+  console.log("extname: ", extname)
+  console.log("mimetype: ", mimetype)
   if (extname && mimetype) {
     console.log("checkFileType: File type is CSV.")
     return cb(null, true)
   } else {
     console.log("checkFileType: Did not pass filter.")
-    cb("Csv only!")
+    return cb("Csv only!")
   }
 }
 
 const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
-    console.log("importDataRoutes: upload. ")
+    console.log("go to checkFileType. ")
     checkFileType(file, cb)
   }
 })

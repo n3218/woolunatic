@@ -10,6 +10,7 @@ const ProductsBulkUpload = () => {
   const userLogin = useSelector(state => state.userLogin)
   const [uploading, setUploading] = useState(false)
   const [data, setData] = useState("")
+  const [error, setError] = useState("")
 
   const uploadCsvFileHandler = async e => {
     const file = e.target.files[0]
@@ -29,6 +30,7 @@ const ProductsBulkUpload = () => {
       setData(data)
       setUploading(false)
     } catch (error) {
+      setError(error)
       console.error(error)
       setUploading(false)
     }
