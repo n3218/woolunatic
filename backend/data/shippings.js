@@ -19,13 +19,13 @@ const shippings = [
         minWeight: 5001,
         maxWeight: 10000,
         operator: "parcelnl",
-        cost: 76.67
+        cost: 80
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 112.37
+        cost: 120
       }
     ]
   },
@@ -73,19 +73,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 12.81
+        cost: 15
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 12.81
+        cost: 20
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 12.81
+        cost: 25
       }
     ]
   },
@@ -127,25 +127,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 9.4
+        cost: 9.75
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 9.4
+        cost: 12
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 9.4
+        cost: 14
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 9.4
+        cost: 17
       }
     ]
   },
@@ -175,7 +175,7 @@ const shippings = [
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 32.38
+        cost: 36
       }
     ]
   },
@@ -199,13 +199,13 @@ const shippings = [
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 26.59
+        cost: 30
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 26.59
+        cost: 35
       }
     ]
   },
@@ -229,13 +229,13 @@ const shippings = [
         minWeight: 5001,
         maxWeight: 10000,
         operator: "parcelnl",
-        cost: 52.5
+        cost: 60
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 91.28
+        cost: 100
       }
     ]
   },
@@ -253,19 +253,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 22.5
+        cost: 23
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 22.5
+        cost: 30
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 22.5
+        cost: 37
       }
     ]
   },
@@ -307,25 +307,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 10.1
+        cost: 12
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 10.1
+        cost: 16
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 10.1
+        cost: 20
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 10.1
+        cost: 25
       }
     ]
   },
@@ -343,19 +343,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 12.81
+        cost: 15
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 12.81
+        cost: 20
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 12.81
+        cost: 25
       }
     ]
   },
@@ -367,25 +367,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 13.3
+        cost: 14
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 13.3
+        cost: 17
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 13.3
+        cost: 22
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 13.3
+        cost: 28
       }
     ]
   },
@@ -445,7 +445,7 @@ const shippings = [
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 26.5
+        cost: 32
       }
     ]
   },
@@ -463,19 +463,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 13.67
+        cost: 15
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 13.67
+        cost: 20
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 13.67
+        cost: 25
       }
     ]
   },
@@ -499,13 +499,13 @@ const shippings = [
         minWeight: 5001,
         maxWeight: 10000,
         operator: "parcelnl",
-        cost: 73.02
+        cost: 75
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 101.02
+        cost: 105
       }
     ]
   },
@@ -517,25 +517,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 8.98
+        cost: 9
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 8.98
+        cost: 12
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 8.98
+        cost: 19
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 8.98
+        cost: 24
       }
     ]
   },
@@ -577,25 +577,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 11.2
+        cost: 13
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 11.2
+        cost: 17
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 11.2
+        cost: 22
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 11.2
+        cost: 28
       }
     ]
   },
@@ -673,19 +673,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "parcelnl",
-        cost: 44.74
+        cost: 46.75
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "parcelnl",
-        cost: 56.1
+        cost: 65
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 70.95
+        cost: 85
       }
     ]
   },
@@ -709,13 +709,13 @@ const shippings = [
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 22.22
+        cost: 24
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 22.22
+        cost: 32
       }
     ]
   },
@@ -745,7 +745,7 @@ const shippings = [
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 108.47
+        cost: 125
       }
     ]
   },
@@ -775,7 +775,7 @@ const shippings = [
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 110.48
+        cost: 125
       }
     ]
   },
@@ -787,25 +787,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 12.89
+        cost: 14
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 12.89
+        cost: 17
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 12.89
+        cost: 22
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 12.89
+        cost: 28
       }
     ]
   },
@@ -817,25 +817,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 11.27
+        cost: 14
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 11.27
+        cost: 17
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 11.27
+        cost: 22
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 11.27
+        cost: 28
       }
     ]
   },
@@ -853,19 +853,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 11.11
+        cost: 18
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 11.11
+        cost: 22
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 11.11
+        cost: 28
       }
     ]
   },
@@ -1093,19 +1093,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 23.51
+        cost: 25
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 23.51
+        cost: 31
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 23.51
+        cost: 40
       }
     ]
   },
@@ -1117,25 +1117,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 11.96
+        cost: 12
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 11.96
+        cost: 17
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 11.96
+        cost: 22
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 11.96
+        cost: 28
       }
     ]
   },
@@ -1159,13 +1159,13 @@ const shippings = [
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 22.22
+        cost: 24
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 22.22
+        cost: 30
       }
     ]
   },
@@ -1189,13 +1189,13 @@ const shippings = [
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 25.4
+        cost: 28
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 25.4
+        cost: 34
       }
     ]
   },
@@ -1213,19 +1213,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "parcelnl",
-        cost: 41.4
+        cost: 45
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "parcelnl",
-        cost: 53.57
+        cost: 56
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 69
+        cost: 75
       }
     ]
   },
@@ -1267,25 +1267,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 12.99
+        cost: 16
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 12.99
+        cost: 20
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 12.99
+        cost: 25
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 12.99
+        cost: 30
       }
     ]
   },
@@ -1297,25 +1297,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 13.59
+        cost: 16
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 13.59
+        cost: 20
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 13.59
+        cost: 25
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 13.59
+        cost: 30
       }
     ]
   },
@@ -1363,19 +1363,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 17.1
+        cost: 19
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 17.1
+        cost: 24
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 17.1
+        cost: 32
       }
     ]
   },
@@ -1387,25 +1387,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "dpd",
-        cost: 17.95
+        cost: 18.5
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "dpd",
-        cost: 17.95
+        cost: 25
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "dpd",
-        cost: 17.95
+        cost: 31
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "dpd",
-        cost: 17.95
+        cost: 40
       }
     ]
   },
@@ -1417,25 +1417,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "parcelnl",
-        cost: 38.41
+        cost: 48.5
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "parcelnl",
-        cost: 64.53
+        cost: 74.5
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "parcelnl",
-        cost: 109.59
+        cost: 120
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 162.79
+        cost: 175
       }
     ]
   },
@@ -1477,25 +1477,25 @@ const shippings = [
         minWeight: 0,
         maxWeight: 2000,
         operator: "parcelnl",
-        cost: 38.34
+        cost: 48
       },
       {
         minWeight: 2001,
         maxWeight: 5000,
         operator: "parcelnl",
-        cost: 64.24
+        cost: 74
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "parcelnl",
-        cost: 109.72
+        cost: 120
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 167.29
+        cost: 175
       }
     ]
   },
@@ -1543,19 +1543,19 @@ const shippings = [
         minWeight: 2001,
         maxWeight: 5000,
         operator: "ups",
-        cost: 23.54
+        cost: 25
       },
       {
         minWeight: 5001,
         maxWeight: 10000,
         operator: "ups",
-        cost: 25.53
+        cost: 31
       },
       {
         minWeight: 10001,
         maxWeight: 20000,
         operator: "ups",
-        cost: 34.92
+        cost: 40
       }
     ]
   },
@@ -1585,7 +1585,7 @@ const shippings = [
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 112.2
+        cost: 124
       }
     ]
   },
@@ -1615,7 +1615,7 @@ const shippings = [
         minWeight: 10001,
         maxWeight: 20000,
         operator: "parcelnl",
-        cost: 122.76
+        cost: 132
       }
     ]
   }

@@ -30,9 +30,14 @@ const ProductsBulkUpload = () => {
       setData(data)
       setUploading(false)
     } catch (error) {
-      setError(error)
-      console.error(error)
+      const message = error.response && error.response.data.message ? error.response.data.message : error.message
+      console.error("error: ", error)
+      console.error("message: ", message)
+      setError(message)
       setUploading(false)
+      setTimeout(() => {
+        setError("")
+      }, 5000)
     }
   }
 
@@ -58,7 +63,7 @@ const ProductsBulkUpload = () => {
         </Form.Group>
       </Form>
       {uploading && <Loader />}
-      {error && <Message variant="dander">{error}</Message>}
+      {error && <Message variant="danger">{error}</Message>}
       {!uploading && data.success && (
         <Message variant="success" onClose={() => setData({})}>
           <div>
