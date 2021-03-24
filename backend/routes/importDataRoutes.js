@@ -42,7 +42,10 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
 
   const stream = csv
     .parse({ headers: true })
-    .on("error", error => console.error(error))
+    .on("error", err => {
+      console.log(err.Error)
+      res.status(404).send({ Error: err.Error })
+    })
     .on("data", async row => {
       let newData = {}
       if (row.art) {
@@ -129,12 +132,15 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         }
       } else {
         console.log("newData.name, newData.brand, newData.color: ", newData.name, newData.brand, newData.color)
-        let newProduct = await Product.create(newData)
-        if (newProduct) {
-          newlyAddedProducts++
-        } else {
+        try {
+          let newProduct = await Product.create(newData)
+          if (newProduct) {
+            newlyAddedProducts++
+          }
+        } catch (err) {
           res.status(400)
-          throw new Error({ message: "Can not save New Product" })
+          console.log("err: ", err)
+          throw new Error({ message: "Can not create New Product." })
         }
       }
       if (updatedProducts + newlyAddedProducts === totalRows) {
