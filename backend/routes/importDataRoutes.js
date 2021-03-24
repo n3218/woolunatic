@@ -16,7 +16,7 @@ function checkFileType(file, cb) {
   console.log("file.mimetype: ", file.mimetype)
   console.log("extname: ", extname)
   console.log("mimetype: ", mimetype)
-  if (extname && mimetype) {
+  if (extname || mimetype) {
     console.log("checkFileType: File type is CSV.")
     return cb(null, true)
   } else {
