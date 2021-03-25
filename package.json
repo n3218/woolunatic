@@ -1,7 +1,7 @@
 {
   "name": "mernapp",
   "version": "1.0.0",
-  "description": "MERN shop app",
+  "description": "Woolunatics web app",
   "engines": {
     "node": "14.x.x"
   },

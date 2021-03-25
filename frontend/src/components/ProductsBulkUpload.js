@@ -227,7 +227,7 @@ const ProductsBulkUpload = () => {
                     <br />
                     green
                     <br />
-                    gray
+                    grey
                     <br />
                     brown
                     <br />

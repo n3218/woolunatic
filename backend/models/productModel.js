@@ -28,12 +28,12 @@ const holdsSchema = mongoose.Schema({
 
 const productSchema = mongoose.Schema(
   {
-    art: { type: String, required: false },
-    brand: { type: String, required: false },
-    name: { type: String, required: true },
-    color: { type: String, required: false },
-    colorWay: { type: String, required: false },
-    category: { type: String, required: false },
+    art: { type: String, required: true, default: "" },
+    brand: { type: String, required: true, default: "" },
+    name: { type: String, required: true, default: "" },
+    color: { type: String, required: true, default: "" },
+    colorWay: { type: String, required: true, default: "" },
+    category: { type: String, required: true, default: "" },
     nm: { type: String, required: false, default: "" },
     meterage: { type: Number, required: false, default: 0 },
     fibers: { type: String, required: false, default: "" },

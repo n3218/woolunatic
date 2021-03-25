@@ -1,4 +1,4 @@
-export const UPLOADS = "https://storage.googleapis.com/woolunatics-uploads"
+export const UPLOADS = "https://storage.googleapis.com/woolunatics-dev-uploads"
 
 export const noimage = `${UPLOADS}/noimage/noimage.png`
 export const imagePath = `${UPLOADS}/fullsize/`

@@ -2,7 +2,6 @@ import React from "react"
 import { Row, Col } from "react-bootstrap"
 import * as Icon from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
-import { UPLOADS } from "../constants/commonConstans"
 
 const Footer = () => {
   return (
@@ -103,7 +102,7 @@ const Footer = () => {
             <small>© 2021 All rights reserved.</small>
           </Col>
           <Col className="text-center">
-            <img src={`${UPLOADS}/payments.png`} alt="payment methods" />
+            <img src={`/assets/payments/payments.png`} alt="payment methods" />
           </Col>
         </Row>
       </div>

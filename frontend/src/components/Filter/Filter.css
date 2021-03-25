@@ -145,9 +145,9 @@
 .color > div.black label:before {
   background: black;
 }
-.product_color.bg-gray,
-.color > div.gray label:before {
-  background: gray;
+.product_color.bg-grey,
+.color > div.grey label:before {
+  background: grey;
 }
 .product_color.bg-green,
 .color > div.green label:before {

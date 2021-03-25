@@ -27,7 +27,7 @@ const Filter = ({ products, setFilteredProducts }) => {
     const brandArr = []
     const categoryMap = { cashmere: 0, cashmix: 0, merino: 0, wool: 0, lambswool: 0, mohair: 0, camel: 0, alpaca: 0, yak: 0, angora: 0, cotton: 0, linen: 0, silk: 0, fantasy: 0, pailettes: 0 }
     const categoryArr = []
-    const colorWayMap = { white: 0, natural: 0, beige: 0, yellow: 0, orange: 0, red: 0, pink: 0, purple: 0, blue: 0, green: 0, gray: 0, brown: 0, black: 0, multicolor: 0 }
+    const colorWayMap = { white: 0, natural: 0, beige: 0, yellow: 0, orange: 0, red: 0, pink: 0, purple: 0, blue: 0, green: 0, grey: 0, brown: 0, black: 0, multicolor: 0 }
     const colorWayArr = []
     let priceMinVar = 0
     let priceMaxVar = 0
