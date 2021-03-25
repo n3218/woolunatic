@@ -34,6 +34,7 @@ app.use("/api/upload", uploadRoutes)
 app.use("/api/importdata", importDataRoutes)
 app.use("/api/mailer", mailerRoutes)
 app.get("/api/config/paypal", (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+app.get("/api/config/bucket", (req, res) => res.send(process.env.GCLOUD_BUCKET))
 
 const __dirname = path.resolve()
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")))
