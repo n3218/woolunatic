@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
-import { cartAddItemAction, getCartAction } from "../../actions/cartActions"
+import { useDispatch, useSelector } from "react-redux"
+import { cartAddItemAction, getCartAction, cartLocalAddItemAction, getCartLocalAction } from "../../actions/cartActions"
 
 import "./CartScreen.css"
 import CartLayout from "./CartLayout"
@@ -10,29 +10,35 @@ import ShippingOptions from "../../components/ShippingOptions"
 const CartScreen = ({ match, history }) => {
   const dispatch = useDispatch()
   const productId = match.params.id && match.params.id
-  const qty = match.params.qty ? Number(match.params.qty) : 300
+  const qty = match.params.qty && Number(match.params.qty)
   const checkoutStep = "cart"
-  const [redirect, setRedirect] = useState()
+
   const [showShippingOption, setShowShippingOptions] = useState(false)
   const [country, setCountry] = useState("")
+  const userLogin = useSelector(state => state.userLogin)
+  const { userInfo } = userLogin
 
   useEffect(() => {
     if (productId) {
-      setRedirect(`cart/${productId}/${qty}`)
-      dispatch(cartAddItemAction(productId, qty))
+      if (userInfo) {
+        dispatch(cartAddItemAction(productId, qty))
+      } else {
+        dispatch(cartLocalAddItemAction(productId, qty))
+      }
     } else {
-      setRedirect("cart")
-      dispatch(getCartAction())
+      if (userInfo) {
+        console.log("getCartAction: userInfo.")
+        dispatch(getCartAction())
+      }
     }
-  }, [dispatch, productId, qty])
+  }, [dispatch, productId, qty, userInfo])
 
   const checkShippingPriceHandler = () => {
     setShowShippingOptions(true)
-    console.log("checkShippingPriceHandler")
   }
 
   return (
-    <CartLayout history={history} redirect={redirect} checkoutStep={checkoutStep} title="Shopping Cart" shippingPrice={0}>
+    <CartLayout history={history} checkoutStep={checkoutStep} title="Shopping Cart" shippingPrice={0}>
       <Card border="light">
         <Card.Header>
           {showShippingOption ? (

@@ -73,7 +73,7 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         newData.fibers = row.fibers.trim()
       }
       if (row.price) {
-        newData.price = Math.round(Number(row.price.replace(/[,]+/g, ".").replace(/[ €Ū]+/g, ""))).toFixed(1)
+        newData.price = Number(row.price.replace(/[,]+/g, ".").replace(/[ €Ū]+/g, "")).toFixed(2)
       }
       if (row.nm) {
         newData.nm = row.nm.trim()

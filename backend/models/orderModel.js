@@ -26,17 +26,17 @@ const orderSchema = mongoose.Schema(
       }
     ],
     shippingAddress: {
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      zipCode: { type: String, required: true },
-      country: { type: String, required: true }
+      address: { type: String, required: false },
+      city: { type: String, required: false },
+      zipCode: { type: String, required: false },
+      country: { type: String, required: false }
     },
     paymentMethod: { type: String, required: false },
     paymentResult: {
-      id: { type: String },
-      status: { type: String },
-      update_time: { type: String },
-      email_address: { type: String },
+      id: { type: String, required: false },
+      status: { type: String, required: false },
+      update_time: { type: String, required: false },
+      email_address: { type: String, required: false },
       links: { type: String, required: false }
     },
     itemsPrice: { type: Number, required: true, default: 0.0 },

@@ -19,7 +19,8 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
-  const { loading: cartLoading, error: cartError, items, success: cartSuccess } = cart
+  const { loading: cartLoading, error: cartError, cartItems: items, success: cartSuccess } = cart
+
   const [summary, setSummary] = useState({})
   const [warning, setWarning] = useState(false)
   const [checkout, setCheckout] = useState(false)
@@ -28,23 +29,24 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const { loading: orderLoading, order, success, error: orderError } = orderCreate
 
   useEffect(() => {
-    if (!userInfo) {
+    if (checkoutStep !== "cart" && !userInfo) {
       if (redirect) {
         history.push(`/login?redirect=${redirect}`)
       } else {
         history.push(`/login`)
       }
     }
-  }, [cart, history, redirect, userInfo, dispatch])
+  }, [cart, history, redirect, userInfo, dispatch, checkoutStep])
 
   // ------------------------------------------------------------------------Calculating totals
   useEffect(() => {
     if (items && items.length > 0) {
+      console.log("items: ", items)
       const { itemsWeight, totalWeight } = calculateWeight(items)
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
       const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
       let taxPrice = itemsPrice - itemsPrice / 1.21
-      const storecredit = userInfo.storecredit || 0
+      const storecredit = userInfo ? userInfo.storecredit : 0
       const totalPrice = (Number(itemsPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
       setSummary({ itemsPrice, taxPrice, shippingPrice, storecredit, totalPrice, itemsWeight, totalWeight })
     }
@@ -70,10 +72,14 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   useEffect(() => {
     if (cartSuccess && isChecked && checkout) {
       console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
-      dispatch(startCheckoutAction())
-      history.push("/checkout/shipping")
+      if (!userInfo) {
+        console.log("NOT REGISTERED USER STARTS CHECKOUT")
+      } else {
+        dispatch(startCheckoutAction())
+        history.push("/checkout/shipping")
+      }
     }
-  }, [checkout, isChecked, cartSuccess, dispatch, history])
+  }, [checkout, isChecked, cartSuccess, dispatch, history, userInfo])
 
   useEffect(() => {
     if (success && order) {
@@ -138,17 +144,15 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
           <Col md={9} xs={12}>
             {/* --------------------------------------------------------------------SHIPPING/PAYMENT CONTENT */}
             {children && checkoutStep !== "cart" && children}
-
             {/* --------------------------------------------------------------------ORDER ITEMS */}
             <ListGroup variant="flush">
-              {checkoutStep !== "cart" && (
-                <ListGroup.Item>
-                  <h4>ORDER ITEMS</h4>
-                </ListGroup.Item>
-              )}
-              {items.map(item => item && <CartItem key={`${item._id}-${item.qty}`} item={item} qty={item.qty} setCheckout={setCheckout} checkoutStep={checkoutStep} />)}
+              {/* {checkoutStep !== "cart" && ( */}
+              <ListGroup.Item>
+                <h4>ORDER ITEMS</h4>
+              </ListGroup.Item>
+              {/* )} */}
+              {items.map(item => item && <CartItem userInfo={userInfo} key={`${item._id}-${item.qty}`} item={item} qty={item.qty} setCheckout={setCheckout} checkoutStep={checkoutStep} />)}
             </ListGroup>
-
             {/* --------------------------------------------------------------------ORDER WEIGHT SUMMARY */}
             <OrderWeightsSummary order={summary} />
             {checkoutStep === "cart" && children}

@@ -2,15 +2,19 @@ import React from "react"
 import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { Row, Col, Image, Button, ListGroup } from "react-bootstrap"
-import { cartRemoveItemAction } from "../actions/cartActions"
+import { cartRemoveItemAction, cartLocalRemoveItemAction } from "../actions/cartActions"
 import { noimage, thumbPath } from "../constants/commonConstans"
 
-const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
+const CartItem = ({ item, qty, setCheckout, checkoutStep, userInfo }) => {
   const dispatch = useDispatch()
   const productId = item.product._id || item.product
 
   const removeFromCartHandler = () => {
-    dispatch(cartRemoveItemAction(productId, qty))
+    if (userInfo) {
+      dispatch(cartRemoveItemAction(productId, qty))
+    } else {
+      dispatch(cartLocalRemoveItemAction(productId, qty))
+    }
     setCheckout(false)
   }
 
@@ -32,13 +36,20 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
         </Col>
         <Col>
           <div>
-            <small>{item.brand}</small> <span className="text-capitalize h5">{item.name}</span>
+            <i className="h5">{item.brand}</i>{" "}
+            <span className="text-capitalize h5">
+              {" "}
+              <strong> {item.name}</strong>
+            </span>
+          </div>
+          <div className="text-capitalize">
+            <b>Color: </b>{" "}
+            <span className="text-capitalize h5">
+              <strong>{item.color && item.color}</strong>
+            </span>
           </div>
           <div className="text-capitalize">
             <b>art: </b> <Link to={`/products/${productId}`}>{item.art && item.art}</Link>
-          </div>
-          <div className="text-capitalize">
-            <b>Color: </b> {item.color && item.color}
           </div>
           {item.meterage && (
             <div className="text-capitalize">
@@ -48,7 +59,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep }) => {
           {item.fibers && (
             <div>
               <b>Fibers: </b>
-              <small>{item.fibers}</small>
+              <>{item.fibers}</>
             </div>
           )}
         </Col>

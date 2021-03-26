@@ -15,7 +15,7 @@ router //
 
 router //
   .route("/shipping")
-  .get(protect, getShipping)
+  .get(getShipping)
 
 router //
   .route("/:id")

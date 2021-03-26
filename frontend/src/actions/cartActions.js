@@ -1,5 +1,8 @@
 import {
-  CART_ADD_ITEM_REQUEST, //
+  CART_LOCAL_ADD_ITEM,
+  CART_LOCAL_REMOVE_ITEM,
+  //
+  CART_ADD_ITEM_REQUEST,
   CART_ADD_ITEM_FAIL,
   CART_ADD_ITEM_SUCCESS,
   GET_CART_REQUEST,
@@ -20,6 +23,33 @@ import {
   // CART_CLEAR_FAIL
 } from "../constants/cartConstants"
 import axios from "axios"
+
+export const cartLocalAddItemAction = (id, qty) => async (dispatch, getState) => {
+  dispatch({ type: CART_ADD_ITEM_REQUEST })
+  try {
+    const { data } = await axios.get(`/api/products/${id}`)
+    dispatch({
+      type: CART_LOCAL_ADD_ITEM,
+      payload: {
+        product: data._id,
+        art: data.art,
+        name: data.name,
+        brand: data.brand,
+        fibers: data.fibers,
+        meterage: data.meterage,
+        minimum: data.minimum,
+        image: data.image[0],
+        price: data.price,
+        color: data.color,
+        qty
+      }
+    })
+    localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems)) // save to Local Storage
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: CART_ADD_ITEM_FAIL, payload: message })
+  }
+}
 
 export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
   try {
@@ -63,6 +93,7 @@ export const getCartAction = () => async (dispatch, getState) => {
       }
     }
     const { data } = await axios.get(`/api/cart/${userInfo._id}`, config)
+    console.log("getCartAction: data: ", data)
     if (data && data.items && data.items.length > 0) {
       localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
     }
@@ -71,6 +102,15 @@ export const getCartAction = () => async (dispatch, getState) => {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     dispatch({ type: GET_CART_FAIL, payload: message })
   }
+}
+
+export const cartLocalRemoveItemAction = (id, qty) => async (dispatch, getState) => {
+  console.log("cartLocalRemoveItemAction: ", id, qty)
+  dispatch({
+    type: CART_LOCAL_REMOVE_ITEM,
+    payload: { id, qty }
+  })
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }
 
 export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {
@@ -133,17 +173,17 @@ export const savePaymentMethodAction = data => async dispatch => {
   localStorage.setItem("paymentMethod", JSON.stringify(data))
 }
 
-export const cartCleanItemsAction = () => async (dispatch, getState) => {
-  dispatch({
-    type: CART_CLEAN_ITEMS
-  })
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
-}
-
 export const saveShippingAddressAction = data => async dispatch => {
   dispatch({
     type: CART_SAVE_SHIPPING_ADDRESS,
     payload: data
   })
   localStorage.setItem("shippingAddress", JSON.stringify(data))
+}
+
+export const cartCleanItemsAction = () => async (dispatch, getState) => {
+  dispatch({
+    type: CART_CLEAN_ITEMS
+  })
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
 }

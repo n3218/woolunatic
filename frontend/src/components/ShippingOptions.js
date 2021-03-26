@@ -12,18 +12,24 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
   const { loading, success, error, shippings } = shipping
   const [weight, setWeight] = useState(0)
 
+  console.log("cart: ", cart)
+
+  useEffect(() => {
+    if (cart && cart.cartItems) {
+      const { totalWeight } = calculateWeight(cart.cartItems)
+      setWeight(totalWeight)
+    }
+  }, [cart])
+
   useEffect(() => {
     if (!success) {
       dispatch(getShippingAction())
-    }
-    if (cart && cart.items) {
-      const { totalWeight } = calculateWeight(cart.items)
-      setWeight(totalWeight)
     }
   }, [dispatch, cart, success])
 
   useEffect(() => {
     if (country && shippings && weight) {
+      console.log("country && shippings && weight")
       const initialShippingOption = shippings.filter(el => el.country === country)[0].options.filter(op => weight < op.maxWeight && weight > op.minWeight)[0]
       setShippingPrice(initialShippingOption.cost)
       setShippingOption(initialShippingOption)
@@ -32,11 +38,20 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
 
   const onChangeCountryHandler = e => {
     setCountry(e.target.value)
+    if (e.target.value === "") {
+      setShippingPrice(0)
+    }
   }
 
   const onChangeShippingHandler = op => {
     setShippingPrice(op.cost)
     setShippingOption(op)
+  }
+
+  const selfPickUpHandler = () => {
+    setShippingPrice(0)
+    setCountry("")
+    setShippingOption({ cost: 0 })
   }
 
   return (
@@ -47,7 +62,7 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
         <>
           <Form.Group controlId="country">
             <Form.Label>Country</Form.Label>
-            <Form.Control as="select" className="order-select" value={country} onChange={onChangeCountryHandler} required>
+            <Form.Control as="select" className="order-select" value={country} onChange={onChangeCountryHandler}>
               <option key="0" value="">
                 Select country...
               </option>
@@ -98,37 +113,37 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
                       </Card>
                     </Col>
                   ))}
-
-                <Col xs={6} lg={4} md={4} xl={3} className="mt-4">
-                  <Card bg="light">
-                    <Card.Header className="text-center">
-                      <div style={{ height: "60px", width: "100px", margin: "auto", paddingTop: "7px" }}>
-                        <small>
-                          no shipment
-                          <br /> or self pick up
-                        </small>
-                      </div>
-                    </Card.Header>
-                    <Card.Body className="text-center">
-                      <Card.Title>{`0kg - 20kg`}</Card.Title>
-                      {checkoutStep === "shipping" ? (
-                        <Form.Check //
-                          type="radio"
-                          label="no cost"
-                          id="nocost"
-                          name="shippingOption"
-                          value="noship"
-                          checked={shippingOption.cost === 0}
-                          onChange={() => onChangeShippingHandler({ cost: 0 })}
-                        ></Form.Check>
-                      ) : (
-                        <Card.Text>no cost</Card.Text>
-                      )}
-                    </Card.Body>
-                  </Card>
-                </Col>
               </>
             )}
+            <Col xs={6} lg={4} md={4} xl={3} className="mt-4">
+              <Card bg="light">
+                <Card.Header className="text-center">
+                  <div style={{ height: "60px", width: "100px", margin: "auto", paddingTop: "7px" }}>
+                    {/* <small>
+                          no shipment
+                          <br /> or self pick up
+                        </small> */}
+                    <h5 className="mt-2">self pick up</h5>
+                  </div>
+                </Card.Header>
+                <Card.Body className="text-center">
+                  <Card.Title>{`0kg - 20kg`}</Card.Title>
+                  {checkoutStep === "shipping" ? (
+                    <Form.Check //
+                      type="radio"
+                      label="no cost"
+                      id="nocost"
+                      name="shippingOption"
+                      value="noship"
+                      checked={shippingOption.cost === 0}
+                      onChange={selfPickUpHandler}
+                    ></Form.Check>
+                  ) : (
+                    <Card.Text>no cost</Card.Text>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
           </Row>
         </>
       )}
