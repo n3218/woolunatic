@@ -21,9 +21,9 @@ const ImagesBulkUpload = () => {
     for (let i in file) {
       if (typeof file[i] === "object") {
         const options = {
-          maxSizeMB: 0.3,
           maxWidthOrHeight: 1440,
-          useWebWorker: true
+          useWebWorker: true,
+          fileType: "jpeg"
         }
         try {
           setUploading(true)
@@ -61,7 +61,6 @@ const ImagesBulkUpload = () => {
         <Col sm="2">
           <h4>Uploading Images</h4>
           <Form.Label>
-            JPEG, JPG, PNG
             <div>
               <small>
                 named by ART., like: 101957-1.jpg,

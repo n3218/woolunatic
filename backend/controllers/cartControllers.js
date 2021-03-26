@@ -10,8 +10,8 @@ const fillTheCartWithData = async cart => {
   const prodMap = {}
   products.map(prod => (prodMap[prod._id] = prod)) //------------------------------- build a map of Products
 
-  const itemsData = cart.items
-    .sort((a, b) => String(b._id).localeCompare(String(a._id)))
+  const itemsData = cart.items //--------------------------------------------------- iterate by Cart Items
+    // .sort((a, b) => String(b._id).localeCompare(String(a._id)))
     .map(it => {
       let result = {
         qty: it.qty,
@@ -26,30 +26,41 @@ const fillTheCartWithData = async cart => {
       }
 
       if (prodMap[it.product]) {
-        //------------------------------------------ if Product exists in DB
-        let product = prodMap[it.product] // ------- Product from DB
+        //--------------------------------------------------------------------- if Product exists in DB
 
+        let product = prodMap[it.product] // ---------------------------------- take Product from Products Map
         result.price = product.price
         result.product = product
-        const arr = product.inStock
-          .split(",")
-          .map(el => Number(el.trim()))
-          .sort((a, b) => a - b)
 
-        const isCurrentUserHold = product.onHold.filter(hold => Number(hold.qty) === Number(it.qty) && String(hold.user) === String(cart.user))
-        console.log("isCurrentUserHold: ", isCurrentUserHold)
-        if (isCurrentUserHold.length === 0) {
-          // check in stock
+        if (product.outOfStock) {
+          result.message = "out of stock" //------------------------------------- if Product Out Of Stock
+        } else if (product.inStock) {
+          const arr = product.inStock //-----------------------------------if Product in Stock split "inStock"
+            .split(",")
+            .map(el => Number(el.trim()))
+            .sort((a, b) => a - b)
+          console.log("take product from ProdMap: product.inStock: ", product.inStock)
+          console.log("--------compare with cart item qty: it.qty: ", it.qty)
+          console.log("------------ split inStock: ", arr)
 
-          if (product.outOfStock) {
-            result.message = "out of stock"
-          } else if (!arr.includes(it.qty)) {
+          if (arr.includes(it.qty)) {
+            let newArr = arr.filter(el => el !== it.qty).join(",") //--------if ARR includes it.qty, filter it
+            prodMap[it.product].inStock = newArr
+            prodMap[it.product].totalInStock = newArr.split(",").reduce((acc, el) => Number(acc) + Number(el))
+            console.log("-----------------------FILTERED.inStock: ", prodMap[it.product].inStock)
+            console.log("-----------------------FILTERED.totalInStock: ", prodMap[it.product].totalInStock)
+          } else {
+            //----------------------------------------------------------------if ARR DOES NOT includes it.qty,
+
             if (product.minimum > 0) {
-              let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
+              let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100 //---- If Minimum
               let maxVal = arr[arr.length - 1] - minLeftover
+
               if (it.qty >= product.minimum && it.qty <= maxVal) {
-                console.log("/////it.qty: ", `${it.qty} >= ${product.minimum} && ${it.qty} <= ${maxVal}`)
-                result.message = ""
+                arr[arr.length - 1] = arr[arr.length - 1] - it.qty
+                prodMap[it.product].inStock = arr.join(",")
+                console.log("//////////////////// IF minimum <= it.qty <= maxVal : ", `${product.minimum} <= ${it.qty} <= ${maxVal}`)
+                console.log("-----------------------DELETED WEIGHT from inStock: ", prodMap[it.product].inStock)
               } else {
                 result.message = "weight not found"
               }
@@ -57,6 +68,8 @@ const fillTheCartWithData = async cart => {
               result.message = "weight not found"
             }
           }
+        } else {
+          result.message = "out of stock"
         }
       } else {
         result.message = "product not found"

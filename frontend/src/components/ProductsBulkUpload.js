@@ -128,6 +128,7 @@ const ProductsBulkUpload = () => {
                   <br />
                   outOfStock
                 </th>
+                <th>minimum</th>
               </tr>
             </thead>
             <tbody>
@@ -310,6 +311,15 @@ const ProductsBulkUpload = () => {
                 </td>
                 <td>
                   <strong>1</strong>
+                </td>
+                <td>
+                  300
+                  <br />
+                  200
+                  <br />
+                  100
+                  <br />
+                  ...
                 </td>
               </tr>
             </tbody>

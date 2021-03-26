@@ -37,7 +37,7 @@ const uploadResizedImages = async file => {
     await sharp(file.buffer)
       .resize(250, 250)
       .toFormat("jpeg")
-      .jpeg({ quality: 80 })
+      .jpeg({ quality: 100 })
       .toBuffer((err, data, info) => {
         if (err) {
           console.log("Error on thumbs: ", err)
@@ -55,7 +55,7 @@ const uploadResizedImages = async file => {
     await sharp(file.buffer)
       .resize(80, 80)
       .toFormat("jpeg")
-      .jpeg({ quality: 80 })
+      .jpeg({ quality: 100 })
       .toBuffer((err, data, info) => {
         if (err) {
           console.log("Error on minithumbs: ", err)

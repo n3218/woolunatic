@@ -44,17 +44,14 @@ const ProductScreen = ({ history, match }) => {
         .split(",")
         .map(el => Number(el.trim()))
         .sort((a, b) => a - b)
-
       setInStockArr([...arr])
-      if (arr.length === 1) {
+      if (arr.length === 1 && !product.minimum) {
         setQty(arr[0])
       }
     }
     if (product && Array.isArray(product.image) && product.image.length > 0) {
       let imagesArray = []
-      console.log("product.image: ", product.image)
       product.image.map(img => imagesArray.push({ original: imagePath + img, thumbnail: thumbPath + img }))
-      console.log("imagesArray: ", imagesArray)
       setInitialImages([...imagesArray])
     } else {
       setInitialImages([{ original: noimage, thumbnail: noimage }])
@@ -81,7 +78,7 @@ const ProductScreen = ({ history, match }) => {
     }
     console.log(
       "total in Stock: ",
-      product.inStock.split(",").reduce((acc, el) => acc + Number(el), 0)
+      product.inStock.split(",").reduce((acc, el) => acc + Number(el.trim()), 0)
     )
     return values
   }
