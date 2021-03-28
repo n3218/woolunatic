@@ -1,10 +1,12 @@
 import asyncHandler from "express-async-handler"
 import Cart from "../models/cartModel.js"
 import Product from "../models/productModel.js"
+import { checkQtyInHolds, checkQtyInMinMax } from "../utils/utils.js"
 
 const holdTime = 300000
 
 const fillTheCartWithData = async cart => {
+  console.log("================================== fillTheCartWithData:")
   const prodIds = cart.items.map(it => it.product) //------------------------------- collect cartItem's IDs
   const products = await Product.find({ _id: { $in: prodIds } }) //----------------- find Products with those IDs
   const prodMap = {}
@@ -35,32 +37,31 @@ const fillTheCartWithData = async cart => {
         if (product.outOfStock) {
           result.message = "out of stock" //------------------------------------- if Product Out Of Stock
         } else if (product.inStock) {
-          const arr = product.inStock //-----------------------------------if Product in Stock split "inStock"
+          const arr = product.inStock //----------------------------------- if Product in Stock split "inStock"
             .split(",")
             .map(el => Number(el.trim()))
             .sort((a, b) => a - b)
           console.log("take product from ProdMap: product.inStock: ", product.inStock)
           console.log("--------compare with cart item qty: it.qty: ", it.qty)
-          console.log("------------ split inStock: ", arr)
+          console.log("-------------------------- splited inStock: ", arr)
 
           if (arr.includes(it.qty)) {
-            let newArr = arr.filter(el => el !== it.qty).join(",") //--------if ARR includes it.qty, filter it
+            let newArr = arr.filter(el => el !== it.qty).join(",") //-------- if ARR includes it.qty, filter it
             prodMap[it.product].inStock = newArr
             prodMap[it.product].totalInStock = newArr.split(",").reduce((acc, el) => Number(acc) + Number(el))
-            console.log("-----------------------FILTERED.inStock: ", prodMap[it.product].inStock)
-            console.log("-----------------------FILTERED.totalInStock: ", prodMap[it.product].totalInStock)
+            console.log("-------------------------FILTERED.inStock: ", prodMap[it.product].inStock)
+            console.log("-------------------------FILTERED.totalInStock: ", prodMap[it.product].totalInStock)
           } else {
-            //----------------------------------------------------------------if ARR DOES NOT includes it.qty,
+            //---------------------------------------------------------------- if ARR DOES NOT includes it.qty,
 
             if (product.minimum > 0) {
-              let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100 //---- If Minimum
-              let maxVal = arr[arr.length - 1] - minLeftover
-
-              if (it.qty >= product.minimum && it.qty <= maxVal) {
-                arr[arr.length - 1] = arr[arr.length - 1] - it.qty
+              let qtyInMinMax = checkQtyInMinMax(it.qty, product.meterage, product.minimum, arr[arr.length - 1])
+              let isQtyInHolds = checkQtyInHolds(it.qty, product, cart.user)
+              console.log("IF QTY BETWEEN MIN and MAX: ", qtyInMinMax)
+              if (qtyInMinMax) {
+                arr[arr.length - 1] = arr[arr.length - 1] - it.qty //----------------- REMOVE QTY from Stock
                 prodMap[it.product].inStock = arr.join(",")
-                console.log("//////////////////// IF minimum <= it.qty <= maxVal : ", `${product.minimum} <= ${it.qty} <= ${maxVal}`)
-                console.log("-----------------------DELETED WEIGHT from inStock: ", prodMap[it.product].inStock)
+                console.log("----------------------- inStock after removing it.qty: ", prodMap[it.product].inStock)
               } else {
                 result.message = "weight not found"
               }
@@ -129,11 +130,11 @@ export const addItemToCart = asyncHandler(async (req, res) => {
       console.log(err)
     }
     if (cart) {
-      if (!cart.items.filter(item => item.product == productId && item.qty == qty).length > 0) {
-        cart.items = [...cart.items, newItem]
-      } else {
-        cart.items = [...cart.items]
-      }
+      // if (!cart.items.filter(item => item.product == productId && item.qty == qty).length > 0) {
+      cart.items = [...cart.items, newItem]
+      // } else {
+      //   cart.items = [...cart.items]
+      // }
       updatedCart = await cart.save()
     } else {
       const newCart = new Cart({
@@ -182,7 +183,7 @@ export const startCheckout = asyncHandler(async (req, res) => {
       cart.items.map(async item => {
         const product = await Product.findById(item.product)
         if (product) {
-          console.log("--------------------product._id: ", product._id)
+          console.log("-------------------------------- product._id: ", product._id)
           if (!prodMap[product._id]) {
             prodMap[product._id] = product
           }
@@ -197,28 +198,27 @@ export const startCheckout = asyncHandler(async (req, res) => {
           console.log("prodMap[product._id].outOfStock: ", prodMap[product._id].outOfStock)
           console.log("prodMap[product._id].inStock: ", prodMap[product._id].inStock)
 
-          if (arr.length === 1 && prodMap[product._id].inStock === item.qty) {
-            //-------------------------------------- if only one weight is in Stock
+          if (arr.length === 1 && arr[0] === item.qty) {
+            //--------------------------------------- if only one weight is in Stock and is equal item.qty
             console.log("arr.length: ", arr.length)
             console.log("arr.length === 1: ", arr.length === 1)
             prodMap[product._id].outOfStock = true
             prodMap[product._id].inStock = ""
           } else {
-            const index = arr.indexOf(String(item.qty)) //---------------- else find an index
+            const index = arr.indexOf(String(item.qty)) //----------------------------- else find an index
             if (index !== -1) {
+              //----------------------------------------------------- if index found
               arr.splice(index, 1)
               console.log("arr after splice: ", arr)
             } else {
               if (product.minimum > 0) {
-                //------------------------------- if no index found check minimum
+                //--------------------------------------------------------------------- if no index found check minimum
                 let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
                 let maxVal = arr[arr.length - 1] - minLeftover
                 if (item.qty >= product.minimum && item.qty <= maxVal) {
                   console.log("/////item.qty: ", `${item.qty} >= ${product.minimum} && ${item.qty} <= ${maxVal}`)
-
-                  // remove qty from biggest cone
                   console.log("before replacing arr: ", arr)
-                  arr.splice(arr.length - 1, 1, arr[arr.length - 1] - item.qty)
+                  arr.splice(arr.length - 1, 1, arr[arr.length - 1] - item.qty) // remove qty from biggest cone
                   console.log("after replacing arr: ", arr)
                 } else {
                   console.log(`Error: Qty not found in Stock: ${item.qty}g in ${item.brand} ${item.name} ${item.color}`)

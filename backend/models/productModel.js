@@ -17,7 +17,7 @@ const reviewSchema = mongoose.Schema(
 )
 
 const holdsSchema = mongoose.Schema({
-  qty: { type: String, required: false },
+  qty: { type: Number, required: false },
   lockedAt: { type: Date, required: false },
   user: {
     type: mongoose.Schema.Types.ObjectId,

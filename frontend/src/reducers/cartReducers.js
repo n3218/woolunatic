@@ -28,20 +28,20 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
     case CART_LOCAL_ADD_ITEM:
       const item = action.payload
       if (state.cartItems) {
-        const existItem = state.cartItems.find(x => x.product === item.product && x.qty === item.qty)
-        if (existItem) {
-          return {
-            ...state,
-            loading: false,
-            cartItems: state.cartItems.map(x => (x.product === existItem.product && x.qty === existItem.qty ? item : x))
-          }
-        } else {
-          return {
-            ...state,
-            loading: false,
-            cartItems: [item, ...state.cartItems]
-          }
+        // const existItem = state.cartItems.find(x => x.product === item.product && x.qty === item.qty)
+        // if (existItem) {
+        //   return {
+        //     ...state,
+        //     loading: false,
+        //     cartItems: state.cartItems.map(x => (x.product === existItem.product && x.qty === existItem.qty ? item : x))
+        //   }
+        // } else {
+        return {
+          ...state,
+          loading: false,
+          cartItems: [item, ...state.cartItems]
         }
+        // }
       } else {
         return {
           ...state,

@@ -10,8 +10,8 @@ import LoginScreen from "./screens/LoginScreen"
 import RegisterScreen from "./screens/RegisterScreen"
 import ProfileScreen from "./screens/ProfileScreen"
 import PayOrderScreen from "./screens/OrderScreen/PayOrderScreen"
-import AboutScreen from "./screens/AboutScreen"
-import HowToScreen from "./screens/HowToScreen"
+import AboutScreen from "./screens/TextScreens/AboutScreen"
+import HowToScreen from "./screens/TextScreens/HowToScreen"
 import ProductScreen from "./screens/ProductScreen/ProductScreen"
 import CartScreen from "./screens/OrderScreen/CartScreen"
 import ShippingScreen from "./screens/OrderScreen/ShippingScreen"
@@ -23,6 +23,10 @@ import ProductListScreen from "./screens/AdminScreen/ProductListScreen"
 import ProductEditScreen from "./screens/AdminScreen/ProductEditScreen"
 import OrderListScreen from "./screens/AdminScreen/OrderListScreen"
 import AdminScreen from "./screens/AdminScreen/AdminScreen"
+import GeneralConditionsScreen from "./screens/TextScreens/GeneralConditionsScreen"
+import PrivacyPolicyScreen from "./screens/TextScreens/PrivacyPolicyScreen"
+import DisclaimerScreen from "./screens/TextScreens/DisclaimerScreen"
+import ComplaintsScreen from "./screens/TextScreens/ComplaintsScreen"
 
 const App = () => {
   return (
@@ -31,18 +35,21 @@ const App = () => {
       <main>
         <Container>
           <Switch>
+            <Route path="/about" component={AboutScreen} />
+            <Route path="/how-to" component={HowToScreen} />
+            <Route path="/general-conditions" component={GeneralConditionsScreen} />
+            <Route path="/privacy-policy" component={PrivacyPolicyScreen} />
+            <Route path="/disclaimer" component={DisclaimerScreen} />
+            <Route path="/complaints" component={ComplaintsScreen} />
+
             <Route path="/login" exact component={LoginScreen} />
             <Route path="/register" exact component={RegisterScreen} />
             <Route path="/profile" exact component={ProfileScreen} />
-            <Route path="/about" component={AboutScreen} />
-            <Route path="/how-to" component={HowToScreen} />
-            <Route path="/products/:id" component={ProductScreen} />
 
             <Route path="/cart/:id?/:qty?" component={CartScreen} exact />
             <Route path="/checkout/shipping" component={ShippingScreen} />
             <Route path="/checkout/payment" component={PaymentScreen} />
             <Route path="/checkout/payorder/:id?/:paymentmethod?" exact component={PayOrderScreen} />
-
             <Route path="/orders/:id" component={OrderScreen} />
 
             <Route path="/admin/userlist" component={UserListScreen} />
@@ -57,6 +64,7 @@ const App = () => {
             <Route path="/search/:keyword" component={CollectionScreen} exact />
             <Route path="/search/:keyword/page/:pageNumber" component={CollectionScreen} exact />
 
+            <Route path="/products/:id" component={ProductScreen} />
             <Route path="/yarns/page/:pageNumber" component={CollectionScreen} exact />
             <Route path="/yarns/:category" component={CollectionScreen} exact />
             <Route path="/yarns" component={CollectionScreen} exact />

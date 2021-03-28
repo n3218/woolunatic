@@ -173,9 +173,9 @@ main {
   max-width: 1700px;
   margin: auto;
 }
-main {
+/* main {
   min-height: 80vh;
-}
+} */
 
 @media screen and (max-width: 768px) {
   .jumbotron {
@@ -208,6 +208,8 @@ h2 {
 }
 h3 {
   text-transform: uppercase;
+  padding-top: 30px;
+  padding-bottom: 20px;
 }
 h5 {
   font-weight: 500;

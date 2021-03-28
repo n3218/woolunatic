@@ -11,19 +11,19 @@ const Footer = () => {
           <Col md={6} sm={12} className="pb-5 text-center">
             <div className="text-left ml-5">
               <h3>
-                <strong>Woolunatics</strong>
+                <strong>Woolunatics.nl</strong>
               </h3>
-              <div className="my-3">
+              <div className="mt-3 mb-2">
                 <a href="https://www.instagram.com/woolunatics_nl" target="_blank" rel="noreferrer">
                   <Icon.Instagram className="text-light h4 mr-3" />
                 </a>
-                <a href="mailto: woolunatics.nl@google.com" target="_blank" rel="noreferrer">
+                <a href="mailto: info@woolunatics.nl" target="_blank" rel="noreferrer">
                   <Icon.Envelope className="text-light h3" />
                 </a>
               </div>
-              <div>
-                <small>Groningen, Netherlands</small>
-              </div>
+              <div>H. Hasekampsingel 17</div>
+              <div>9617EV Harkstede</div>
+              <div>The Netherlands</div>
             </div>
           </Col>
           <Col className="pl-5">
@@ -90,6 +90,26 @@ const Footer = () => {
               <div className="mb-1">
                 <Link to="/how-to" className="text-light">
                   How To Order
+                </Link>
+              </div>
+              <div className="mb-1">
+                <Link to="/complaints" className="text-light">
+                  Complaints
+                </Link>
+              </div>
+              <div className="mb-1">
+                <Link to="/disclaimer" className="text-light">
+                  Disclaimer
+                </Link>
+              </div>
+              <div className="mb-1">
+                <Link to="/general-conditions" className="text-light">
+                  General Conditions
+                </Link>
+              </div>
+              <div className="mb-1">
+                <Link to="/privacy-policy" className="text-light">
+                  Privacy Policy
                 </Link>
               </div>
             </div>
