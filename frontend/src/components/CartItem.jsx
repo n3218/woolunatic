@@ -31,7 +31,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep, userInfo }) => {
             </div>
           )}
           <Link to={`/products/${productId}`} className="text-capitalize">
-            {item.image.length === 0 ? <Image src={noimage} alt={item.name} fluid thumbnail /> : <Image src={thumbPath + item.image} alt={item.name} fluid thumbnail />}
+            {item.image && item.image.length === 0 ? <Image src={noimage} alt={item.name} fluid thumbnail /> : <Image src={thumbPath + item.image} alt={item.name} fluid thumbnail />}
           </Link>
         </Col>
         <Col>

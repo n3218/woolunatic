@@ -6,15 +6,17 @@ dotenv.config()
 
 export const sendMail = asyncHandler(async orderData => {
   const order = new Object(orderData)
-  const GMAIL_EMAIL = process.env.GMAIL_EMAIL
-  const GMAIL_PASSWORD = String(process.env.GMAIL_PASSWORD)
-  const DOMAIN_NAME = process.env.DOMAIN_NAME
+  const OUGOING_ORDERS_EMAIL = process.env.OUGOING_ORDERS_EMAIL
+  const OUGOING_ORDERS_PASSWORD = process.env.OUGOING_ORDERS_PASSWORD
+  const DOMAIN_NAME = String(process.env.DOMAIN_NAME)
+
+  const ORDERS_EMAIL = process.env.ORDERS_EMAIL
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: GMAIL_EMAIL,
-      pass: GMAIL_PASSWORD
+      user: OUGOING_ORDERS_EMAIL,
+      pass: OUGOING_ORDERS_PASSWORD
     }
   })
 
@@ -64,9 +66,13 @@ export const sendMail = asyncHandler(async orderData => {
   }
 
   const mailOptions = {
-    from: `WOOLUNATICS <${GMAIL_EMAIL}>`,
+    from: `WOOLUNATICS <${ORDERS_EMAIL}>`,
     to: `${order.user.email}`,
     subject: `Thank you for your order!`,
+    envelope: {
+      from: `WOOLUNATICS <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
+      to: `${order.user.email}` // used as RCPT TO: address for SMTP
+    },
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
