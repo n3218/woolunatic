@@ -7,16 +7,16 @@ dotenv.config()
 
 export const sendMailToManager = asyncHandler(async orderData => {
   const order = new Object(orderData)
-  const GMAIL_EMAIL = process.env.GMAIL_EMAIL
-  const GMAIL_PASSWORD = String(process.env.GMAIL_PASSWORD)
-  const MANAGER_EMAIL = process.env.MANAGER_EMAIL
-  const DOMAIN_NAME = process.env.DOMAIN_NAME
+  const MANAGER_EMAIL = String(process.env.MANAGER_EMAIL)
+  const OUGOING_ORDERS_EMAIL = String(process.env.OUGOING_ORDERS_EMAIL)
+  const OUGOING_ORDERS_PASSWORD = String(process.env.OUGOING_ORDERS_PASSWORD)
+  const DOMAIN_NAME = String(process.env.DOMAIN_NAME)
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: GMAIL_EMAIL,
-      pass: GMAIL_PASSWORD
+      user: OUGOING_ORDERS_EMAIL,
+      pass: OUGOING_ORDERS_PASSWORD
     }
   })
 
@@ -64,7 +64,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
   }
 
   const mailOptions = {
-    from: `#${order._id} <${GMAIL_EMAIL}>`,
+    from: `#${order._id} <${OUGOING_ORDERS_EMAIL}>`,
     to: `${MANAGER_EMAIL}`,
     subject: `New order #${order._id} received`,
     html: `

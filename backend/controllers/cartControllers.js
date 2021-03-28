@@ -197,7 +197,7 @@ export const startCheckout = asyncHandler(async (req, res) => {
           console.log("prodMap[product._id].outOfStock: ", prodMap[product._id].outOfStock)
           console.log("prodMap[product._id].inStock: ", prodMap[product._id].inStock)
 
-          if (arr.length === 1) {
+          if (arr.length === 1 && prodMap[product._id].inStock === item.qty) {
             //-------------------------------------- if only one weight is in Stock
             console.log("arr.length: ", arr.length)
             console.log("arr.length === 1: ", arr.length === 1)

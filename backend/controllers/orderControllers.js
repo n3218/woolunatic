@@ -268,7 +268,7 @@ export const actionsAfterOrderPay = async order => {
           }
         })
       )
-        .then(results => console.log("Successfully updated Products: ", results.length))
+        .then(results => console.log("----------------------------Successfully updated Products: ", results.length))
         .catch(err => console.error("Error on updating Products: ", err))
     })
     .catch(err => console.error("Error on sendMail: ", err))
@@ -296,7 +296,7 @@ export const removeStoreCredit = asyncHandler(async userId => {
       console.log("Something wrong when removing StoreCredit: ", err)
       return err
     } else {
-      console.log("StoreCredit has been removed... " + doc)
+      console.log("---------------------------StoreCredit has been removed... " + doc)
       return doc
     }
   })
@@ -312,7 +312,7 @@ export const clearCart = asyncHandler(async userId => {
       console.log("Something wrong when cleaning Cart: ", err)
       return err
     } else {
-      console.log("Cart has been cleaned... " + doc)
+      console.log("-----------------------------Cart has been cleaned... " + doc)
       return doc
     }
   })
@@ -322,7 +322,7 @@ export const clearCart = asyncHandler(async userId => {
 //
 // Save Mollie Order
 const saveOrderToMollie = async updatedOrder => {
-  console.log("/////////////saveOrderToMollie: updatedOrder: ", updatedOrder)
+  console.log("----------------------------saveOrderToMollie: updatedOrder: ", updatedOrder)
   const vat = Number(21.0)
   try {
     // const mollieItems = updatedOrder.orderItems.map(it => ({
@@ -393,7 +393,7 @@ const saveOrderToMollie = async updatedOrder => {
       // orderNumber: updatedOrder._id,
       lines: []
     })
-    console.log("//////////////////////////mollieOrder: ", mollieOrder)
+    console.log("---------------------------------mollieOrder: ", mollieOrder)
     return mollieOrder
   } catch (err) {
     console.warn("Error on create MollieOrder: ", err)
