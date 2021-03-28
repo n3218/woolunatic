@@ -1,7 +1,7 @@
 import React from "react"
 import { Jumbotron } from "react-bootstrap"
-import FormContainer from "../components/FormContainer"
-import Meta from "../components/Meta"
+import FormContainer from "../../components/FormContainer"
+import Meta from "../../components/Meta"
 
 const HowToScreen = () => {
   return (
