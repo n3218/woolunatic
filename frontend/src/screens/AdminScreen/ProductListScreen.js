@@ -15,7 +15,7 @@ const ProductListScreen = ({ history, match }) => {
   const pageNumber = match.params.pageNumber || 1
 
   const productList = useSelector(state => state.productList)
-  const { loading, error, products, page, pages } = productList
+  const { loading, error, products, page, pages, count } = productList
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const productDelete = useSelector(state => state.productDelete)
@@ -48,13 +48,14 @@ const ProductListScreen = ({ history, match }) => {
 
   return (
     <>
-      <h2>Products</h2>
+      <h2>Products {count && ` - ${count}`}</h2>
 
       <div className="submenu">
         <Button className="btn btn-success bg-blue my-3 px-5" onClick={createProductHandler}>
           <i className="fas fa-plus mr-1"></i> Create Product
         </Button>
       </div>
+
       {(loadingDelete || loadingCreate) && <Loader />}
       {errorDelete && <Message variant="danger">{errorDelete}</Message>}
       {successDelete && <Message variant="success">Product was deleted</Message>}
@@ -66,19 +67,31 @@ const ProductListScreen = ({ history, match }) => {
       ) : (
         <>
           <Meta title="Admin | Product List | Woolunatics" />
+          <Paginate isAdmin list="productlist" pages={pages} page={page} />
           <Table striped hover responsive className="table-sm product-list">
             <thead>
               <tr>
                 <th>art</th>
                 <th className="product-list-item_image">image</th>
-                <th>brand</th>
-                <th>name</th>
-                <th>color</th>
-                <th>colorWay</th>
-                <th>category</th>
-                <th>fibers</th>
-                <th>nm</th>
-                <th>meterage</th>
+                <th>
+                  brand
+                  <br /> name
+                </th>
+                <th>
+                  color
+                  <br />
+                  colorWay
+                </th>
+                <th>
+                  category
+                  <br />
+                  fibers
+                </th>
+                <th>
+                  nm
+                  <br />
+                  meterage
+                </th>
                 <th>price</th>
                 <th className="product-list-max">inStock</th>
                 <th>minimum</th>

@@ -97,13 +97,13 @@ const ProductScreen = ({ history, match }) => {
       ) : (
         <>
           <Meta title={product.name} description={product.description} />
-          <div className="submenu">
-            {userInfo && userInfo.isAdmin && (
+          {userInfo && userInfo.isAdmin && (
+            <div className="submenu">
               <Link to={`/admin/product/${productId}/edit`} className="btn btn-success bg-blue my-3 px-5">
                 <i className="fas fa-edit text-white"></i> Edit
               </Link>
-            )}
-          </div>
+            </div>
+          )}
 
           <div id="product-details">
             {/* ---------------------------Gallery--------------------------- */}

@@ -1,11 +1,24 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Row, Col } from "react-bootstrap"
 import * as Icon from "react-bootstrap-icons"
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+import { textListAction } from "../actions/textActions"
+import Loader from "./Loader"
+import Message from "./Message"
 
 const Footer = () => {
+  const dispatch = useDispatch()
+
+  const textList = useSelector(state => state.textList)
+  const { loading, error, texts } = textList
+
+  useEffect(() => {
+    dispatch(textListAction())
+  }, [dispatch])
+
   return (
-    <footer className="bg-gray py-3 mt-5">
+    <footer className="bg-gray py-3">
       <div className="mt-5 pl-5">
         <Row>
           <Col md={6} sm={12} className="pb-5 text-center">
@@ -80,39 +93,21 @@ const Footer = () => {
             </div>
           </Col>
           <Col>
-            <div>
-              <h5>SUPPORT</h5>
-              <div className="mb-1">
-                <Link to="/about" className="text-light">
-                  About
-                </Link>
-              </div>
-              <div className="mb-1">
-                <Link to="/how-to" className="text-light">
-                  How To Order
-                </Link>
-              </div>
-              <div className="mb-1">
-                <Link to="/complaints" className="text-light">
-                  Complaints
-                </Link>
-              </div>
-              <div className="mb-1">
-                <Link to="/disclaimer" className="text-light">
-                  Disclaimer
-                </Link>
-              </div>
-              <div className="mb-1">
-                <Link to="/general-conditions" className="text-light">
-                  General Conditions
-                </Link>
-              </div>
-              <div className="mb-1">
-                <Link to="/privacy-policy" className="text-light">
-                  Privacy Policy
-                </Link>
-              </div>
-            </div>
+            <h5>SUPPORT</h5>
+
+            {loading && <Loader />}
+            {error && <Message variant="danger">{error}</Message>}
+            {texts &&
+              texts.map(
+                text =>
+                  !text.hide && (
+                    <div className="mb-1 mr-2" key={text._id}>
+                      <Link to={`/info/${text.url}`} className="text-light">
+                        {text.title}
+                      </Link>
+                    </div>
+                  )
+              )}
           </Col>
         </Row>
 

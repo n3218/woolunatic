@@ -8,7 +8,9 @@ const Paginate = ({ list, pages, page, isAdmin = false, keyword = "" }) => {
       <Pagination className="justify-content-center">
         {[...Array(pages).keys()].map(x => (
           <LinkContainer key={x + 1} to={!isAdmin ? (keyword ? `/search/${keyword}/page/${x + 1}` : `/collection/page/${x + 1}`) : `/admin/${list}/${x + 1}`}>
-            <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
+            <Pagination.Item className="success" active={x + 1 === page}>
+              {x + 1}
+            </Pagination.Item>
           </LinkContainer>
         ))}
       </Pagination>

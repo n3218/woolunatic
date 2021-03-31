@@ -4,6 +4,7 @@ import { Button, Image } from "react-bootstrap"
 import { productDeleteAction } from "../../actions/productActions"
 import { minithumbPath, noimage } from "../../constants/commonConstans"
 import "./ProductListItem.css"
+import { Link } from "react-router-dom"
 
 const ProductListItem = memo(({ product, history }) => {
   const dispatch = useDispatch()
@@ -14,7 +15,7 @@ const ProductListItem = memo(({ product, history }) => {
     }
   }
 
-  const detailsHandler = () => history.push(`/products/${product._id}`)
+  const detailsHandler = () => history.push(`/admin/product/${product._id}/edit`)
 
   return (
     <tr key={product._id} className={`product-list-item ${product.outOfStock && "font-weight-light"}`}>
@@ -22,14 +23,25 @@ const ProductListItem = memo(({ product, history }) => {
       <td onClick={detailsHandler} className="product-list-item_image">
         {product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={minithumbPath + product.image[0]} alt={product.name} fluid className="product-list-image" />}
       </td>
-      <td onClick={detailsHandler}>{product.brand}</td>
-      <td onClick={detailsHandler}>{product.name}</td>
-      <td onClick={detailsHandler}>{product.color && product.color}</td>
-      <td onClick={detailsHandler}>{product.colorWay && product.colorWay}</td>
-      <td onClick={detailsHandler}>{product.category}</td>
-      <td onClick={detailsHandler}>{product.fibers}</td>
-      <td onClick={detailsHandler}>{product.nm}</td>
-      <td onClick={detailsHandler}>{product.meterage}</td>
+      <td onClick={detailsHandler}>
+        {product.brand}
+        <div className="text-capitalize">{product.name}</div>
+      </td>
+      <td onClick={detailsHandler}>
+        {product.color && product.color}
+        <br />
+        {product.colorWay && product.colorWay}
+      </td>
+      <td onClick={detailsHandler}>
+        {product.category}
+        <br />
+        {product.fibers}
+      </td>
+      <td onClick={detailsHandler}>
+        {product.nm}
+        <br />
+        {product.meterage}
+      </td>
       <td onClick={detailsHandler}>€{product.price}</td>
       <td onClick={detailsHandler} className="product-list-max">
         {product.inStock}
@@ -53,11 +65,11 @@ const ProductListItem = memo(({ product, history }) => {
         )}
       </td>
       <td>
-        <Button variant="link" title="Delete" onClick={() => deleteHandler(product._id)}>
+        <Link onClick={() => deleteHandler(product._id)} className="px-2">
           <i className="fas fa-trash text-danger"></i>
-        </Button>
+        </Link>
       </td>
-      <td>{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
+      <td className="px-3">{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
     </tr>
   )
 })

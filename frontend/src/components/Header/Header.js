@@ -48,15 +48,6 @@ const Header = ({ location }) => {
               <LinkContainer to="/admin">
                 <Nav.Link>Admin</Nav.Link>
               </LinkContainer>
-              <LinkContainer to="/admin/userlist">
-                <Nav.Link>Users</Nav.Link>
-              </LinkContainer>
-              <LinkContainer to="/admin/productlist">
-                <Nav.Link>Products</Nav.Link>
-              </LinkContainer>
-              <LinkContainer to="/admin/orderlist">
-                <Nav.Link>Orders</Nav.Link>
-              </LinkContainer>
             </Navbar>
           )}
           {/* ---------------------- /Admin Menu ---------------------- */}
@@ -66,14 +57,14 @@ const Header = ({ location }) => {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ml-auto">
-                  <LinkContainer to="/about">
+                  {/* <LinkContainer to="/about">
                     <Nav.Link>About</Nav.Link>
                   </LinkContainer>
                   <LinkContainer to="/how-to">
                     <Nav.Link>
                       <nobr>How To Order</nobr>
                     </Nav.Link>
-                  </LinkContainer>
+                  </LinkContainer> */}
                   <LinkContainer to="/cart" className="text-nowrap">
                     <Nav.Link>
                       <i className="fas fa-shopping-cart"></i>({(cartItems && cartItems.length) || 0})

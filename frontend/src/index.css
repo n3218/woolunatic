@@ -37,6 +37,7 @@
   --danger: var(--red);
 }
 
+/* ----------------------- BACKGROUND COLORS ----------------------- */
 .bg-super-dark-gray {
   background-color: var(--super-dark-gray);
   color: white;
@@ -89,6 +90,50 @@
 .bg-blue {
   background-color: var(--blue) !important;
   color: white;
+}
+
+/* ----------------------- TEXT COLORS ----------------------- */
+.text-super-dark-gray {
+  color: var(--super-dark-gray);
+}
+.text-dark-gray {
+  color: var(--dark-gray);
+}
+.text-gray {
+  color: var(--gray);
+}
+.text-medium-gray {
+  color: var(--medium-gray);
+}
+.text-light-gray {
+  color: var(--light-gray);
+}
+.text-super-light-gray {
+  color: var(--super-light-gray);
+}
+.text-super-dark-green {
+  color: var(--super-dark-green);
+}
+.text-dark-green {
+  color: var(--dark-green);
+}
+.text-green {
+  color: var(--green) !important;
+}
+.text-light-green {
+  color: var(--light-green) !important;
+}
+.text-super-light-green {
+  color: var(--super-light-green);
+}
+.text-orange {
+  color: var(--orange);
+}
+.text-red {
+  color: var(--red);
+}
+.text-blue {
+  color: var(--blue) !important;
 }
 
 .badge-danger {
@@ -173,9 +218,9 @@ main {
   max-width: 1700px;
   margin: auto;
 }
-/* main {
-  min-height: 80vh;
-} */
+main {
+  min-height: 50vh;
+}
 
 @media screen and (max-width: 768px) {
   .jumbotron {

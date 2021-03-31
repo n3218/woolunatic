@@ -10,8 +10,6 @@ import LoginScreen from "./screens/LoginScreen"
 import RegisterScreen from "./screens/RegisterScreen"
 import ProfileScreen from "./screens/ProfileScreen"
 import PayOrderScreen from "./screens/OrderScreen/PayOrderScreen"
-import AboutScreen from "./screens/TextScreens/AboutScreen"
-import HowToScreen from "./screens/TextScreens/HowToScreen"
 import ProductScreen from "./screens/ProductScreen/ProductScreen"
 import CartScreen from "./screens/OrderScreen/CartScreen"
 import ShippingScreen from "./screens/OrderScreen/ShippingScreen"
@@ -23,10 +21,13 @@ import ProductListScreen from "./screens/AdminScreen/ProductListScreen"
 import ProductEditScreen from "./screens/AdminScreen/ProductEditScreen"
 import OrderListScreen from "./screens/AdminScreen/OrderListScreen"
 import AdminScreen from "./screens/AdminScreen/AdminScreen"
-import GeneralConditionsScreen from "./screens/TextScreens/GeneralConditionsScreen"
-import PrivacyPolicyScreen from "./screens/TextScreens/PrivacyPolicyScreen"
-import DisclaimerScreen from "./screens/TextScreens/DisclaimerScreen"
-import ComplaintsScreen from "./screens/TextScreens/ComplaintsScreen"
+import AdminLayout from "./screens/AdminScreen/AdminLayout"
+import ColorListScreen from "./screens/AdminScreen/ColorListScreen"
+import ProductUploadScreen from "./screens/AdminScreen/ProductUploadScreen"
+import ImageUploadScreen from "./screens/AdminScreen/ImageUploadScreen"
+import TextListScreen from "./screens/AdminScreen/TextListScreen"
+import TextEditScreen from "./screens/AdminScreen/TextEditScreen"
+import InfoScreen from "./screens/TextScreens/InfoScreen"
 
 const App = () => {
   return (
@@ -35,40 +36,46 @@ const App = () => {
       <main>
         <Container>
           <Switch>
-            <Route path="/about" component={AboutScreen} />
-            <Route path="/how-to" component={HowToScreen} />
-            <Route path="/general-conditions" component={GeneralConditionsScreen} />
-            <Route path="/privacy-policy" component={PrivacyPolicyScreen} />
-            <Route path="/disclaimer" component={DisclaimerScreen} />
-            <Route path="/complaints" component={ComplaintsScreen} />
+            <Route path="/admin">
+              <AdminLayout>
+                <Switch>
+                  <Route path={`/admin/colorlist`} component={ColorListScreen} exact />
+                  <Route path={`/admin/productsupload`} component={ProductUploadScreen} exact />
+                  <Route path={`/admin/imagesupload`} component={ImageUploadScreen} exact />
+                  <Route path={`/admin/textlist`} component={TextListScreen} exact />
+                  <Route path={`/admin/text/:id/edit`} component={TextEditScreen} exact />
+                  <Route path={`/admin/userlist`} component={UserListScreen} exact />
+                  <Route path={`/admin/user/:id/edit`} component={UserEditScreen} exact />
+                  <Route path={`/admin/product/:id/edit`} component={ProductEditScreen} exact />
+                  <Route path={`/admin/productlist`} component={ProductListScreen} exact />
+                  <Route path={`/admin/productlist/:pageNumber`} component={ProductListScreen} exact />
+                  <Route path={`/admin/orderlist`} component={OrderListScreen} exact />
+                  <Route path={`/admin/orderlist/:pageNumber`} component={OrderListScreen} exact />
+                  <Route path={`/admin`} component={AdminScreen} exact />
+                </Switch>
+              </AdminLayout>
+            </Route>
 
-            <Route path="/login" exact component={LoginScreen} />
-            <Route path="/register" exact component={RegisterScreen} />
-            <Route path="/profile" exact component={ProfileScreen} />
-
-            <Route path="/cart/:id?/:qty?" component={CartScreen} exact />
-            <Route path="/checkout/shipping" component={ShippingScreen} />
-            <Route path="/checkout/payment" component={PaymentScreen} />
-            <Route path="/checkout/payorder/:id?/:paymentmethod?" exact component={PayOrderScreen} />
-            <Route path="/orders/:id" component={OrderScreen} />
-
-            <Route path="/admin/userlist" component={UserListScreen} />
-            <Route path="/admin/user/:id/edit" component={UserEditScreen} />
-            <Route path="/admin/product/:id/edit" component={ProductEditScreen} />
-            <Route path="/admin/productlist" component={ProductListScreen} exact />
-            <Route path="/admin/productlist/:pageNumber" component={ProductListScreen} exact />
-            <Route path="/admin/orderlist" component={OrderListScreen} exact />
-            <Route path="/admin/orderlist/:pageNumber" component={OrderListScreen} exact />
-            <Route path="/admin" component={AdminScreen} exact />
-
-            <Route path="/search/:keyword" component={CollectionScreen} exact />
-            <Route path="/search/:keyword/page/:pageNumber" component={CollectionScreen} exact />
-
-            <Route path="/products/:id" component={ProductScreen} />
-            <Route path="/yarns/page/:pageNumber" component={CollectionScreen} exact />
-            <Route path="/yarns/:category" component={CollectionScreen} exact />
-            <Route path="/yarns" component={CollectionScreen} exact />
-            <Route path="/" component={HomeScreen} exact />
+            <Route path="/">
+              <Switch>
+                <Route path="/info/:textUrl" component={InfoScreen} exact />
+                <Route path="/login" component={LoginScreen} exact />
+                <Route path="/register" component={RegisterScreen} exact />
+                <Route path="/profile" component={ProfileScreen} exact />
+                <Route path="/cart/:id?/:qty?" component={CartScreen} exact />
+                <Route path="/checkout/shipping" component={ShippingScreen} exact />
+                <Route path="/checkout/payment" component={PaymentScreen} exact />
+                <Route path="/checkout/payorder/:id?/:paymentmethod?" component={PayOrderScreen} exact />
+                <Route path="/orders/:id" component={OrderScreen} exact />
+                <Route path="/search/:keyword" component={CollectionScreen} exact />
+                <Route path="/search/:keyword/page/:pageNumber" component={CollectionScreen} exact />
+                <Route path="/products/:id" component={ProductScreen} exact />
+                <Route path="/yarns/page/:pageNumber" component={CollectionScreen} exact />
+                <Route path="/yarns/:category" component={CollectionScreen} exact />
+                <Route path="/yarns" component={CollectionScreen} exact />
+                <Route path="/" component={HomeScreen} exact />
+              </Switch>
+            </Route>
           </Switch>
         </Container>
       </main>

@@ -13,6 +13,7 @@ import cartRoutes from "./routes/cartRoutes.js"
 import uploadRoutes from "./routes/uploadRoutes.js"
 import importDataRoutes from "./routes/importDataRoutes.js"
 import mailerRoutes from "./routes/mailerRoutes.js"
+import textRoutes from "./routes/textRoutes.js"
 
 dotenv.config()
 connectDB()
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(express.urlencoded({ extended: true }))
 
 app.use(express.json())
+app.use("/api/texts", textRoutes)
 app.use("/api/products", productRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)

@@ -1,6 +1,46 @@
+.color-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 .color-example {
   width: 100px;
   height: 50px;
   padding: 5px;
+  margin: 5px 0;
   text-align: center;
+}
+
+.admin-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.admin-panel {
+  width: 100px !important;
+  max-width: 100px !important;
+}
+
+.admin-content {
+  padding: 0;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.page-item.active .page-link {
+  background-color: var(--medium-gray);
+  border-color: var(--gray);
+}
+
+.page-link {
+  color: var(--dark-gray);
+}
+
+.custom-control {
+  position: relative;
+  z-index: 1;
+  display: block;
+  min-height: auto;
 }
