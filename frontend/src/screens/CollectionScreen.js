@@ -26,8 +26,8 @@ const CollectionScreen = ({ match }) => {
       {error && <Message variant="danger">{error}</Message>}
       {success && (
         <>
-          <h1>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "Cachmere Mixes" : match.params.category.split("-").join(" | ")) : "All Yarns"}</h1>
           <Meta />
+          <h1>{keyword ? keyword.split("|").join(" | ") : match.params.category ? (match.params.category === "cashmix" ? "Cachmere Mixes" : match.params.category.split("-").join(" | ")) : "All Yarns"}</h1>
           <div className="display-flex">
             <div className="filter-container">
               <Filter products={products} setFilteredProducts={setFilteredProducts} />

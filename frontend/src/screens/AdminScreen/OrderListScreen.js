@@ -9,21 +9,15 @@ import { listOrdersAction } from "../../actions/orderActions"
 import Paginate from "../../components/Paginate"
 import { PaymentStatus } from "../../components/Utils"
 
-const OrderListScreen = ({ history, match }) => {
+const OrderListScreen = ({ match }) => {
   const dispatch = useDispatch()
   const pageNumber = match.params.pageNumber || 1
   const orderList = useSelector(state => state.orderList)
   const { loading, error, orders, page, pages } = orderList
-  const userLogin = useSelector(state => state.userLogin)
-  const { userInfo } = userLogin
 
   useEffect(() => {
-    if (!userInfo || !userInfo.isAdmin) {
-      history.push("/login")
-    } else {
-      dispatch(listOrdersAction(pageNumber))
-    }
-  }, [dispatch, history, userInfo, pageNumber])
+    dispatch(listOrdersAction(pageNumber))
+  }, [dispatch, pageNumber])
 
   return (
     <>
