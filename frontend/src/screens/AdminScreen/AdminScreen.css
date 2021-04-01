@@ -44,3 +44,8 @@
   display: block;
   min-height: auto;
 }
+
+.editor {
+  background-color: var(--super-light-gray);
+  border-bottom: 1px solid var(--medium-gray);
+}
