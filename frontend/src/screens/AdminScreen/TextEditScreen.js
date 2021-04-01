@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
+// import { Link } from "react-router-dom"
 import { Form, Button, Row, Col } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
-import ReactQuill from "react-quill"
+// import ReactQuill from "react-quill"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import { FormFieldAsRow, FormFieldAsRowCheckbox } from "../../components/FormField"
 import { getTextAction, textUpdateAction } from "../../actions/textActions"
 import Meta from "../../components/Meta"
 // import ImageUpload from "../../components/ImageUpload"
-import "react-quill/dist/quill.snow.css"
+// import "react-quill/dist/quill.snow.css"
+
+import { CKEditor } from "@ckeditor/ckeditor5-react"
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
 
 const TextEditScreen = ({ history, match }) => {
   const dispatch = useDispatch()
@@ -46,6 +49,15 @@ const TextEditScreen = ({ history, match }) => {
 
   const submitHandler = e => {
     e.preventDefault()
+    collectDataAndDispatch()
+  }
+
+  const previewHandler = () => {
+    collectDataAndDispatch()
+    history.push(`/info/${url}`)
+  }
+
+  const collectDataAndDispatch = () => {
     const newText = {
       _id: textId,
       title,
@@ -63,14 +75,14 @@ const TextEditScreen = ({ history, match }) => {
       <Meta title="Admin | Edit Text Page | Woolunatics" />
 
       <div className="submenu">
-        <Link to={`/info/${url}`} className="btn btn-success bg-blue my-3 px-5">
+        <div onClick={previewHandler} className="btn btn-success bg-blue my-3 px-5">
           <i className="fas fa-eye text-white"></i> Preview
-        </Link>
+        </div>
       </div>
 
       <Row>
         <Col>
-          <h2>Edit Info Page</h2>
+          <h2>Edit Text Page</h2>
           {loading && <Loader />}
           {error && <Message variant="danger">{error}</Message>}
           {text && (
@@ -85,11 +97,25 @@ const TextEditScreen = ({ history, match }) => {
                   <Col sm="2">
                     <Form.Label>Description:</Form.Label>
                   </Col>
-                  <Col>
-                    <ReactQuill //
-                      theme="snow"
-                      value={description}
-                      onChange={setDescription}
+                  <Col className="mt-1">
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={description}
+                      onReady={editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log("Editor is ready to use!", editor)
+                      }}
+                      onChange={(event, editor) => {
+                        const data = editor.getData()
+                        setDescription(data)
+                        console.log({ event, editor, data })
+                      }}
+                      onBlur={(event, editor) => {
+                        console.log("Blur.", editor)
+                      }}
+                      onFocus={(event, editor) => {
+                        console.log("Focus.", editor)
+                      }}
                     />
                   </Col>
                 </Row>
