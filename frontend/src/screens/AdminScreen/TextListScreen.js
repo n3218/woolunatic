@@ -88,7 +88,7 @@ const TextListScreen = ({ history }) => {
                     </td>
                     <td>{text.hide ? <i className="fas fa-check text-danger font-weight-bold"></i> : <i className="fas fa-times text-success"></i>}</td>
                     <td>
-                      <Link onClick={() => deleteHandler(text._id)} className="px-2">
+                      <Link to="#" onClick={() => deleteHandler(text._id)} className="px-2">
                         <i className="fas fa-trash text-danger"></i>
                       </Link>
                     </td>

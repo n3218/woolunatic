@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Form, Row, Col, Card } from "react-bootstrap"
-import { getShippingAction } from "../actions/shippingActions"
+import { getShippingListAction } from "../actions/shippingActions"
 import { calculateWeight } from "./Utils"
 import Message from "./Message"
 import Loader from "./Loader"
 
 const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingPrice, shippingOption, setShippingOption }) => {
   const dispatch = useDispatch()
-  const shipping = useSelector(state => state.shipping)
-  const { loading, success, error, shippings } = shipping
+  const shippingList = useSelector(state => state.shippingList)
+  const { loading, success, error, shippings } = shippingList
   const [weight, setWeight] = useState(0)
 
   console.log("cart: ", cart)
@@ -23,7 +23,7 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
 
   useEffect(() => {
     if (!success) {
-      dispatch(getShippingAction())
+      dispatch(getShippingListAction())
     }
   }, [dispatch, cart, success])
 

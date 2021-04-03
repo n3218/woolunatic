@@ -202,6 +202,10 @@ a:hover {
   color: #81869c;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .jumbotron {
   background-color: var(--super-light-gray);
 }

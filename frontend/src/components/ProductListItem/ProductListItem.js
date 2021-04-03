@@ -1,6 +1,6 @@
 import React, { memo } from "react"
 import { useDispatch } from "react-redux"
-import { Button, Image } from "react-bootstrap"
+import { Image } from "react-bootstrap"
 import { productDeleteAction } from "../../actions/productActions"
 import { minithumbPath, noimage } from "../../constants/commonConstans"
 import "./ProductListItem.css"

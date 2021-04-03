@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { Row, Col, Nav } from "react-bootstrap"
+import { Nav } from "react-bootstrap"
 import { logout } from "../../actions/userActions"
 import Meta from "../../components/Meta"
 import { LinkContainer } from "react-router-bootstrap"
@@ -25,9 +25,6 @@ const AdminLayout = ({ children }) => {
       <div className="admin-container">
         <div className="admin-panel bg-gray pl-1">
           <Nav>
-            {/* <LinkContainer to="/admin">
-              <Nav.Link className="text-light">Admin</Nav.Link>
-            </LinkContainer> */}
             <div>
               <h4 className="mt-5 text-medium-gray">Upload</h4>
             </div>
@@ -43,7 +40,7 @@ const AdminLayout = ({ children }) => {
             <LinkContainer to="/admin/textlist">
               <Nav.Link className="text-light">Texts</Nav.Link>
             </LinkContainer>
-            <LinkContainer to="/admin">
+            <LinkContainer to="/admin/shippinglist">
               <Nav.Link className="text-light">Shippings</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/admin/userlist">

@@ -28,6 +28,8 @@ import ImageUploadScreen from "./screens/AdminScreen/ImageUploadScreen"
 import TextListScreen from "./screens/AdminScreen/TextListScreen"
 import TextEditScreen from "./screens/AdminScreen/TextEditScreen"
 import InfoScreen from "./screens/TextScreens/InfoScreen"
+import ShippingListScreen from "./screens/AdminScreen/ShippingListScreen"
+import ShippingEditScreen from "./screens/AdminScreen/ShippingEditScreen"
 
 const App = () => {
   return (
@@ -44,6 +46,8 @@ const App = () => {
                   <Route path={`/admin/imagesupload`} component={ImageUploadScreen} exact />
                   <Route path={`/admin/textlist`} component={TextListScreen} exact />
                   <Route path={`/admin/text/:id/edit`} component={TextEditScreen} exact />
+                  <Route path={`/admin/shippinglist`} component={ShippingListScreen} exact />
+                  <Route path={`/admin/shipping/:id/edit`} component={ShippingEditScreen} exact />
                   <Route path={`/admin/userlist`} component={UserListScreen} exact />
                   <Route path={`/admin/user/:id/edit`} component={UserEditScreen} exact />
                   <Route path={`/admin/product/:id/edit`} component={ProductEditScreen} exact />
