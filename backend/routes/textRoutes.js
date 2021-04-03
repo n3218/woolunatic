@@ -1,7 +1,7 @@
 import express from "express"
-const router = express.Router()
 import { getTexts, getTextById, updateText, createText, getTextByUrl, deleteText } from "../controllers/textControllers.js"
 import { protect, admin } from "../middleware/authMiddleware.js"
+const router = express.Router()
 
 // "/api/texts"
 router //

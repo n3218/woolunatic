@@ -7,7 +7,6 @@ import fs from "fs"
 // @access Public
 export const getTexts = asyncHandler(async (req, res) => {
   const texts = await Text.find({}).sort([["sort", 1]])
-  console.log("getTexts: texts", texts)
   res.json(texts)
 })
 
@@ -17,8 +16,6 @@ export const getTexts = asyncHandler(async (req, res) => {
 export const getTextById = asyncHandler(async (req, res) => {
   console.log("getTextById: req.params.id: ", req.params.id)
   const text = await Text.findById(req.params.id)
-  console.log("getTextById: text: ", text)
-
   if (text) {
     res.status(201).json(text)
   } else {

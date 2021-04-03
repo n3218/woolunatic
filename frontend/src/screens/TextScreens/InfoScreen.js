@@ -1,5 +1,4 @@
 import React, { useEffect } from "react"
-import { Jumbotron } from "react-bootstrap"
 import Meta from "../../components/Meta"
 import FormContainer from "../../components/FormContainer"
 import { useDispatch, useSelector } from "react-redux"

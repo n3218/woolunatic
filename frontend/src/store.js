@@ -33,7 +33,7 @@ const reducer = combineReducers({
 
   cart: cartReducer,
 
-  shipping: shippingReducer,
+  shippingList: shippingReducer,
 
   textList: textReducer,
 
