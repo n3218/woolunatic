@@ -15,8 +15,8 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
   console.log("cart: ", cart)
 
   useEffect(() => {
-    if (cart && cart.cartItems) {
-      const { totalWeight } = calculateWeight(cart.cartItems)
+    if (cart && cart.items) {
+      const { totalWeight } = calculateWeight(cart.items)
       setWeight(totalWeight)
     }
   }, [cart])

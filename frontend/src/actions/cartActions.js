@@ -44,7 +44,7 @@ export const cartLocalAddItemAction = (id, qty) => async (dispatch, getState) =>
         qty
       }
     })
-    localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems)) // save to Local Storage
+    localStorage.setItem("cartItems", JSON.stringify(getState().cart.items)) // save to Local Storage
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     dispatch({ type: CART_ADD_ITEM_FAIL, payload: message })
@@ -110,7 +110,7 @@ export const cartLocalRemoveItemAction = (id, qty) => async (dispatch, getState)
     type: CART_LOCAL_REMOVE_ITEM,
     payload: { id, qty }
   })
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
 }
 
 export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {
@@ -185,5 +185,5 @@ export const cartCleanItemsAction = () => async (dispatch, getState) => {
   dispatch({
     type: CART_CLEAN_ITEMS
   })
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
 }
