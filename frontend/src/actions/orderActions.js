@@ -216,5 +216,5 @@ export const orderRemoveItemsFromStockAction = order => async (dispatch, getStat
     console.error(message)
     dispatch({ type: ORDER_REMOVE_ITEMS_FROM_STOCK_FAIL, payload: message })
   }
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.cartItems))
+  localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
 }

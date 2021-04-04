@@ -5,6 +5,12 @@
   grid-auto-rows: max-content;
 }
 
+#product-description,
+#product-add,
+#product-title {
+  padding: 2em 0px;
+}
+
 @media screen and (max-width: 600px) {
   #product-details {
     grid-template-columns: 6fr 6fr;

@@ -10,10 +10,18 @@ const fillTheCartWithData = async cart => {
   const prodIds = cart.items.map(it => it.product) //------------------------------- collect cartItem's IDs
   const products = await Product.find({ _id: { $in: prodIds } }) //----------------- find Products with those IDs
   const prodMap = {}
-  products.map(prod => (prodMap[prod._id] = prod)) //------------------------------- build a map of Products
+  products.map(prod => {
+    prodMap[prod._id] = prod //----------------------------------------- build a map of Products
+    prodMap[prod._id].totalInStock = prodMap[prod._id].inStock //------- TOTAL IN STOCK this Product
+      .split(",")
+      .reduce((acc, el) => Number(acc) + Number(el.trim()))
+    prodMap[prod._id].arrayInStock = prodMap[prod._id].inStock //------- ARRAY IN STOCK this Product
+      .split(",")
+      .map(el => Number(el.trim()))
+      .sort((a, b) => a - b)
+  })
 
   const itemsData = cart.items //--------------------------------------------------- iterate by Cart Items
-    // .sort((a, b) => String(b._id).localeCompare(String(a._id)))
     .map(it => {
       let result = {
         qty: it.qty,
@@ -37,6 +45,10 @@ const fillTheCartWithData = async cart => {
         if (product.outOfStock) {
           result.message = "out of stock" //------------------------------------- if Product Out Of Stock
         } else if (product.inStock) {
+          console.log("totalInStock BEFORE: ", prodMap[it.product].totalInStock)
+          prodMap[it.product].totalInStock -= it.qty
+          console.log("totalInStock AFTER: ", prodMap[it.product].totalInStock)
+
           const arr = product.inStock //----------------------------------- if Product in Stock split "inStock"
             .split(",")
             .map(el => Number(el.trim()))
@@ -44,6 +56,7 @@ const fillTheCartWithData = async cart => {
           console.log("take product from ProdMap: product.inStock: ", product.inStock)
           console.log("--------compare with cart item qty: it.qty: ", it.qty)
           console.log("-------------------------- splited inStock: ", arr)
+          // const totalInStock = product.inStock.split(',').reduce((acc, el))
 
           if (arr.includes(it.qty)) {
             let newArr = arr.filter(el => el !== it.qty).join(",") //-------- if ARR includes it.qty, filter it
@@ -130,11 +143,7 @@ export const addItemToCart = asyncHandler(async (req, res) => {
       console.log(err)
     }
     if (cart) {
-      // if (!cart.items.filter(item => item.product == productId && item.qty == qty).length > 0) {
-      cart.items = [...cart.items, newItem]
-      // } else {
-      //   cart.items = [...cart.items]
-      // }
+      cart.items = [newItem, ...cart.items]
       updatedCart = await cart.save()
     } else {
       const newCart = new Cart({

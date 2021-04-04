@@ -19,7 +19,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
-  const { loading: cartLoading, error: cartError, cartItems: items, success: cartSuccess } = cart
+  const { loading: cartLoading, error: cartError, items, success: cartSuccess } = cart
 
   const [summary, setSummary] = useState({})
   const [warning, setWarning] = useState(false)
@@ -72,12 +72,9 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   useEffect(() => {
     if (cartSuccess && isChecked && checkout) {
       console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
-      if (!userInfo) {
-        console.log("NOT REGISTERED USER STARTS CHECKOUT")
-      } else {
-        dispatch(startCheckoutAction())
-        history.push("/checkout/shipping")
-      }
+
+      dispatch(startCheckoutAction())
+      history.push("/checkout/shipping")
     }
   }, [checkout, isChecked, cartSuccess, dispatch, history, userInfo])
 
@@ -90,9 +87,15 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
   // ----------------------------------------------------------------------- Handlers
   const checkoutHandler = () => {
-    dispatch(getCartAction())
-    setIsChecked(false)
-    setCheckout(true)
+    if (!userInfo) {
+      console.log("NOT REGISTERED USER STARTS CHECKOUT")
+      history.push("/login?redirect=/cart")
+      // history.push("/login?redirect=/checkout/shipping")
+    } else {
+      dispatch(getCartAction())
+      setIsChecked(false)
+      setCheckout(true)
+    }
   }
 
   const placeOrderHandler = () => {
@@ -151,7 +154,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
                 <h4>ORDER ITEMS</h4>
               </ListGroup.Item>
               {/* )} */}
-              {items.map(item => item && <CartItem userInfo={userInfo} key={`${item._id}-${item.qty}`} item={item} qty={item.qty} setCheckout={setCheckout} checkoutStep={checkoutStep} />)}
+              {items.map((item, i) => item && <CartItem userInfo={userInfo} key={`${i}-${item.art}-${item.qty}`} item={item} qty={item.qty} setCheckout={setCheckout} checkoutStep={checkoutStep} />)}
             </ListGroup>
             {/* --------------------------------------------------------------------ORDER WEIGHT SUMMARY */}
             <OrderWeightsSummary order={summary} />

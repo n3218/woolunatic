@@ -13,7 +13,7 @@ const Header = ({ location }) => {
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
-  const { cartItems } = cart
+  const { items } = cart
 
   const logoutHandler = () => {
     dispatch(logout())
@@ -67,7 +67,7 @@ const Header = ({ location }) => {
                   </LinkContainer> */}
                   <LinkContainer to="/cart" className="text-nowrap">
                     <Nav.Link>
-                      <i className="fas fa-shopping-cart"></i>({(cartItems && cartItems.length) || 0})
+                      <i className="fas fa-shopping-cart"></i>({(items && items.length) || 0})
                     </Nav.Link>
                   </LinkContainer>
                   {userInfo ? (

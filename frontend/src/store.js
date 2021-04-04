@@ -52,7 +52,7 @@ const paymentMethodFromStorage = localStorage.getItem("paymentMethod") && localS
 
 const initialState = {
   cart: {
-    cartItems: cartItemsFromLocalStorage,
+    items: cartItemsFromLocalStorage,
     shippingAddress: shippingAddressFromStorage,
     paymentMethod: paymentMethodFromStorage
   },

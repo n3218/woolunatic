@@ -28,6 +28,8 @@ const ProductScreen = ({ history, match }) => {
   const { loading, error, product } = productDetails
   const productCreateReview = useSelector(state => state.productCreateReview)
   const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview
+  const cart = useSelector(state => state.cart)
+  const { loading: cartLoading, error: errorLoading, items } = cart
 
   useEffect(() => {
     if (successCreateReview) {
@@ -46,7 +48,9 @@ const ProductScreen = ({ history, match }) => {
         .sort((a, b) => a - b)
       setInStockArr([...arr])
       if (arr.length === 1 && !product.minimum) {
-        setQty(arr[0])
+        if (checkQtyExistsInCart(qty)) {
+          setQty(arr[0])
+        }
       }
     }
     if (product && Array.isArray(product.image) && product.image.length > 0) {
@@ -86,6 +90,15 @@ const ProductScreen = ({ history, match }) => {
   const onChangeHandler = e => {
     dispatch(productDetailsAction(productId))
     setQty(e.target.value)
+  }
+
+  const checkQtyExistsInCart = qty => {
+    let exists = items.filter(el => el.product === product._id && qty === el.qty)
+    if (exists.length > 0) {
+      return true
+    } else {
+      return false
+    }
   }
 
   return (
@@ -184,7 +197,7 @@ const ProductScreen = ({ history, match }) => {
             {/* ---------------------------Add--------------------------- */}
 
             <div id="product-add" className="mx-3">
-              <Card border="light">
+              <Card>
                 <Form onSubmit={addToCartHandler}>
                   <ListGroup variant="flush">
                     <ListGroup.Item>
@@ -192,7 +205,8 @@ const ProductScreen = ({ history, match }) => {
                         <Col>Price: </Col>
                         <Col>€{product.price} / 100g</Col>
                       </Row>
-
+                    </ListGroup.Item>
+                    <ListGroup.Item>
                       {!product.outOfStock && (
                         <Row>
                           <Col>Weight:</Col>
@@ -204,7 +218,7 @@ const ProductScreen = ({ history, match }) => {
                                 </option>
                                 {product.inStock &&
                                   inStockArr.map((el, i) => (
-                                    <option key={i} value={el}>
+                                    <option key={i} value={el} disabled={checkQtyExistsInCart(el)}>
                                       {el}g cone
                                     </option>
                                   ))}
@@ -220,6 +234,7 @@ const ProductScreen = ({ history, match }) => {
                           </Col>
                         </Row>
                       )}
+
                       <Row>
                         <Col xl={12} xs={12}>
                           <Button className="btn-block btn-success my-3" type="submit" disabled={product.outOfStock}>
