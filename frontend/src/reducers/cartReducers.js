@@ -57,6 +57,7 @@ export const cartReducer = (state = { items: [] }, action) => {
       }
     case CART_ADD_ITEM_SUCCESS:
       return {
+        ...state,
         loading: false,
         ...action.payload,
         items: action.payload.items
@@ -70,11 +71,12 @@ export const cartReducer = (state = { items: [] }, action) => {
     case GET_CART_REQUEST:
       if (state.items) {
         return {
-          items: state.items,
+          ...state,
           loading: true
         }
       } else {
         return {
+          ...state,
           loading: true
         }
       }
@@ -84,15 +86,15 @@ export const cartReducer = (state = { items: [] }, action) => {
         return {
           loading: false,
           success: true,
-          ...action.payload,
-          items: [...state.items, ...action.payload.items]
+          ...action.payload
+          // items: [...state.items, ...action.payload.items]
         }
       } else {
         return {
           loading: false,
           success: true,
-          ...action.payload,
-          items: action.payload.items
+          ...action.payload
+          // items: action.payload.items
         }
       }
     case GET_CART_FAIL:

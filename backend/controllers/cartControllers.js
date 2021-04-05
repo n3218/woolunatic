@@ -97,14 +97,32 @@ const fillTheCartWithData = async cart => {
 }
 
 // @desc Get Cart
-// @route GET /api/cart/user/:id
+// @route POST /api/cart/:userId
 // @access Private
 export const getCart = asyncHandler(async (req, res) => {
-  console.log("req.params: ", req.params.id)
+  console.log("getCart: req.params: ", req.params)
+  console.log("getCart: req.body: ", req.body)
+  const itemsFromLocalCart = req.body
+  console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
+
   try {
-    const cart = await Cart.findOne({ user: req.params.id })
+    const cart = await Cart.findOne({ user: req.params.userId })
     if (cart) {
-      let updatedCart = await fillTheCartWithData(cart)
+      console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
+      console.log("------------------------getCart: cart: ", cart)
+      let updatedCart = {}
+      if (itemsFromLocalCart) {
+        cart.items = [...itemsFromLocalCart, ...cart.items]
+
+        console.log("------------------------getCart: cart.items: ", cart.items)
+        let newCart = await cart.save()
+        updatedCart = await fillTheCartWithData(newCart)
+      } else {
+        updatedCart = await fillTheCartWithData(cart)
+      }
+
+      console.log("======================getCart: updatedCart: ", updatedCart)
+
       res.json(updatedCart)
     } else {
       console.log("getCart: ELSE: ")
@@ -161,7 +179,7 @@ export const addItemToCart = asyncHandler(async (req, res) => {
 })
 
 // @desc Remove Item from Cart
-// @route PUT /api/cart/:id
+// @route PUT /api/cart/:userId
 // @access Private
 export const removeItemFromCart = asyncHandler(async (req, res) => {
   const { user, productId, qty } = req.body

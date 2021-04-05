@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { cartAddItemAction, getCartAction, cartLocalAddItemAction, getCartLocalAction } from "../../actions/cartActions"
+import { cartAddItemAction, getCartAction, cartLocalAddItemAction } from "../../actions/cartActions"
 
 import "./CartScreen.css"
 import CartLayout from "./CartLayout"

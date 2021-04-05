@@ -20,13 +20,13 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
   const { loading: cartLoading, error: cartError, items, success: cartSuccess } = cart
+  const orderCreate = useSelector(state => state.orderCreate)
+  const { loading: orderLoading, order, success: orderCreateSuccess, error: orderCreateError } = orderCreate
 
   const [summary, setSummary] = useState({})
   const [warning, setWarning] = useState(false)
   const [checkout, setCheckout] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
-  const orderCreate = useSelector(state => state.orderCreate)
-  const { loading: orderLoading, order, success, error: orderError } = orderCreate
 
   useEffect(() => {
     if (checkoutStep !== "cart" && !userInfo) {
@@ -38,7 +38,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
     }
   }, [cart, history, redirect, userInfo, dispatch, checkoutStep])
 
-  // ------------------------------------------------------------------------Calculating totals
+  // ----------------------------------------------Calculating totals
   useEffect(() => {
     if (items && items.length > 0) {
       console.log("items: ", items)
@@ -72,20 +72,19 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   useEffect(() => {
     if (cartSuccess && isChecked && checkout) {
       console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
-
       dispatch(startCheckoutAction())
       history.push("/checkout/shipping")
     }
   }, [checkout, isChecked, cartSuccess, dispatch, history, userInfo])
 
   useEffect(() => {
-    if (success && order) {
+    if (orderCreateSuccess && order) {
       dispatch({ type: ORDER_CREATE_RESET })
       history.push(`/checkout/payorder/${order._id}/${order.paymentMethod}`)
     }
-  }, [order, history, success, dispatch])
+  }, [order, history, orderCreateSuccess, dispatch])
 
-  // ----------------------------------------------------------------------- Handlers
+  // ------------------------------------------------------ Handlers
   const checkoutHandler = () => {
     if (!userInfo) {
       console.log("NOT REGISTERED USER STARTS CHECKOUT")
@@ -114,7 +113,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       })
     )
   }
-  // ----------------------------------------------------------------------- /Handlers
+  // ------------------------------------------------------ /Handlers
 
   return (
     <>
@@ -124,9 +123,9 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
       {(loading || cartLoading || orderLoading) && <Loader />}
 
-      {(error || cartError || orderError) && (
+      {(error || cartError || orderCreateError) && (
         <Message variant="warning" className="py-4" onClose={() => dispatch(getCartAction())}>
-          {error || cartError || orderError}
+          {error || cartError || orderCreateError}
         </Message>
       )}
 
