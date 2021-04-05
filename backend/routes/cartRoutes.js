@@ -13,8 +13,8 @@ router //
   .put(protect, startCheckout)
 
 router //
-  .route("/:id")
-  .get(protect, getCart)
+  .route("/:userId")
+  .post(protect, getCart)
   .put(protect, removeItemFromCart)
 
 export default router

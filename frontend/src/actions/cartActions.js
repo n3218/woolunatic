@@ -1,6 +1,7 @@
 import {
   CART_LOCAL_ADD_ITEM,
   CART_LOCAL_REMOVE_ITEM,
+  ADD_LOCAL_CART_ITEMS_TO_CART_REQUEST,
   //
   CART_ADD_ITEM_REQUEST,
   CART_ADD_ITEM_FAIL,
@@ -37,7 +38,6 @@ export const cartLocalAddItemAction = (id, qty) => async (dispatch, getState) =>
         brand: data.brand,
         fibers: data.fibers,
         meterage: data.meterage,
-        minimum: data.minimum,
         image: data.image[0],
         price: data.price,
         color: data.color,
@@ -83,16 +83,28 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
 export const getCartAction = () => async (dispatch, getState) => {
   try {
     dispatch({ type: GET_CART_REQUEST })
+
     const {
       userLogin: { userInfo }
     } = getState()
+    const {
+      cart: { items }
+    } = getState()
+    console.log("getCartAction: items: ", items)
+    console.log("getCartAction: userInfo: ", userInfo)
+
     const config = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const { data } = await axios.get(`/api/cart/${userInfo._id}`, config)
+
+    const itemsFromLocalCart = items ? items.filter(el => !el._id) : {}
+
+    console.log("getCartAction: itemsFromLocalCart: ", itemsFromLocalCart)
+    const { data } = await axios.post(`/api/cart/${userInfo._id}`, itemsFromLocalCart, config)
+
     console.log("getCartAction: data: ", data)
     if (data && data.items && data.items.length > 0) {
       localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage

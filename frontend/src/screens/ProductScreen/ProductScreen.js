@@ -17,7 +17,7 @@ import { noimage, imagePath, thumbPath } from "../../constants/commonConstans"
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
   const productId = match.params.id
-  const [qty, setQty] = useState(1)
+  const [qty, setQty] = useState(0)
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState("")
   const [initialImages, setInitialImages] = useState([])
@@ -47,8 +47,12 @@ const ProductScreen = ({ history, match }) => {
         .map(el => Number(el.trim()))
         .sort((a, b) => a - b)
       setInStockArr([...arr])
+
+      console.log(`==========if (${arr.length} === 1 && ${!product.minimum})`)
+
       if (arr.length === 1 && !product.minimum) {
-        if (checkQtyExistsInCart(qty)) {
+        console.log("==========if (arr.length === 1 && !product.minimum)")
+        if (!checkQtyExistsInCart(qty)) {
           setQty(arr[0])
         }
       }
@@ -93,7 +97,10 @@ const ProductScreen = ({ history, match }) => {
   }
 
   const checkQtyExistsInCart = qty => {
-    let exists = items.filter(el => el.product === product._id && qty === el.qty)
+    console.log("checkQtyExistsInCart: qty: ", qty)
+    let exists = items.filter(el => qty === el.qty && (el.product === product._id || el.product._id === product._id))
+    console.log("checkQtyExistsInCart: exists: ", exists)
+
     if (exists.length > 0) {
       return true
     } else {
@@ -213,7 +220,7 @@ const ProductScreen = ({ history, match }) => {
                           <Col>
                             <Form.Group controlId="qty">
                               <Form.Control as="select" className="order-select" value={qty} onChange={onChangeHandler} required>
-                                <option key="0" value="">
+                                <option key="0" value={0}>
                                   Select...
                                 </option>
                                 {product.inStock &&
