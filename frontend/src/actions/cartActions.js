@@ -25,28 +25,60 @@ import {
 } from "../constants/cartConstants"
 import axios from "axios"
 
+const checkIfQtyAlreadyInCart = (cart, product, itemQty) => {
+  let totalInStock = product.inStock.split(",").reduce((acc, el) => acc + Number(el.trim()))
+  console.log("checkIfQtyAlreadyInCart: totalInStock: ", totalInStock)
+  let relevantItems = cart.items.filter(it => it.product === product._id)
+  console.log("checkIfQtyAlreadyInCart: relevantItems: ", relevantItems)
+  relevantItems.map(it => (totalInStock -= it.qty))
+  if (totalInStock > 0) {
+    if (totalInStock - itemQty >= product.minimum || totalInStock - itemQty === 0) {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    return false
+  }
+}
+
 export const cartLocalAddItemAction = (id, qty) => async (dispatch, getState) => {
+  console.log("cartLocalAddItemAction: id, qty: ", id, qty)
   dispatch({ type: CART_ADD_ITEM_REQUEST })
   try {
     const { data } = await axios.get(`/api/products/${id}`)
-    dispatch({
-      type: CART_LOCAL_ADD_ITEM,
-      payload: {
-        product: data._id,
-        art: data.art,
-        name: data.name,
-        brand: data.brand,
-        fibers: data.fibers,
-        meterage: data.meterage,
-        image: data.image[0],
-        price: data.price,
-        color: data.color,
-        qty
-      }
-    })
+    const product = data
+    console.log("cartLocalAddItemAction: product: ", product)
+
+    let cart = getState().cart
+    let itemQty = qty
+
+    if (checkIfQtyAlreadyInCart(cart, product, itemQty)) {
+      dispatch({
+        type: CART_LOCAL_ADD_ITEM,
+        payload: {
+          product: product._id,
+          art: product.art,
+          name: product.name,
+          brand: product.brand,
+          fibers: product.fibers,
+          meterage: product.meterage,
+          image: product.image[0],
+          price: product.price,
+          color: product.color,
+          qty
+        }
+      })
+    } else {
+      dispatch({
+        type: CART_ADD_ITEM_FAIL,
+        payload: "Weight can not be added to the Cart, it is out of total Item weight"
+      })
+    }
+
     localStorage.setItem("cartItems", JSON.stringify(getState().cart.items)) // save to Local Storage
   } catch (error) {
-    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    const message = error.response && error.response.product.message ? error.response.product.message : error.message
     dispatch({ type: CART_ADD_ITEM_FAIL, payload: message })
   }
 }
@@ -54,6 +86,7 @@ export const cartLocalAddItemAction = (id, qty) => async (dispatch, getState) =>
 export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
   try {
     dispatch({ type: CART_ADD_ITEM_REQUEST })
+
     const {
       userLogin: { userInfo }
     } = getState()
@@ -69,6 +102,7 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
       qty
     }
     const { data } = await axios.post(`/api/cart`, item, config)
+
     if (data && data.items && data.items.length > 0) {
       localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
     }
@@ -125,7 +159,7 @@ export const cartLocalRemoveItemAction = (id, qty) => async (dispatch, getState)
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
 }
 
-export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {
+export const cartRemoveItemAction = (productId, qty) => async (dispatch, getState) => {
   try {
     dispatch({ type: CART_REMOVE_ITEM_REQUEST })
     const {
@@ -138,9 +172,8 @@ export const cartRemoveItemAction = (id, qty) => async (dispatch, getState) => {
       }
     }
     const item = {
-      user: userInfo._id,
-      productId: id,
-      qty
+      productId: productId,
+      qty: qty
     }
     const { data } = await axios.put(`/api/cart/${userInfo._id}`, item, config)
     localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
