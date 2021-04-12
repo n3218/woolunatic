@@ -47,13 +47,20 @@ const ProductScreen = ({ history, match }) => {
         .map(el => Number(el.trim()))
         .sort((a, b) => a - b)
       setInStockArr([...arr])
+      if (qty > 0) {
+        console.log(`==========if (${arr.length} === 1 && ${!product.minimum})`)
 
-      console.log(`==========if (${arr.length} === 1 && ${!product.minimum})`)
+        if (arr.length === 1 && !product.minimum) {
+          console.log("==========if (arr.length === 1 && !product.minimum)")
+          if (!checkQtyExistsInCart(qty)) {
+            console.log("(`==========if (!checkQtyExistsInCart(qty))")
+            setQty(arr[0])
+          } else {
+            console.log("(`==========ELSE")
+            console.log("(`==========if (checkQtyExistsInCart(qty))")
 
-      if (arr.length === 1 && !product.minimum) {
-        console.log("==========if (arr.length === 1 && !product.minimum)")
-        if (!checkQtyExistsInCart(qty)) {
-          setQty(arr[0])
+            setQty(0)
+          }
         }
       }
     }
@@ -244,7 +251,7 @@ const ProductScreen = ({ history, match }) => {
 
                       <Row>
                         <Col xl={12} xs={12}>
-                          <Button className="btn-block btn-success my-3" type="submit" disabled={product.outOfStock}>
+                          <Button className="btn-block btn-success my-3" type="submit" disabled={product.outOfStock || qty === 0}>
                             {!product.outOfStock ? "Add to Cart" : "Out of Stock"}
                           </Button>
                         </Col>

@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler"
 import Cart from "../models/cartModel.js"
 import Product from "../models/productModel.js"
-import { checkQtyInHolds, checkQtyInMinMax } from "../utils/utils.js"
+import { checkQtyInHolds, checkQtyInMinMax, recalculateInStock, checkIfHoldBelongsCurrentUser } from "../utils/utils.js"
 
 const holdTime = 300000
 
@@ -12,19 +12,12 @@ const fillTheCartWithData = async cart => {
   const prodMap = {}
   products.map(prod => {
     prodMap[prod._id] = prod //----------------------------------------- build a map of Products
-    prodMap[prod._id].totalInStock = prodMap[prod._id].inStock //------- TOTAL IN STOCK this Product
-      .split(",")
-      .reduce((acc, el) => Number(acc) + Number(el.trim()))
-    prodMap[prod._id].arrayInStock = prodMap[prod._id].inStock //------- ARRAY IN STOCK this Product
-      .split(",")
-      .map(el => Number(el.trim()))
-      .sort((a, b) => a - b)
+    recalculateInStock(prodMap[prod._id])
   })
-
   const itemsData = cart.items //--------------------------------------------------- iterate by Cart Items
     .map(it => {
       let result = {
-        qty: it.qty,
+        qty: it.qty, //-------------------------------------------------- take item's properties to resultItem
         art: it.art,
         brand: it.brand,
         name: it.name,
@@ -34,11 +27,10 @@ const fillTheCartWithData = async cart => {
         image: it.image,
         price: it.price
       }
-
+      console.log("------------------------- fillTheCartWithData: item: " + it.art + " - " + it.qty)
       if (prodMap[it.product]) {
-        //--------------------------------------------------------------------- if Product exists in DB
-
-        let product = prodMap[it.product] // ---------------------------------- take Product from Products Map
+        //--------------------------------------------------------------------- if Product exists in Map
+        let product = prodMap[it.product] // ------------------ take Product properties from Map to resultItem
         result.price = product.price
         result.product = product
 
@@ -48,27 +40,24 @@ const fillTheCartWithData = async cart => {
           console.log("totalInStock BEFORE: ", prodMap[it.product].totalInStock)
           prodMap[it.product].totalInStock -= it.qty
           console.log("totalInStock AFTER: ", prodMap[it.product].totalInStock)
+          const arr = prodMap[it.product].arrayInStock
+          let index = arr.indexOf(it.qty)
+          console.log("fillTheCartWithData: index: ", index)
+          if (index >= 0) {
+            arr.splice(index, 1).join(",") //--------------------------- if ARR includes it.qty, exclude it
+            console.log("fillTheCartWithData: arr: ", arr)
+            prodMap[it.product].inStock = arr.join(",")
 
-          const arr = product.inStock //----------------------------------- if Product in Stock split "inStock"
-            .split(",")
-            .map(el => Number(el.trim()))
-            .sort((a, b) => a - b)
-          console.log("take product from ProdMap: product.inStock: ", product.inStock)
-          console.log("--------compare with cart item qty: it.qty: ", it.qty)
-          console.log("-------------------------- splited inStock: ", arr)
-          // const totalInStock = product.inStock.split(',').reduce((acc, el))
+            recalculateInStock(prodMap[it.product])
 
-          if (arr.includes(it.qty)) {
-            let newArr = arr.filter(el => el !== it.qty).join(",") //-------- if ARR includes it.qty, filter it
-            prodMap[it.product].inStock = newArr
-            prodMap[it.product].totalInStock = newArr.split(",").reduce((acc, el) => Number(acc) + Number(el))
-            console.log("-------------------------FILTERED.inStock: ", prodMap[it.product].inStock)
-            console.log("-------------------------FILTERED.totalInStock: ", prodMap[it.product].totalInStock)
+            console.log("FILTERED.inStock: ", prodMap[it.product].inStock)
+            console.log("FILTERED.totalInStock: ", prodMap[it.product].totalInStock)
+            console.log("FILTERED.arrayInStock: ", prodMap[it.product].arrayInStock)
           } else {
             //---------------------------------------------------------------- if ARR DOES NOT includes it.qty,
 
             if (product.minimum > 0) {
-              let qtyInMinMax = checkQtyInMinMax(it.qty, product.meterage, product.minimum, arr[arr.length - 1])
+              let qtyInMinMax = checkQtyInMinMax(it.qty, product)
               let isQtyInHolds = checkQtyInHolds(it.qty, product, cart.user)
               console.log("IF QTY BETWEEN MIN and MAX: ", qtyInMinMax)
               if (qtyInMinMax) {
@@ -100,39 +89,43 @@ const fillTheCartWithData = async cart => {
 // @route POST /api/cart/:userId
 // @access Private
 export const getCart = asyncHandler(async (req, res) => {
-  console.log("getCart: req.params: ", req.params)
+  console.log("======================getCart: req.params: ", req.params)
   console.log("getCart: req.body: ", req.body)
   const itemsFromLocalCart = req.body
   console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
-
-  try {
-    const cart = await Cart.findOne({ user: req.params.userId })
-    if (cart) {
-      console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
-      console.log("------------------------getCart: cart: ", cart)
-      let updatedCart = {}
-      if (itemsFromLocalCart) {
-        cart.items = [...itemsFromLocalCart, ...cart.items]
-
-        console.log("------------------------getCart: cart.items: ", cart.items)
-        let newCart = await cart.save()
-        updatedCart = await fillTheCartWithData(newCart)
-      } else {
-        updatedCart = await fillTheCartWithData(cart)
-      }
-
-      console.log("======================getCart: updatedCart: ", updatedCart)
-
-      res.json(updatedCart)
+  const cart = await Cart.findOne({ user: req.params.userId })
+  if (cart) {
+    console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
+    console.log("getCart: cart.items.length: ", cart.items.length)
+    let updatedCart = {}
+    if (itemsFromLocalCart) {
+      cart.items = [...itemsFromLocalCart, ...cart.items]
+      console.log("getCart: +itemsFromLocalCart=cart.items.length: ", cart.items.length)
+      let newCart = await cart.save()
+      updatedCart = await fillTheCartWithData(newCart)
     } else {
-      console.log("getCart: ELSE: ")
-
-      res.status(200).json({ message: "your cart is empty" })
+      updatedCart = await fillTheCartWithData(cart)
     }
-  } catch {
-    res.status(404)
-    throw new Error("Can not find a product")
+    console.log("//======================getCart: updatedCart: ", updatedCart)
+    res.json(updatedCart)
+  } else {
+    console.log("======================getCart: ELSE: ")
+    if (itemsFromLocalCart) {
+      const newCart = new Cart({
+        user: req.params.userId,
+        items: itemsFromLocalCart
+      })
+      let updatedNewCart = await newCart.save()
+      console.log("updatedNewCart: ", updatedNewCart)
+      updatedCart = await fillTheCartWithData(updatedNewCart)
+      console.log("//======================getCart: ELSE: updatedCart: ", updatedCart)
+      res.status(200).json(updatedCart)
+    } else {
+      res.status(200).json({ message: "Your cart is empty" })
+    }
   }
+  // res.status(404)
+  // throw new Error("Can not find a product")
 })
 
 // @desc Add Item to Cart
@@ -142,27 +135,41 @@ export const addItemToCart = asyncHandler(async (req, res) => {
   let updatedCart = {}
   const { user, productId, qty } = req.body
   const newItem = { user, productId, qty }
+  let product = {}
   try {
-    const cart = await Cart.findOne({ user: user })
     try {
-      const productData = await Product.findById(productId)
-      if (productData) {
-        newItem.product = productId
-        newItem.art = productData.art
-        newItem.brand = productData.brand
-        newItem.name = productData.name
-        newItem.color = productData.color
-        newItem.fibers = productData.fibers
-        newItem.meterage = productData.meterage
-        newItem.image = productData.image[0] || ""
-        newItem.price = productData.price
+      product = await Product.findById(productId) //------------- get Product from DB
+      if (product) {
+        console.log("addItemToCart: product._id: ", product._id)
+        newItem.product = productId //------------- take data from Product
+        newItem.art = product.art
+        newItem.brand = product.brand
+        newItem.name = product.name
+        newItem.color = product.color
+        newItem.fibers = product.fibers
+        newItem.meterage = product.meterage
+        newItem.image = product.image[0] || ""
+        newItem.price = product.price
       }
     } catch (err) {
-      console.log(err)
+      console.log("Error on finding Product by Id: ", err)
     }
+
+    const cart = await Cart.findOne({ user: user }) //------------- get Cart from DB
     if (cart) {
-      cart.items = [newItem, ...cart.items]
-      updatedCart = await cart.save()
+      console.log("addItemToCart: cart._id: ", cart._id)
+      let qtyMayBeAdded = checkIfEnoughQtyInStock(cart, product, qty)
+      console.log("addItemToCart: qtyMayBeAdded: ", qtyMayBeAdded)
+
+      if (qtyMayBeAdded) {
+        // checkIfHoldBelongsCurrentUser(cart, user, product, qty)
+        cart.items = [newItem, ...cart.items]
+        updatedCart = await cart.save()
+        console.log("addItemToCart: updatedCart: ", updatedCart)
+      } else {
+        res.status(401)
+        throw new Error("Weight " + qty + " can not be added to the Cart")
+      }
     } else {
       const newCart = new Cart({
         user,
@@ -174,21 +181,86 @@ export const addItemToCart = asyncHandler(async (req, res) => {
     res.status(201).json(resultCart)
   } catch {
     res.status(401)
-    throw new Error("Can not find a product")
+    throw new Error("Weight " + qty + " can not be added to the Cart")
   }
 })
+
+// @desc Checking Weight is available to add to the cart:
+// Calculate total in stock,
+// filter cart items relevant to current item
+// iterate by relevant items and substract their qty from total in stock
+// finally if total in stock still positive and if total - qty still bigger or equal 0
+// return true, otherwise false
+const checkIfEnoughQtyInStock = (cart, product, qty) => {
+  product.totalInStock = product.inStock.split(",").reduce((acc, el) => acc + Number(el.trim()), 0)
+  product.arrayInStock = product.inStock.split(",").map(el => Number(el.trim()))
+  let relevantItems = cart.items.filter(it => String(it.product._id) === String(product._id))
+  console.log("checkIfEnoughQtyInStock: totalInStock: ", product.totalInStock)
+  console.log("checkIfEnoughQtyInStock: arrayInStock: ", product.arrayInStock)
+  console.log("checkIfEnoughQtyInStock: relevantItems.length: ", relevantItems.length)
+  relevantItems.map(it => {
+    let index = product.arrayInStock.indexOf(Number(it.qty))
+    console.log("checkIfEnoughQtyInStock: index: ", index)
+    if (index >= 0) {
+      product.arrayInStock.splice(index, 1) //--------- if qty in arrayInStock, remove it from totalInStock
+      product.totalInStock -= it.qty
+    } else if (product.minimum > 0) {
+      let qtyInMinMax = checkQtyInMinMax(it.qty, product)
+      if (qtyInMinMax) {
+        product.totalInStock -= it.qty //--------- if qty in MinMax, remove it from totalInStock
+      } else {
+        console.log("QTY IS NOT IN CONES WEIGHTS AND ALSO IS NOT IN MIN-MAX DIAPASON")
+      }
+    }
+  })
+
+  console.log("checkIfEnoughQtyInStock: totalInStock after relevant items: ", product.totalInStock)
+  console.log("checkIfEnoughQtyInStock: arrayInStock after relevant items: ", product.arrayInStock)
+
+  if (product.totalInStock > 0) {
+    console.log("checkIfEnoughQtyInStock: totalInStock > 0")
+    let index = product.arrayInStock.indexOf(Number(qty)) //--- if Qty in cones array
+    console.log("checkIfEnoughQtyInStock: index: ", index)
+
+    if (index >= 0) {
+      console.log("checkIfEnoughQtyInStock: index >= 0")
+      return true
+    } else if (checkQtyInMinMax(qty, product)) {
+      console.log("checkIfEnoughQtyInStock: ELSE 1")
+      return true
+    } else {
+      console.log("checkIfEnoughQtyInStock: ELSE 2")
+      return false
+    }
+  } else {
+    console.log("checkIfEnoughQtyInStock: ELSE 3")
+    return false
+  }
+}
 
 // @desc Remove Item from Cart
 // @route PUT /api/cart/:userId
 // @access Private
 export const removeItemFromCart = asyncHandler(async (req, res) => {
-  const { user, productId, qty } = req.body
-  const cart = await Cart.findOne({ user: user })
+  const productId = req.body.productId
+  const qty = req.body.qty
+  const userId = req.params.userId
+  console.log("removeItemFromCart: req.params: ", req.params)
+  console.log("removeItemFromCart: req.body: ", req.body)
+  const cart = await Cart.findOne({ user: userId })
   if (cart) {
-    const filteredCart = new Cart(cart)
-    filteredCart.items = cart.items.filter(item => !(item.product == productId && item.qty == qty))
-    await filteredCart.save()
+    const index = cart.items.findIndex(item => item.product == productId && item.qty == qty)
+    console.log("removeItemFromCart: index: ", index)
+
+    cart.items.splice(index, index >= 0 ? 1 : 0)
+    console.log("removeItemFromCart: cart.items: ", cart.items)
+
+    let filteredCart = await cart.save()
+    console.log("removeItemFromCart: filteredCart.items.length: ", filteredCart.items.length)
+
     let updatedCart = await fillTheCartWithData(filteredCart)
+    console.log("removeItemFromCart: updatedCart.items.length: ", updatedCart.items.length)
+
     res.status(201).json(updatedCart)
   } else {
     res.status(404)

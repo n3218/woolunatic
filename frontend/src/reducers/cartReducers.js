@@ -59,11 +59,12 @@ export const cartReducer = (state = { items: [] }, action) => {
       return {
         ...state,
         loading: false,
-        ...action.payload,
-        items: action.payload.items
+        ...action.payload
+        // items: action.payload.items
       }
     case CART_ADD_ITEM_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload
       }
@@ -113,7 +114,7 @@ export const cartReducer = (state = { items: [] }, action) => {
       console.log("action.payload.id: ", action.payload.id)
       return {
         ...state,
-        items: state.items.filter(item => !(item.qty === action.payload.qty && item.product === action.payload.id))
+        items: state.items.filter(item => !item._id && !(item.qty === action.payload.qty && item.product === action.payload.id))
       }
 
     case CART_REMOVE_ITEM_REQUEST:
