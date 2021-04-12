@@ -94,10 +94,10 @@ export const getCart = asyncHandler(async (req, res) => {
   const itemsFromLocalCart = req.body
   console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
   const cart = await Cart.findOne({ user: req.params.userId })
+  let updatedCart = {}
   if (cart) {
     console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
     console.log("getCart: cart.items.length: ", cart.items.length)
-    let updatedCart = {}
     if (itemsFromLocalCart) {
       cart.items = [...itemsFromLocalCart, ...cart.items]
       console.log("getCart: +itemsFromLocalCart=cart.items.length: ", cart.items.length)
@@ -119,7 +119,9 @@ export const getCart = asyncHandler(async (req, res) => {
       console.log("updatedNewCart: ", updatedNewCart)
       updatedCart = await fillTheCartWithData(updatedNewCart)
       console.log("//======================getCart: ELSE: updatedCart: ", updatedCart)
-      res.status(200).json(updatedCart)
+      if (updatedCart) {
+        res.status(200).json(updatedCart)
+      }
     } else {
       res.status(200).json({ message: "Your cart is empty" })
     }
