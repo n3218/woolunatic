@@ -7,8 +7,7 @@ dotenv.config()
 export const sendMailWithResetPasswordConfirmation = asyncHandler(async ({ email }) => {
   const OUGOING_ORDERS_EMAIL = process.env.OUGOING_ORDERS_EMAIL
   const OUGOING_ORDERS_PASSWORD = process.env.OUGOING_ORDERS_PASSWORD
-  const DOMAIN_NAME = "http://localhost:3000"
-  // const DOMAIN_NAME = String(process.env.DOMAIN_NAME)
+  const DOMAIN_NAME = String(process.env.DOMAIN_NAME)
 
   const ORDERS_EMAIL = process.env.ORDERS_EMAIL
 
