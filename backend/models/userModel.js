@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema(
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true, default: false },
     storecredit: { type: Number, required: true, default: 0 },
+    phone: { type: String, required: false, default: "" },
     favorites: [
       {
         art: { type: String, required: false },

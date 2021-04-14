@@ -1,7 +1,13 @@
 import mongoose from "mongoose"
+import autoIncrement from "mongoose-auto-increment"
+
+var connection = mongoose.createConnection(process.env.MONGO_URI)
+
+autoIncrement.initialize(connection)
 
 const orderSchema = mongoose.Schema(
   {
+    orderId: { type: Number, required: true, unique: true, default: 0 },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -29,7 +35,8 @@ const orderSchema = mongoose.Schema(
       address: { type: String, required: false },
       city: { type: String, required: false },
       zipCode: { type: String, required: false },
-      country: { type: String, required: false }
+      country: { type: String, required: false },
+      phone: { type: String, required: false }
     },
     paymentMethod: { type: String, required: false },
     paymentResult: {
@@ -55,6 +62,13 @@ const orderSchema = mongoose.Schema(
     timestamps: true
   }
 )
+
+orderSchema.plugin(autoIncrement.plugin, {
+  model: "Order",
+  field: "orderId",
+  startAt: 210000,
+  incrementBy: 1
+})
 
 const Order = mongoose.model("Order", orderSchema)
 

@@ -70,7 +70,7 @@ export const createNewOrder = asyncHandler(async (req, res) => {
 // @route GET /api/orders
 // @access Private
 export const getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate("user", "name email")
+  const order = await Order.findById(req.params.id).populate("user", "name email phone")
   if (order) {
     res.json(order)
   } else {
@@ -106,7 +106,7 @@ export const getOrders = asyncHandler(async (req, res) => {
 // @route GET /api/orders/:id/deliver
 // @access Private/Admin
 export const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate("user", "name email")
+  const order = await Order.findById(req.params.id).populate("user", "name email phone")
   if (order) {
     order.isDelivered = true
     order.deliveredAt = Date.now()
@@ -123,7 +123,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @access Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
   console.log("=========================updateOrderToPaid:req.body: ", req.body)
-  const order = await Order.findById(req.params.id).populate("user", "name email")
+  const order = await Order.findById(req.params.id).populate("user", "name email phone")
   if (order) {
     order.isPaid = true
     order.paidAt = Date.now()
@@ -197,7 +197,7 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
             links: JSON.stringify(payment._links)
           }
         }
-        const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email")
+        const order = await Order.findById(orderToUpdate.orderId).populate("user", "name email phone")
         if (order) {
           order.paymentMethod = orderToUpdate.paymentMethod
           order.paidAt = orderToUpdate.paidAt

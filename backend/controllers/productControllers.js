@@ -12,7 +12,7 @@ export const getProducts = asyncHandler(async (req, res) => {
   let order = req.body.order ? req.body.order : "desc"
   let sortBy = req.body.sortBy ? req.body.sortBy : "updatedAt"
   let page = Number(req.query.pageNumber) || 1
-  let pageSize = 30
+  let pageSize = 500
   let parameters = {}
 
   if (req.query.keyword) {
