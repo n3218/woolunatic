@@ -1,6 +1,9 @@
 import asyncHandler from "express-async-handler"
 import generateToken from "../utils/generateToken.js"
 import User from "../models/userModel.js"
+import jwt from "jsonwebtoken"
+import { sendMailToResetPasswordEmail } from "../mailer/sendMailToResetPassword.js"
+import { sendMailWithResetPasswordConfirmation } from "../mailer/sendMailWithResetPasswordConfirmation.js"
 
 // @desc Auth user & get token
 // @route POST /api/users/login
@@ -159,5 +162,58 @@ export const updateUser = asyncHandler(async (req, res) => {
   } else {
     res.status(401)
     throw new Error("User not found")
+  }
+})
+
+// @desc send Link To Reset Password
+// @route POST /api/users/forgotpassword
+// @access Public
+export const sendLinkToResetPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body
+  const userExists = await User.findOne({ email })
+  if (userExists) {
+    const payload = {
+      _id: userExists._id,
+      email: userExists.email
+    }
+    const secret = userExists.password + "-" + userExists.createdAt.getTime()
+    const token = jwt.sign(payload, secret, { expiresIn: 3600 })
+    await sendMailToResetPasswordEmail({ id: payload._id, email: payload.email, token }).catch(err => console.error("Error on sendMailToResetPasswordEmail: ", err))
+    res.status(201).send("Email with reset password link was sent.")
+  } else {
+    res.status(400)
+    throw new Error("Email address does not exist in our system.")
+  }
+})
+
+// @desc Reset Password
+// @route POST /api/users/resetpassword/:userId/:token
+// @access Public
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { userId, token } = req.params
+  const { password } = req.body
+  const userExists = await User.findById(userId)
+  if (userExists) {
+    const secret = userExists.password + "-" + userExists.createdAt.getTime()
+    const payload = jwt.decode(token, secret)
+    if (payload._id === userId) {
+      userExists.password = password
+      const updatedUser = await userExists.save()
+      if (updatedUser) {
+        await sendMailWithResetPasswordConfirmation({ email: payload.email }).catch(err => console.error("Error on sendMailWithResetPasswordConfirmation: ", err))
+        console.log("Password was successfully reseted.")
+        res.status(200).json({
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          isAdmin: updatedUser.isAdmin,
+          storecredit: updatedUser.storecredit,
+          token: generateToken(updatedUser._id)
+        })
+      }
+    }
+  } else {
+    res.status(400)
+    throw new Error("Email address is missing.")
   }
 })

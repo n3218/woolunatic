@@ -30,6 +30,8 @@ import TextEditScreen from "./screens/AdminScreen/TextEditScreen"
 import InfoScreen from "./screens/TextScreens/InfoScreen"
 import ShippingListScreen from "./screens/AdminScreen/ShippingListScreen"
 import ShippingEditScreen from "./screens/AdminScreen/ShippingEditScreen"
+import ForgotPasswordScreen from "./screens/ForgotPasswordScreen"
+import ResetPasswordScreen from "./screens/ResetPasswordScreen"
 
 const App = () => {
   return (
@@ -62,15 +64,19 @@ const App = () => {
 
             <Route path="/">
               <Switch>
-                <Route path="/info/:textUrl" component={InfoScreen} exact />
                 <Route path="/login" component={LoginScreen} exact />
                 <Route path="/register" component={RegisterScreen} exact />
                 <Route path="/profile" component={ProfileScreen} exact />
+                <Route path="/forgot-password" component={ForgotPasswordScreen} exact />
+                <Route path="/reset-password/:id/:token" component={ResetPasswordScreen} exact />
+
                 <Route path="/cart/:id?/:qty?" component={CartScreen} exact />
                 <Route path="/checkout/shipping" component={ShippingScreen} exact />
                 <Route path="/checkout/payment" component={PaymentScreen} exact />
                 <Route path="/checkout/payorder/:id?/:paymentmethod?" component={PayOrderScreen} exact />
                 <Route path="/orders/:id" component={OrderScreen} exact />
+
+                <Route path="/info/:textUrl" component={InfoScreen} exact />
                 <Route path="/search/:keyword" component={CollectionScreen} exact />
                 <Route path="/search/:keyword/page/:pageNumber" component={CollectionScreen} exact />
                 <Route path="/products/:id" component={ProductScreen} exact />

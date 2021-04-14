@@ -13,7 +13,6 @@ import shippingRoutes from "./routes/shippingRoutes.js"
 import cartRoutes from "./routes/cartRoutes.js"
 import uploadRoutes from "./routes/uploadRoutes.js"
 import importDataRoutes from "./routes/importDataRoutes.js"
-import mailerRoutes from "./routes/mailerRoutes.js"
 import textRoutes from "./routes/textRoutes.js"
 
 dotenv.config()
@@ -36,9 +35,7 @@ app.use("/api/shippings", shippingRoutes)
 app.use("/api/cart", cartRoutes)
 app.use("/api/upload", uploadRoutes)
 app.use("/api/importdata", importDataRoutes)
-app.use("/api/mailer", mailerRoutes)
 app.get("/api/config/paypal", (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
-app.get("/api/config/bucket", (req, res) => res.send(process.env.GCLOUD_BUCKET))
 
 const __dirname = path.resolve()
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")))

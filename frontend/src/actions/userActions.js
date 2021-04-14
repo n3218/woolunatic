@@ -23,7 +23,13 @@ import {
   USER_DELETE_FAIL,
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
-  USER_UPDATE_FAIL
+  USER_UPDATE_FAIL,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAIL,
+  FORGOT_PASSWORD_REQUEST,
+  FORGOT_PASSWORD_SUCCESS,
+  FORGOT_PASSWORD_FAIL
 } from "../constants/userConstants"
 import { ORDER_LIST_MY_RESET } from "../constants/orderConstants"
 
@@ -113,10 +119,7 @@ export const updateUserProfileAction = user => async (dispatch, getState) => {
     if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
-    dispatch({
-      type: USER_UPDATE_PROFILE_FAIL,
-      payload: message
-    })
+    dispatch({ type: USER_UPDATE_PROFILE_FAIL, payload: message })
   }
 }
 
@@ -138,10 +141,7 @@ export const listUsersAction = () => async (dispatch, getState) => {
     if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
-    dispatch({
-      type: USER_LIST_FAIL,
-      payload: message
-    })
+    dispatch({ type: USER_LIST_FAIL, payload: message })
   }
 }
 
@@ -163,10 +163,7 @@ export const deleteUserAction = id => async (dispatch, getState) => {
     if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
-    dispatch({
-      type: USER_DELETE_FAIL,
-      payload: message
-    })
+    dispatch({ type: USER_DELETE_FAIL, payload: message })
   }
 }
 
@@ -191,9 +188,31 @@ export const updateUserAction = user => async (dispatch, getState) => {
     if (message === "Not authorized, token failed") {
       dispatch(logout())
     }
-    dispatch({
-      type: USER_UPDATE_FAIL,
-      payload: message
-    })
+    dispatch({ type: USER_UPDATE_FAIL, payload: message })
+  }
+}
+
+export const forgotPasswordAction = email => async (dispatch, getState) => {
+  try {
+    dispatch({ type: FORGOT_PASSWORD_REQUEST })
+    const config = { headers: { "Content-Type": "application/json" } }
+    const { data } = await axios.post(`/api/users/forgotpassword`, { email }, config)
+    dispatch({ type: FORGOT_PASSWORD_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: FORGOT_PASSWORD_FAIL, payload: message })
+  }
+}
+
+export const resetPasswordAction = (id, token, password) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: RESET_PASSWORD_REQUEST })
+    const config = { headers: { "Content-Type": "application/json" } }
+    const { data } = await axios.post(`/api/users/resetpassword/${id}/${token}`, { password }, config)
+    dispatch({ type: RESET_PASSWORD_SUCCESS, payload: data })
+    // document.location.href = "/confirm-password-reset"
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: RESET_PASSWORD_FAIL, payload: message })
   }
 }
