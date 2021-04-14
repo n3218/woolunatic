@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
-import { json } from "express"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -10,6 +9,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
   const MANAGER_EMAIL = String(process.env.MANAGER_EMAIL)
   const OUGOING_ORDERS_EMAIL = String(process.env.OUGOING_ORDERS_EMAIL)
   const OUGOING_ORDERS_PASSWORD = String(process.env.OUGOING_ORDERS_PASSWORD)
+
   const DOMAIN_NAME = String(process.env.DOMAIN_NAME)
 
   const transporter = nodemailer.createTransport({
@@ -185,7 +185,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
       console.log(error)
       return error
     } else {
-      console.log("Email sent... " + info.response)
+      console.log("Email to manager with new order sent... " + info.response)
       return info.response
     }
   })

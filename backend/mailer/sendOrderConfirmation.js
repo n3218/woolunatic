@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-export const sendMail = asyncHandler(async orderData => {
+export const sendOrderConfirmation = asyncHandler(async orderData => {
   const order = new Object(orderData)
   const OUGOING_ORDERS_EMAIL = process.env.OUGOING_ORDERS_EMAIL
   const OUGOING_ORDERS_PASSWORD = process.env.OUGOING_ORDERS_PASSWORD
@@ -76,7 +76,7 @@ export const sendMail = asyncHandler(async orderData => {
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
-        <div style="font-size: 30px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
+        <div style="font-size: 30px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="right">
           <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" /></a>
         </div>
         <div style="font-size: 20px; margin-bottom: 10px;">
@@ -98,7 +98,7 @@ export const sendMail = asyncHandler(async orderData => {
                 <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">payment ID: </td><td style="font-size: 12px; font-weight: 300;"> ${order.paymentResult.id}</td></tr>
                 <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">payment method: </td><td style="font-size: 12px; font-weight: 300;"> ${order.paymentMethod}</td></tr>
                 <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">payment status: </td><td style="font-size: 12px; font-weight: 300;"> 
-                  <div style="background-color:${badges[order.paymentResult.status]}; padding: 2px; color: white; text-transform:uppercase; display:inline-block">${order.paymentResult.status}</div>
+                  <div style="background-color:${badges[order.paymentResult.status]}; padding: 2px 5px; color: white; text-transform:uppercase; display:inline-block">${order.paymentResult.status}</div>
                 </td></tr>
               </tbody>
             </table>
@@ -117,7 +117,14 @@ export const sendMail = asyncHandler(async orderData => {
                 <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">city: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.city}</td></tr>
                 <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">zipcode: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.zipCode}</td></tr>
                 <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">country: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.country}</td></tr>
-                <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">email: </td><td style="font-size: 12px; font-weight: 300; text-decoration:none; color:#417d97"> ${order.user.email}</td></tr>
+                <tr>
+                  <td style="text-align: right; font-size: 12px; font-weight: 300;">email: </td>
+                  <td style="font-size: 12px; font-weight: 300; text-decoration:none; color:#417d97">
+                    <a href="mailto:" style="text-decoration:none; color:#417d97;">
+                      ${order.user.email}
+                    </a>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -194,7 +201,7 @@ export const sendMail = asyncHandler(async orderData => {
       console.log(error)
       return error
     } else {
-      console.log("Email sent... " + info.response)
+      console.log("Email with order confirmation sent... " + info.response)
       return info.response
     }
   })

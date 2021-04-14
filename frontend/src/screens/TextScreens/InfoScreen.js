@@ -7,6 +7,7 @@ import Loader from "../../components/Loader"
 import Message from "../../components/Message"
 import ReactHtmlParser from "react-html-parser"
 import { Link } from "react-router-dom"
+import "./content-styles.css"
 
 const InfoScreen = ({ match }) => {
   const dispatch = useDispatch()
@@ -42,7 +43,7 @@ const InfoScreen = ({ match }) => {
           <FormContainer className="pb-5">
             <h1>{text.title}</h1>
             <br />
-            <div>{text.description && ReactHtmlParser(text.description)}</div>
+            <div className="ck-content">{text.description && ReactHtmlParser(text.description)}</div>
           </FormContainer>
         </>
       )}

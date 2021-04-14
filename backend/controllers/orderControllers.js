@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 import asyncHandler from "express-async-handler"
 import querystring from "querystring"
 import colors from "colors"
-import { sendMail } from "../mailer/mailer.js"
+import { sendOrderConfirmation } from "../mailer/sendOrderConfirmation.js"
 import { sendMailToManager } from "../mailer/sendMailToManager.js"
 import { createMollieClient } from "@mollie/api-client"
 import { json } from "express"
@@ -274,7 +274,7 @@ export const actionsAfterOrderPay = async order => {
     .catch(err => console.error("Error on sendMail: ", err))
 
   // 2. Send Email Confirmation to customer
-  await sendMail(order).catch(err => console.error("Error on sendMail: ", err))
+  await sendOrderConfirmation(order).catch(err => console.error("Error on sendOrderConfirmation: ", err))
 
   // 3. Send Email to Manager
   await sendMailToManager(order).catch(err => console.error("Error on sendMailToManager: ", err))
