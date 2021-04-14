@@ -6,7 +6,7 @@ import { calculateWeight } from "./Utils"
 import Message from "./Message"
 import Loader from "./Loader"
 
-const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingPrice, shippingOption, setShippingOption }) => {
+const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPrice, setShippingPrice, shippingOption, setShippingOption }) => {
   const dispatch = useDispatch()
   const shippingList = useSelector(state => state.shippingList)
   const { loading, success, error, shippings } = shippingList
@@ -40,6 +40,7 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
     setCountry(e.target.value)
     if (e.target.value === "") {
       setShippingPrice(0)
+      setShippingOption({ cost: 0 })
     }
   }
 
@@ -135,7 +136,7 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, setShippingP
                       id="nocost"
                       name="shippingOption"
                       value="noship"
-                      checked={shippingOption.cost === 0}
+                      checked={shippingOption.cost === 0 || shippingPrice === 0}
                       onChange={selfPickUpHandler}
                     ></Form.Check>
                   ) : (

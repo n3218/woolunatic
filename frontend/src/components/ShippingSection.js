@@ -19,13 +19,15 @@ const ShippingSection = ({ children, checkoutStep, userInfo, cart }) => {
               </div>
               {cart && cart.shippingAddress && (
                 <>
+                  <div>{cart.shippingAddress.phone}</div>
                   <div>{userInfo.name}</div>
                   <div>{cart.shippingAddress.address}</div>
-                  {cart.shippingAddress.country !== "" && (
+                  {cart.shippingAddress.country && cart.shippingAddress.country !== "" && (
                     <div>
                       {cart.shippingAddress.city}, {cart.shippingAddress.zipCode}, {cart.shippingAddress.country}
                     </div>
                   )}
+
                   {checkoutStep === "order" && <div className="my-3">{cart.isDelivered ? <Message variant="success">Shipped on {new Date(cart.deliveredAt).toString()}</Message> : <Message variant="warning">Not shipped</Message>}</div>}
                 </>
               )}

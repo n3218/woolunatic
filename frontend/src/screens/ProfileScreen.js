@@ -9,9 +9,10 @@ import { listMyOrdersAction } from "../actions/orderActions"
 import Meta from "../components/Meta"
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants"
 
-const ProfileScreen = ({ history, location }) => {
+const ProfileScreen = ({ history }) => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [message, setMessage] = useState(null)
@@ -19,11 +20,9 @@ const ProfileScreen = ({ history, location }) => {
   const dispatch = useDispatch()
 
   const userDetails = useSelector(state => state.userDetails)
-  const { loading, error, user } = userDetails
+  const { loading, error, user, successUpdate } = userDetails
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
-  const userUpdateProfile = useSelector(state => state.userUpdateProfile)
-  const { success } = userUpdateProfile
   const orderListMy = useSelector(state => state.orderListMy)
   const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
 
@@ -36,13 +35,14 @@ const ProfileScreen = ({ history, location }) => {
     if (!userInfo) {
       history.push("/login")
     } else {
-      if (success) dispatch({ type: USER_UPDATE_PROFILE_RESET })
+      // if (successUpdate) dispatch({ type: USER_UPDATE_PROFILE_RESET })
       if (user && user.name) {
         setName(user.name)
         setEmail(user.email)
+        setPhone(user.phone)
       }
     }
-  }, [dispatch, history, userInfo, user, success])
+  }, [dispatch, history, userInfo, user, successUpdate])
 
   const updateProfileHandler = e => {
     e.preventDefault()
@@ -54,6 +54,7 @@ const ProfileScreen = ({ history, location }) => {
           id: user._id,
           name,
           email,
+          phone,
           password
         })
       )
@@ -66,7 +67,7 @@ const ProfileScreen = ({ history, location }) => {
       <Col md={3}>
         <h2>My Profile</h2>
         {message && <Message variant="danger">{message}</Message>}
-        {success && <Message variant="success">Profile Updated</Message>}
+        {successUpdate && <Message variant="success">Profile Updated</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -83,6 +84,10 @@ const ProfileScreen = ({ history, location }) => {
                 <Form.Group controlId="email">
                   <Form.Label>Email Address</Form.Label>
                   <Form.Control type="email" placeholder="Enter Email" value={email} autoComplete="email" onChange={e => setEmail(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="phone">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Control type="phone" placeholder="Enter Phone Number" value={phone} autoComplete="phone" onChange={e => setPhone(e.target.value)}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="password">
                   <Form.Label>Password</Form.Label>
@@ -102,10 +107,10 @@ const ProfileScreen = ({ history, location }) => {
       </Col>
       <Col md={9}>
         <h2>My Orders</h2>
-        {loadingOrders ? (
-          <Loader />
-        ) : errorOrders ? (
-          <Message variant="danger">{errorOrders}</Message>
+        {loadingOrders && <Loader />}
+        {errorOrders && <Message variant="danger">{errorOrders}</Message>}
+        {orders && orders.length === 0 ? (
+          <Message variant="success">You don't have any orders yet.</Message>
         ) : (
           <Table striped hover responsive className="table-sm">
             <thead>
@@ -122,8 +127,8 @@ const ProfileScreen = ({ history, location }) => {
             <tbody>
               {orders &&
                 orders.map(order => (
-                  <tr key={order._id}>
-                    <td>{order._id}</td>
+                  <tr key={order.orderId}>
+                    <td>{order.orderId}</td>
                     <td>{order.createdAt.substring(0, 10)}</td>
                     <td>{order.paymentMethod && order.paymentMethod.split(",")[0]}</td>
                     <td>€{order.totalPrice}</td>

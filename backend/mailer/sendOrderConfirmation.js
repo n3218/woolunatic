@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
+import { itemRow, storecredit, infoBlock } from "./mailComponents.js"
 
 dotenv.config()
 
@@ -20,53 +21,8 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
     }
   })
 
-  const row = item => {
-    return `<tr style="border: 1px solid #9AABBD">
-    <td style="text-align: center">
-      <div>
-        <a target="_blank" rel="noreferrer" href="${DOMAIN_NAME}/products/${item.product}" style="text-decoration:none; color:#417d97; font-weight: bold">
-          <img src="${process.env.GCLOUD_STORAGE_URL}/${process.env.GCLOUD_BUCKET}/minithumbs/${item.image}" alt=${item.art} width="80" height"80" />
-        </a>
-      </div>
-    </td>
-    <td style="text-align: center">
-      <div>
-        <a target="_blank" rel="noreferrer" href="${DOMAIN_NAME}/products/${item.product}" style="text-decoration:none; color:#417d97; font-weight: bold">
-          ${item.art}
-        </a>
-      </div>
-      <div>${item.brand}</div>
-      <div>${item.name}</div>
-      <div>${item.color.replace(/_+/g, " ")}</div>
-    </td>
-    <td style="text-align: center;">${item.fibers}</td>
-    <td style="text-align: center;">${item.qty}</td>
-    <td style="text-align: center;">${item.meterage}</td>
-    <td style="text-align: center;">€${item.price.toFixed(2)}</td>
-    <td style="text-align: center;">€${((item.qty * item.price) / 100).toFixed(2)}</td>
-  </tr>`
-  }
-
-  const badges = {
-    paid: "#3fb618",
-    expired: "#81869c",
-    canceled: "#a44a55",
-    COMPLETED: "#3fb618"
-  }
-
-  const storecredit = storecredit => {
-    if (storecredit) {
-      return `<tr>
-          <td style="text-align: right; font-size: 12px; font-weight: 300;">store credit used: </td>
-          <td style="font-size: 12px; font-weight: 300;"> -€${storecredit.toFixed(2)}</td>
-        </tr>`
-    } else {
-      return ``
-    }
-  }
-
   const mailOptions = {
-    from: `WOOLUNATICS <${ORDERS_EMAIL}>`,
+    from: `Order WOOLUNATICS <${ORDERS_EMAIL}>`,
     to: `${order.user.email}`,
     subject: `Thank you for your order!`,
     envelope: {
@@ -90,62 +46,11 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Hello ${order.user.name}</div> 
         <div style="font-size: 16px; font-weight: 300; margin-bottom: 10px;">Just to let you know, we've received your order. Thank you for shopping with us!</div>
         <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">We will collect your order. After shipping you'll receive an email with the Track & Trace code.</div>        
-        <hr style="border-top: 1px solid #e2e4e8;" />
+        
+        ${infoBlock(order)}
 
         <div>
-          <table style="width:100%; table-layout:fixed;">
-            <tbody>
-              <tr>
-                <td style="width: 50%; max-width: 50%; min-width: 50%">
-                  <div style="font-size: 18px; font-weight: 300;" align="left">PAYMENT DETAILS:</div>
-                  <div>
-                    <table>
-                      <tbody>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">placed: </td><td style="font-size: 12px; font-weight: 300;"> ${new Date(order.createdAt).toString().substring(0, 21)}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">paid: </td><td style="font-size: 12px; font-weight: 300;"> ${new Date(order.paidAt).toString().substring(0, 21)}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">payment ID: </td><td style="font-size: 12px; font-weight: 300;"> ${order.paymentResult.id}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">payment method: </td><td style="font-size: 12px; font-weight: 300;"> ${order.paymentMethod}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">payment status: </td><td style="font-size: 12px; font-weight: 300;"> 
-                          <div style="background-color:${badges[order.paymentResult.status]}; padding: 2px 5px; color: white; text-transform:uppercase; display:inline-block">${order.paymentResult.status}</div>
-                        </td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <br/>
-                  <br/>
-                </td>
-                <td style="width: 50%; max-width: 50%; min-width: 50%">
-                  <div style="font-size: 18px; font-weight: 300;" align="left">SHIPPING DETAILS:</div>
-                  <div>
-                    <table>
-                      <tbody>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">name: </td><td style="font-size: 12px; font-weight: 300;"> ${order.user.name}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">address: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.address}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">city: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.city}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">zipcode: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.zipCode}</td></tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">country: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.country}</td></tr>
-                        <tr>
-                          <td style="text-align: right; font-size: 12px; font-weight: 300;">email: </td>
-                          <td style="font-size: 12px; font-weight: 300; text-decoration:none; color:#417d97">
-                            <a href="mailto:" style="text-decoration:none; color:#417d97;">
-                              ${order.user.email}
-                            </a>
-                          </td>
-                        </tr>
-                        <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">phone: </td><td style="font-size: 12px; font-weight: 300;"> ${order.shippingAddress.phone}</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <hr style="border-top: 1px solid #e2e4e8;" />
-
-        <div>
-          <div style="font-size: 18px; font-weight: 300;" align="left">
+          <div style="font-size: 18px; font-weight: 300; margin: 10px 0px;" align="left">
             ORDER DETAILS (total ${order.orderItems.length} items):
           </div>
           <table style="width: 100%; border: 1px solid gray; font-weight: 200">
@@ -161,7 +66,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
               </tr>
             </thead>
             <tbody>
-              ${order.orderItems.map(item => row(item))}
+              ${order.orderItems.map(item => itemRow(item))}
               <tr style="height: 30px;"></tr>
             </tbody>
           </table>
@@ -171,7 +76,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
           <table cellspacing="0" style="margin-right:15px">
             <tbody>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">items weight: </td><td style="font-size: 12px; font-weight: 300;"> ${order.itemsWeight}g</td></tr>
-              <tr><td style="padding-bottom: 10px; text-align: right; font-size: 12px; font-weight: 300;">estimated parcel weight: </td><td style="padding-bottom: 10px; font-size: 12px; font-weight: 300;"> ${order.totalWeight}g</td></tr>
+              <tr><td style="padding-bottom: 10px; text-align: right; font-size: 12px; font-weight: 300;">estimated parcel weight: </td><td style="padding-bottom: 5px; font-size: 12px; font-weight: 300;"> ${order.totalWeight}g</td></tr>
             </tbody>
           </table>
 
