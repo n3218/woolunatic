@@ -16,6 +16,7 @@ export const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       isAdmin: user.isAdmin,
       storecredit: user.storecredit,
       token: generateToken(user._id)
@@ -46,6 +47,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone,
         isAdmin: user.isAdmin,
         storecredit: user.storecredit,
         token: generateToken(user._id)
@@ -67,6 +69,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       isAdmin: user.isAdmin,
       storecredit: user.storecredit
     })
@@ -92,6 +95,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      phone: user.phone,
       isAdmin: updatedUser.isAdmin,
       token: generateToken(updatedUser._id)
     })
@@ -156,6 +160,7 @@ export const updateUser = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      phone: user.phone,
       isAdmin: updatedUser.isAdmin,
       storecredit: updatedUser.storecredit
     })
@@ -206,6 +211,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
           _id: updatedUser._id,
           name: updatedUser.name,
           email: updatedUser.email,
+          phone: updatedUser.phone,
           isAdmin: updatedUser.isAdmin,
           storecredit: updatedUser.storecredit,
           token: generateToken(updatedUser._id)

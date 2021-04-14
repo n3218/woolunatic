@@ -34,9 +34,6 @@ const Footer = () => {
                   <Icon.Envelope className="text-light h3" />
                 </a>
               </div>
-              <div>H. Hasekampsingel 17</div>
-              <div>9617EV Harkstede</div>
-              <div>The Netherlands</div>
             </div>
           </Col>
           <Col className="pl-5">

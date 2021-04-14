@@ -64,9 +64,9 @@ export const sendMailToManager = asyncHandler(async orderData => {
   }
 
   const mailOptions = {
-    from: `#${order._id} <${OUGOING_ORDERS_EMAIL}>`,
+    from: `#${order.orderId} <${OUGOING_ORDERS_EMAIL}>`,
     to: `${MANAGER_EMAIL}`,
-    subject: `New order #${order._id} received`,
+    subject: `New order #${order.orderId} received`,
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
