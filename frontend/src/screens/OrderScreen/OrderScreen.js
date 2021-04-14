@@ -52,8 +52,8 @@ const OrderScreen = ({ match, history }) => {
     <Message variant="danger">{error}</Message>
   ) : (
     <>
-      <Meta title={`Order #${order._id} | Woolunatics`} />
-      <h2>Order #{order._id}</h2>
+      <Meta title={`Order #${order.orderId} | Woolunatics`} />
+      <h2>Order #{order.orderId}</h2>
       <Row>
         <Col md={9} xs={12}>
           <ListGroup variant="flush">

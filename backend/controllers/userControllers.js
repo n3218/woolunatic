@@ -87,6 +87,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
   if (user) {
     user.name = req.body.name || user.name
     user.email = req.body.email || user.email
+    user.phone = req.body.phone || user.phone
     if (req.body.password) {
       user.password = req.body.password
     }
@@ -97,6 +98,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       phone: user.phone,
       isAdmin: updatedUser.isAdmin,
+      storecredit: updatedUser.storecredit,
       token: generateToken(updatedUser._id)
     })
   } else {

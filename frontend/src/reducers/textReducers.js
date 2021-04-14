@@ -22,7 +22,6 @@ import {
 } from "../constants/textConstants"
 
 export const textReducer = (state = { texts: [], text: {} }, action) => {
-  console.log("textReducer: action.payload: ", action.payload)
   switch (action.type) {
     case TEXT_LIST_REQUEST:
       return {

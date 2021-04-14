@@ -17,6 +17,7 @@ const ShippingScreen = ({ history }) => {
   const [city, setCity] = useState(shippingAddress ? shippingAddress.city : "")
   const [zipCode, setZipCode] = useState(shippingAddress ? shippingAddress.zipCode : "")
   const [country, setCountry] = useState(shippingAddress ? shippingAddress.country : "")
+  const [phone, setPhone] = useState(userInfo ? userInfo.phone : "")
 
   const [shippingOption, setShippingOption] = useState({ cost: 0 })
   const [shippingPrice, setShippingPrice] = useState(0)
@@ -24,9 +25,9 @@ const ShippingScreen = ({ history }) => {
   const submitShippingHandler = e => {
     e.preventDefault()
     if (country === "") {
-      dispatch(saveShippingAddressAction({ address, city, zipCode, country, shippingOption }))
+      dispatch(saveShippingAddressAction({ address: "H. Hasekampsingel 17", city: "Harkstede", zipCode: "9617EV", country: "The Netherlands", phone, shippingOption }))
     } else {
-      dispatch(saveShippingAddressAction({ address, city, zipCode, country, shippingOption }))
+      dispatch(saveShippingAddressAction({ address, city, zipCode, country, phone, shippingOption }))
     }
     dispatch(savePaymentMethodAction(""))
     history.push("/checkout/payment")
@@ -41,6 +42,7 @@ const ShippingScreen = ({ history }) => {
               cart={cart}
               shippingAddress={shippingAddress}
               checkoutStep={checkoutStep}
+              shippingPrice={shippingPrice}
               setShippingPrice={setShippingPrice}
               setShippingOption={setShippingOption}
               shippingOption={shippingOption}
@@ -81,6 +83,17 @@ const ShippingScreen = ({ history }) => {
                 </Form.Group>
               </>
             )}
+            <Form.Group controlId="city">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control //
+                type="text"
+                placeholder="Enter Phone"
+                value={phone}
+                required
+                onChange={e => setPhone(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
             <Button type="submit" className="btn-success my-3 px-5">
               Continue
             </Button>
