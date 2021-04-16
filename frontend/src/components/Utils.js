@@ -5,7 +5,8 @@ export const PaymentStatus = ({ paymentStatus }) => {
     paid: "success",
     expired: "secondary",
     canceled: "danger",
-    COMPLETED: "success"
+    COMPLETED: "success",
+    PICKUP: "success"
   }
   return <div className={`badge badge-${badges[paymentStatus]} text-uppercase`}>{paymentStatus}</div>
 }

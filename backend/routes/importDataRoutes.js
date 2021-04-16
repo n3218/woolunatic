@@ -72,6 +72,7 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
       if (row.fibers) {
         newData.fibers = row.fibers.trim()
       }
+      console.log("row.price: ", row.price)
       if (row.price) {
         newData.price = Number(row.price.replace(/[,]+/g, ".").replace(/[ €Ū]+/g, "")).toFixed(2)
       }

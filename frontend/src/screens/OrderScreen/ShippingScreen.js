@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { ListGroup, Form, Button } from "react-bootstrap"
 import CartLayout from "./CartLayout"
@@ -12,20 +12,28 @@ const ShippingScreen = ({ history }) => {
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
-  const { shippingAddress } = cart
-  const [address, setAddress] = useState(shippingAddress ? shippingAddress.address : "")
-  const [city, setCity] = useState(shippingAddress ? shippingAddress.city : "")
-  const [zipCode, setZipCode] = useState(shippingAddress ? shippingAddress.zipCode : "")
-  const [country, setCountry] = useState(shippingAddress ? shippingAddress.country : "")
-  const [phone, setPhone] = useState(userInfo ? userInfo.phone : "")
+  const { user, shippingAddress } = cart
+  const [address, setAddress] = useState("")
+  const [city, setCity] = useState("")
+  const [zipCode, setZipCode] = useState("")
+  const [country, setCountry] = useState("")
+  const [phone, setPhone] = useState("")
 
-  const [shippingOption, setShippingOption] = useState({ cost: 0 })
+  const [shippingOption, setShippingOption] = useState({ cost: 0, operator: "PICKUP" })
   const [shippingPrice, setShippingPrice] = useState(0)
+
+  useEffect(() => {
+    setAddress(user && user.address ? user.address.address : "")
+    setCity(user && user.address ? user.address.city : "")
+    setZipCode(user && user.address ? user.address.zipCode : "")
+    // setCountry(user && user.address ? user.address.country : "")
+    setPhone(user && user.phone ? user.phone : "")
+  }, [shippingAddress, user])
 
   const submitShippingHandler = e => {
     e.preventDefault()
     if (country === "") {
-      dispatch(saveShippingAddressAction({ address: "H. Hasekampsingel 17", city: "Harkstede", zipCode: "9617EV", country: "The Netherlands", phone, shippingOption }))
+      dispatch(saveShippingAddressAction({ address, city, zipCode, country, phone, shippingOption }))
     } else {
       dispatch(saveShippingAddressAction({ address, city, zipCode, country, phone, shippingOption }))
     }
@@ -49,7 +57,7 @@ const ShippingScreen = ({ history }) => {
               country={country}
               setCountry={setCountry}
             />
-            {country && country.length > 0 && (
+            {
               <>
                 <Form.Group controlId="address">
                   <Form.Label>Address</Form.Label>
@@ -57,7 +65,7 @@ const ShippingScreen = ({ history }) => {
                     type="text"
                     placeholder="Enter Address"
                     value={address}
-                    required
+                    required={shippingPrice > 0}
                     onChange={e => setAddress(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
@@ -67,7 +75,7 @@ const ShippingScreen = ({ history }) => {
                     type="text"
                     placeholder="Enter City"
                     value={city}
-                    required
+                    required={shippingPrice > 0}
                     onChange={e => setCity(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
@@ -77,19 +85,19 @@ const ShippingScreen = ({ history }) => {
                     type="text"
                     placeholder="Enter ZipCode"
                     value={zipCode}
-                    required
+                    required={shippingPrice > 0}
                     onChange={e => setZipCode(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
               </>
-            )}
+            }
             <Form.Group controlId="city">
               <Form.Label>Phone</Form.Label>
               <Form.Control //
                 type="text"
                 placeholder="Enter Phone"
                 value={phone}
-                required
+                required={shippingPrice > 0}
                 onChange={e => setPhone(e.target.value)}
               ></Form.Control>
             </Form.Group>

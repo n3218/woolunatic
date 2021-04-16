@@ -11,7 +11,7 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
   const shippingList = useSelector(state => state.shippingList)
   const { loading, success, error, shippings } = shippingList
   const [weight, setWeight] = useState(0)
-
+  const initialShippingOption = { cost: 0, operator: "PICKUP" }
   console.log("cart: ", cart)
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
     setCountry(e.target.value)
     if (e.target.value === "") {
       setShippingPrice(0)
-      setShippingOption({ cost: 0 })
+      setShippingOption(initialShippingOption)
     }
   }
 
@@ -51,8 +51,8 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
 
   const selfPickUpHandler = () => {
     setShippingPrice(0)
-    setCountry("")
-    setShippingOption({ cost: 0 })
+    // setCountry("")
+    setShippingOption(initialShippingOption)
   }
 
   return (
@@ -120,10 +120,6 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
               <Card bg="light">
                 <Card.Header className="text-center">
                   <div style={{ height: "60px", width: "100px", margin: "auto", paddingTop: "7px" }}>
-                    {/* <small>
-                          no shipment
-                          <br /> or self pick up
-                        </small> */}
                     <h5 className="mt-2">self pick up</h5>
                   </div>
                 </Card.Header>
@@ -133,9 +129,9 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
                     <Form.Check //
                       type="radio"
                       label="no cost"
-                      id="nocost"
+                      id="pickup"
                       name="shippingOption"
-                      value="noship"
+                      value="pickup"
                       checked={shippingOption.cost === 0 || shippingPrice === 0}
                       onChange={selfPickUpHandler}
                     ></Form.Check>

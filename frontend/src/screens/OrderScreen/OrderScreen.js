@@ -11,6 +11,7 @@ import OrderSummary from "../../components/OrderSummary"
 import OrderWeightsSummary from "../../components/OrderWeightsSummary"
 import ShippingSection from "../../components/ShippingSection"
 import PaymentSection from "../../components/PaymentSection/PaymentSection"
+import { GET_CART_RESET } from "../../constants/cartConstants"
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
@@ -39,7 +40,10 @@ const OrderScreen = ({ match, history }) => {
       dispatch(getOrderDetailsAction(orderId))
     }
     if (successDeliver) dispatch({ type: ORDER_DELIVER_RESET })
-    if (successPay) dispatch({ type: ORDER_PAY_RESET })
+    if (successPay) {
+      dispatch({ type: ORDER_PAY_RESET })
+      dispatch({ type: GET_CART_RESET })
+    }
   }, [dispatch, order, orderId, successDeliver, successPay])
 
   const deliverHandler = () => {
@@ -125,7 +129,7 @@ const OrderScreen = ({ match, history }) => {
             {loadingDeliver && <Loader />}
             {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
               <ListGroup.Item>
-                <Button type="button" className="btn-success btn-block bg-blue" onClick={deliverHandler}>
+                <Button type="button" className="btn-success btn-block bg-blue my-3" onClick={deliverHandler}>
                   Mark as shipped
                 </Button>
               </ListGroup.Item>

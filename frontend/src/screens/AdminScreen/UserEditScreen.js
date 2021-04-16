@@ -13,6 +13,11 @@ const UserEditScreen = ({ history, match }) => {
   const dispatch = useDispatch()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [address, setAddress] = useState("")
+  const [city, setCity] = useState("")
+  const [zipCode, setZipCode] = useState("")
+  const [country, setCountry] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
   const [storecredit, setStorecredit] = useState(0)
 
@@ -31,6 +36,11 @@ const UserEditScreen = ({ history, match }) => {
       } else {
         setName(user.name)
         setEmail(user.email)
+        setPhone(user.phone)
+        setAddress(user.address.address)
+        setCity(user.address.city)
+        setZipCode(user.address.zipCode)
+        setCountry(user.address.country)
         setIsAdmin(user.isAdmin)
         setStorecredit(user.storecredit)
       }
@@ -39,7 +49,7 @@ const UserEditScreen = ({ history, match }) => {
 
   const submitHandler = e => {
     e.preventDefault()
-    dispatch(updateUserAction({ _id: userId, name, email, isAdmin, storecredit }))
+    dispatch(updateUserAction({ _id: userId, name, email, isAdmin, storecredit, address: { address, city, zipCode, country } }))
   }
 
   return (
@@ -62,6 +72,26 @@ const UserEditScreen = ({ history, match }) => {
             <Form.Group controlId="email">
               <Form.Label>Email Address</Form.Label>
               <Form.Control type="email" placeholder="Enter Email" value={email} onChange={e => setEmail(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Form.Group controlId="phone">
+              <Form.Label>Phone Number</Form.Label>
+              <Form.Control type="text" placeholder="Enter Phone Number" value={phone} autoComplete="phone" onChange={e => setPhone(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Form.Group controlId="address">
+              <Form.Label>Address</Form.Label>
+              <Form.Control type="text" placeholder="Enter Address" value={address} autoComplete="address" onChange={e => setAddress(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Form.Group controlId="city">
+              <Form.Label>City</Form.Label>
+              <Form.Control type="text" placeholder="Enter City" value={city} autoComplete="city" onChange={e => setCity(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Form.Group controlId="zipCode">
+              <Form.Label>Zip Code</Form.Label>
+              <Form.Control type="text" placeholder="Enter zipCode" value={zipCode} autoComplete="zipCode" onChange={e => setZipCode(e.target.value)}></Form.Control>
+            </Form.Group>
+            <Form.Group controlId="country">
+              <Form.Label>Country</Form.Label>
+              <Form.Control type="text" placeholder="Enter Country" value={country} autoComplete="country" onChange={e => setCountry(e.target.value)}></Form.Control>
             </Form.Group>
             <Form.Group controlId="email">
               <Form.Label>Store Credit</Form.Label>

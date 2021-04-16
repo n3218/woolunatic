@@ -24,6 +24,7 @@ import {
   // CART_CLEAR_FAIL
 } from "../constants/cartConstants"
 import axios from "axios"
+import { logout } from "./userActions"
 
 const checkIfQtyAlreadyInCart = (cart, product, itemQty) => {
   let totalInStock = product.inStock.split(",").reduce((acc, el) => acc + Number(el.trim()))
@@ -147,6 +148,7 @@ export const getCartAction = () => async (dispatch, getState) => {
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     dispatch({ type: GET_CART_FAIL, payload: message })
+    dispatch(logout())
   }
 }
 

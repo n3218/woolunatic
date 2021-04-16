@@ -29,6 +29,13 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const [isChecked, setIsChecked] = useState(false)
 
   useEffect(() => {
+    if (!cart.user) {
+      dispatch(getCartAction())
+      setWarning(false)
+    }
+  }, [dispatch, cart.user])
+
+  useEffect(() => {
     if (checkoutStep !== "cart" && !userInfo) {
       if (redirect) {
         history.push(`/login?redirect=${redirect}`)
@@ -46,11 +53,12 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
       const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
       let taxPrice = itemsPrice - itemsPrice / 1.21
-      const storecredit = userInfo ? userInfo.storecredit : 0
+      const storecredit = cart.user && cart.user.storecredit ? cart.user.storecredit : 0
+      console.log("==============storecredit: ", storecredit)
       const totalPrice = (Number(itemsPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
       setSummary({ itemsPrice, taxPrice, shippingPrice, storecredit, totalPrice, itemsWeight, totalWeight })
     }
-  }, [items, checkoutStep, dispatch, userInfo, shippingPrice])
+  }, [items, checkoutStep, dispatch, userInfo, shippingPrice, cart])
 
   useEffect(() => {
     if (checkoutStep === "cart") {
@@ -174,7 +182,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
               )}
               {checkoutStep === "payment" && cart.paymentMethod && (
                 <ListGroup.Item>
-                  <Button className="btn-success btn-block" onClick={() => placeOrderHandler()}>
+                  <Button className="btn-success btn-block my-3" onClick={() => placeOrderHandler()}>
                     Place order and pay
                   </Button>
                 </ListGroup.Item>

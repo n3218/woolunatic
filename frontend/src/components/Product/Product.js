@@ -62,7 +62,7 @@ const Product = ({ product }) => {
           {product.price && (
             <Card.Text as="div" className="product-card_price">
               <nobr>
-                €{product.price}/<small>100g</small>
+                €{product.price.toFixed(2)}/<small>100g</small>
               </nobr>
             </Card.Text>
           )}

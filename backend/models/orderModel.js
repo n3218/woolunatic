@@ -32,11 +32,17 @@ const orderSchema = mongoose.Schema(
       }
     ],
     shippingAddress: {
-      address: { type: String, required: false },
-      city: { type: String, required: false },
-      zipCode: { type: String, required: false },
-      country: { type: String, required: false },
-      phone: { type: String, required: true, default: "" }
+      address: { type: String, required: false, default: "" },
+      city: { type: String, required: false, default: "" },
+      zipCode: { type: String, required: false, default: "" },
+      country: { type: String, required: false, default: "" },
+      phone: { type: String, required: false, default: "" },
+      shippingOption: {
+        minWeight: { type: Number, required: false, default: 0 },
+        maxWeight: { type: Number, required: false, default: 0 },
+        operator: { type: String, required: false, default: "" },
+        cost: { type: Number, required: false, default: 0 }
+      }
     },
     paymentMethod: { type: String, required: false },
     paymentResult: {
@@ -46,10 +52,10 @@ const orderSchema = mongoose.Schema(
       email_address: { type: String, required: false },
       links: { type: String, required: false }
     },
+    storecredit: { type: Number, required: false, default: 0.0 },
     itemsPrice: { type: Number, required: true, default: 0.0 },
     taxPrice: { type: Number, required: true, default: 0.0 },
     shippingPrice: { type: Number, required: true, default: 0.0 },
-    storecredit: { type: Number, required: false, default: 0.0 },
     totalPrice: { type: Number, required: true, default: 0.0 },
     itemsWeight: { type: Number, required: true, default: 0 },
     totalWeight: { type: Number, required: true, default: 0 },

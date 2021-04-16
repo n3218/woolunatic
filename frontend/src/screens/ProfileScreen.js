@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Form, Button, Row, Col, Table, ListGroup } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
-import { LinkContainer } from "react-router-bootstrap"
+import { Link } from "react-router-dom"
 import Message from "../components/Message"
 import { getUserDetails, updateUserProfileAction } from "../actions/userActions"
 import Loader from "../components/Loader"
@@ -13,6 +13,11 @@ const ProfileScreen = ({ history }) => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [phone, setPhone] = useState("")
+  const [address, setAddress] = useState("")
+  const [city, setCity] = useState("")
+  const [zipCode, setZipCode] = useState("")
+  const [country, setCountry] = useState("")
+
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [message, setMessage] = useState(null)
@@ -40,11 +45,16 @@ const ProfileScreen = ({ history }) => {
         setName(user.name)
         setEmail(user.email)
         setPhone(user.phone)
+        setAddress(user.address.address)
+        setCity(user.address.city)
+        setZipCode(user.address.zipCode)
+        setCountry(user.address.country)
       }
     }
   }, [dispatch, history, userInfo, user, successUpdate])
 
   const updateProfileHandler = e => {
+    setMessage("")
     e.preventDefault()
     if (password !== confirmPassword) {
       setMessage("Passwords do not match")
@@ -55,6 +65,7 @@ const ProfileScreen = ({ history }) => {
           name,
           email,
           phone,
+          address: { address, city, zipCode, country },
           password
         })
       )
@@ -64,7 +75,7 @@ const ProfileScreen = ({ history }) => {
   return (
     <Row>
       <Meta title="Profile | Woolunatics" />
-      <Col md={3}>
+      <Col md={4}>
         <h2>My Profile</h2>
         {message && <Message variant="danger">{message}</Message>}
         {successUpdate && <Message variant="success">Profile Updated</Message>}
@@ -74,7 +85,9 @@ const ProfileScreen = ({ history }) => {
           <Message variant="warning">{error}</Message>
         ) : (
           <ListGroup>
-            <ListGroup.Item className="h5 text-center">Your Storecredit: €{Number(user.storecredit).toFixed(2)}</ListGroup.Item>
+            <ListGroup.Item className="h5 text-center">
+              <strong>Your Storecredit: €{Number(user.storecredit).toFixed(2)}</strong>
+            </ListGroup.Item>
             <ListGroup.Item>
               <Form onSubmit={updateProfileHandler}>
                 <Form.Group controlId="name">
@@ -87,7 +100,23 @@ const ProfileScreen = ({ history }) => {
                 </Form.Group>
                 <Form.Group controlId="phone">
                   <Form.Label>Phone Number</Form.Label>
-                  <Form.Control type="phone" placeholder="Enter Phone Number" value={phone} autoComplete="phone" onChange={e => setPhone(e.target.value)}></Form.Control>
+                  <Form.Control type="text" placeholder="Enter Phone Number" value={phone} autoComplete="phone" onChange={e => setPhone(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="address">
+                  <Form.Label>Address</Form.Label>
+                  <Form.Control type="text" placeholder="Enter Address" value={address} autoComplete="address" onChange={e => setAddress(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="city">
+                  <Form.Label>City</Form.Label>
+                  <Form.Control type="text" placeholder="Enter City" value={city} autoComplete="city" onChange={e => setCity(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="zipCode">
+                  <Form.Label>Zip Code</Form.Label>
+                  <Form.Control type="text" placeholder="Enter zipCode" value={zipCode} autoComplete="zipCode" onChange={e => setZipCode(e.target.value)}></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="country">
+                  <Form.Label>Country</Form.Label>
+                  <Form.Control type="text" placeholder="Enter Country" value={country} autoComplete="country" onChange={e => setCountry(e.target.value)}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="password">
                   <Form.Label>Password</Form.Label>
@@ -105,7 +134,7 @@ const ProfileScreen = ({ history }) => {
           </ListGroup>
         )}
       </Col>
-      <Col md={9}>
+      <Col md={8}>
         <h2>My Orders</h2>
         {loadingOrders && <Loader />}
         {errorOrders && <Message variant="danger">{errorOrders}</Message>}
@@ -117,28 +146,34 @@ const ProfileScreen = ({ history }) => {
               <tr>
                 <th>ID</th>
                 <th>DATE</th>
-                <th>PAYMENT METHOD</th>
                 <th>TOTAL</th>
+                <th>CREDIT</th>
+                <th>PAYMENT</th>
                 <th>PAID</th>
                 <th>SHIPPED</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
               {orders &&
                 orders.map(order => (
                   <tr key={order.orderId}>
-                    <td>{order.orderId}</td>
-                    <td>{order.createdAt.substring(0, 10)}</td>
-                    <td>{order.paymentMethod && order.paymentMethod.split(",")[0]}</td>
-                    <td>€{order.totalPrice}</td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>#{order.orderId}</Link>
+                    </td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>{order.createdAt.substring(0, 10)}</Link>
+                    </td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>€{order.totalPrice}</Link>
+                    </td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>€{order.storecredit}</Link>
+                    </td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>{order.paymentMethod && order.paymentMethod.split(",")[0]}</Link>
+                    </td>
                     <td>{order.isPaid ? <span className="text-success">{order.paidAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
                     <td>{order.isDelivered ? <span className="text-success">{order.deliveredAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
-                    <td>
-                      <LinkContainer to={`/orders/${order._id}`}>
-                        <Button className="btn-sm btn-success">Details</Button>
-                      </LinkContainer>
-                    </td>
                   </tr>
                 ))}
             </tbody>
