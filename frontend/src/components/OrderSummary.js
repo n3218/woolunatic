@@ -1,8 +1,15 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Row, Col, Card, ListGroup } from "react-bootstrap"
 import Message from "../components/Message"
 
-const OrderSummary = ({ cart, items, error, checkoutStep, children, userInfo }) => {
+const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
+  console.log("++++++++++++++++cart: ", cart)
+  const [storecredit, setStoreCredit] = useState()
+
+  useEffect(() => {
+    setStoreCredit(cart.storecredit || 0)
+  }, [cart.storecredit])
+
   return (
     <Card className="mx-1">
       <Card.Header className="card-header text-center">
@@ -38,12 +45,12 @@ const OrderSummary = ({ cart, items, error, checkoutStep, children, userInfo }) 
 
         {cart.totalPrice && (
           <ListGroup.Item>
-            {cart.storecredit > 0 && (
+            {cart && (
               <Row>
                 <Col>
                   <strong>Store credit:</strong>
                 </Col>
-                <Col className="text-right">- €{Number(cart.storecredit).toFixed(2)}</Col>
+                <Col className="text-right">€{Number(storecredit).toFixed(2)}</Col>
               </Row>
             )}
             <Row>

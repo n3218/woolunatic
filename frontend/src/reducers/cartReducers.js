@@ -28,20 +28,11 @@ export const cartReducer = (state = { items: [] }, action) => {
     case CART_LOCAL_ADD_ITEM:
       const item = action.payload
       if (state.items) {
-        // const existItem = state.items.find(x => x.product === item.product && x.qty === item.qty)
-        // if (existItem) {
-        //   return {
-        //     ...state,
-        //     loading: false,
-        //     items: state.items.map(x => (x.product === existItem.product && x.qty === existItem.qty ? item : x))
-        //   }
-        // } else {
         return {
           ...state,
           loading: false,
           items: [item, ...state.items]
         }
-        // }
       } else {
         return {
           ...state,
@@ -59,6 +50,7 @@ export const cartReducer = (state = { items: [] }, action) => {
       return {
         ...state,
         loading: false,
+        error: false,
         ...action.payload
         // items: action.payload.items
       }
@@ -70,21 +62,16 @@ export const cartReducer = (state = { items: [] }, action) => {
       }
 
     case GET_CART_REQUEST:
-      if (state.items) {
-        return {
-          ...state,
-          loading: true
-        }
-      } else {
-        return {
-          ...state,
-          loading: true
-        }
+      return {
+        ...state,
+        loading: true
       }
+
     case GET_CART_SUCCESS:
       console.log("cartReducer: GET_CART_SUCCESS: action.payload: ", action.payload)
       if (state.items) {
         return {
+          ...state,
           loading: false,
           success: true,
           ...action.payload
@@ -92,6 +79,7 @@ export const cartReducer = (state = { items: [] }, action) => {
         }
       } else {
         return {
+          ...state,
           loading: false,
           success: true,
           ...action.payload
@@ -100,11 +88,13 @@ export const cartReducer = (state = { items: [] }, action) => {
       }
     case GET_CART_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload
       }
     case GET_CART_RESET:
       return {
+        ...state,
         items: []
       }
 
@@ -119,37 +109,43 @@ export const cartReducer = (state = { items: [] }, action) => {
 
     case CART_REMOVE_ITEM_REQUEST:
       return {
+        ...state,
         loading: true
       }
     case CART_REMOVE_ITEM_SUCCESS:
       return {
+        ...state,
         loading: false,
         ...action.payload,
         items: action.payload.items
       }
     case CART_REMOVE_ITEM_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload
       }
 
     case START_CHECKOUT_REQUEST:
       return {
+        ...state,
         loading: true
       }
     case START_CHECKOUT_SUCCESS:
       return {
+        ...state,
         loading: false,
-        ...action.payload,
-        items: action.payload.items
+        ...action.payload
       }
     case START_CHECKOUT_FAIL:
       return {
+        ...state,
         loading: false,
         error: action.payload
       }
     case START_CHECKOUT_RESET:
       return {
+        ...state,
         items: []
       }
 

@@ -36,7 +36,7 @@ const UserListScreen = () => {
         <Table striped bordered hover responsive className="table-sm">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>COUNTRY</th>
               <th>NAME</th>
               <th>EMAIL</th>
               <th>STORECREDIT</th>
@@ -49,7 +49,7 @@ const UserListScreen = () => {
               <tr key={user._id}>
                 <td>
                   <Link to={`/admin/user/${user._id}/edit`} variant="link" title="Edit">
-                    {user._id}
+                    {user.address.country ? user.address.country : "..."}
                   </Link>
                 </td>
                 <td>

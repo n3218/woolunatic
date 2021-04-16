@@ -93,7 +93,7 @@ export const getCart = asyncHandler(async (req, res) => {
   console.log("getCart: req.body: ", req.body)
   const itemsFromLocalCart = req.body
   console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
-  const cart = await Cart.findOne({ user: req.params.userId })
+  const cart = await Cart.findOne({ user: req.params.userId }).populate("user", "storecredit address phone")
   let updatedCart = {}
   if (cart) {
     console.log("getCart: itemsFromLocalCart: ", itemsFromLocalCart)
@@ -157,7 +157,7 @@ export const addItemToCart = asyncHandler(async (req, res) => {
       console.log("Error on finding Product by Id: ", err)
     }
 
-    const cart = await Cart.findOne({ user: user }) //------------- get Cart from DB
+    const cart = await Cart.findOne({ user: user }).populate("user", "storecredit address phone") //------------- get Cart from DB
     if (cart) {
       console.log("addItemToCart: cart._id: ", cart._id)
       let qtyMayBeAdded = checkIfEnoughQtyInStock(cart, product, qty)
@@ -249,7 +249,7 @@ export const removeItemFromCart = asyncHandler(async (req, res) => {
   const userId = req.params.userId
   console.log("removeItemFromCart: req.params: ", req.params)
   console.log("removeItemFromCart: req.body: ", req.body)
-  const cart = await Cart.findOne({ user: userId })
+  const cart = await Cart.findOne({ user: userId }).populate("user", "storecredit address phone")
   if (cart) {
     const index = cart.items.findIndex(item => item.product == productId && item.qty == qty)
     console.log("removeItemFromCart: index: ", index)
@@ -276,7 +276,7 @@ export const removeItemFromCart = asyncHandler(async (req, res) => {
 export const startCheckout = asyncHandler(async (req, res) => {
   const { user } = req.body
   console.log("startCheckout: user: ", user)
-  const cart = await Cart.findOne({ user: user })
+  const cart = await Cart.findOne({ user: user }).populate("user", "storecredit address phone")
   const prodMap = {} //
 
   if (cart) {

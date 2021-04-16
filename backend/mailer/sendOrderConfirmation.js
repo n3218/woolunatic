@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
-import { itemRow, storecredit, infoBlock } from "./mailComponents.js"
+import { itemRow, ifStorecredit, infoBlock } from "./mailComponents.js"
 
 dotenv.config()
 
@@ -76,7 +76,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
           <table cellspacing="0" style="margin-right:15px">
             <tbody>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">items weight: </td><td style="font-size: 12px; font-weight: 300;"> ${order.itemsWeight}g</td></tr>
-              <tr><td style="padding-bottom: 10px; text-align: right; font-size: 12px; font-weight: 300;">estimated parcel weight: </td><td style="padding-bottom: 5px; font-size: 12px; font-weight: 300;"> ${order.totalWeight}g</td></tr>
+              <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">estimated parcel weight: </td><td style="font-size: 12px; font-weight: 300;"> ${order.totalWeight}g</td></tr>
             </tbody>
           </table>
 
@@ -87,7 +87,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">items price: </td><td style="font-size: 12px; font-weight: 300;"> €${order.itemsPrice.toFixed(2)}</td></tr>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">taxes included: </td><td style="font-size: 12px; font-weight: 300;"> €${order.taxPrice.toFixed(2)}</td></tr>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">shipping price: </td><td style="font-size: 12px; font-weight: 300;"> €${order.shippingPrice.toFixed(2)}</td></tr>
-              ${storecredit(order.storecredit)}
+              ${ifStorecredit(order.storecredit)}
               <tr><td style="text-align: right; font-size: 16px; font-weight: 600; height: 30px;">total price: </td><td style="font-size: 16px; font-weight: 600; height: 30px;"> €${order.totalPrice.toFixed(2)}</td></tr>
             </tbody>
           </table>

@@ -20,7 +20,7 @@ import UserEditScreen from "./screens/AdminScreen/UserEditScreen"
 import ProductListScreen from "./screens/AdminScreen/ProductListScreen"
 import ProductEditScreen from "./screens/AdminScreen/ProductEditScreen"
 import OrderListScreen from "./screens/AdminScreen/OrderListScreen"
-import AdminScreen from "./screens/AdminScreen/AdminScreen"
+// import AdminScreen from "./screens/AdminScreen/AdminScreen"
 import AdminLayout from "./screens/AdminScreen/AdminLayout"
 import ColorListScreen from "./screens/AdminScreen/ColorListScreen"
 import ProductUploadScreen from "./screens/AdminScreen/ProductUploadScreen"
@@ -55,9 +55,9 @@ const App = () => {
                   <Route path={`/admin/product/:id/edit`} component={ProductEditScreen} exact />
                   <Route path={`/admin/productlist`} component={ProductListScreen} exact />
                   <Route path={`/admin/productlist/:pageNumber`} component={ProductListScreen} exact />
-                  <Route path={`/admin/orderlist`} component={OrderListScreen} exact />
+                  {/* <Route path={`/admin/orderlist`} component={OrderListScreen} exact /> */}
                   <Route path={`/admin/orderlist/:pageNumber`} component={OrderListScreen} exact />
-                  <Route path={`/admin`} component={AdminScreen} exact />
+                  <Route path={`/admin`} component={OrderListScreen} exact />
                 </Switch>
               </AdminLayout>
             </Route>

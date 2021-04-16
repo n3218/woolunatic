@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
-import { itemRow, storecredit, infoBlock } from "./mailComponents.js"
+import { itemRowCompact, ifStorecredit, infoBlock } from "./mailComponents.js"
 
 dotenv.config()
 
@@ -28,7 +28,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
-        <div style="font-size: 18px; font-weight: 600; margin-bottom: 30px; margin-top: 20px;">
+        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
           New order 
           <span style="font-size: 20px; margin-bottom: 10px;">
             <a href="${DOMAIN_NAME}/orders/${order._id}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">#${order.orderId}</a>
@@ -40,9 +40,10 @@ export const sendMailToManager = asyncHandler(async orderData => {
 
         <div>
           <div style="font-size: 18px; font-weight: 300; margin: 10px 0px;" align="left">ORDER DETAILS (total ${order.orderItems.length} items):</div>
-          <table style="width: 100%; border: 2px solid gray; font-weight: 300;">
+          <table style="width: 100%; border: 2px solid gray; font-weight: 300; font-size: 10px;">
             <thead>
               <tr>
+                <th><i></i></th>
                 <th><i>art.</i></th>
                 <th><i>brand</i></th>
                 <th><i>name</i></th>
@@ -55,7 +56,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
               </tr>
             </thead>
             <tbody>
-            ${order.orderItems.map(item => itemRow(item))}
+            ${order.orderItems.map(item => itemRowCompact(item))}
             <tr style="height: 30px;"></tr>
             </tbody>
           </table>
@@ -65,18 +66,11 @@ export const sendMailToManager = asyncHandler(async orderData => {
           <table cellspacing="0" style="margin-right:15px">
             <tbody>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">items weight: </td><td style="font-size: 12px; font-weight: 300;"> ${order.itemsWeight}g</td></tr>
-              <tr><td style="padding-bottom: 10px; text-align: right; font-size: 12px; font-weight: 300;">estimated total weight: </td><td style="padding-bottom: 5px; font-size: 12px; font-weight: 300;"> ${order.totalWeight}g</td></tr>
-            </tbody>
-          </table>
-
-          <hr style="border-top: 2px solid #e2e4e8;" />
-              
-          <table cellspacing="0" style="margin-right:15px">
-            <tbody>
+              <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">estimated parcel weight: </td><td style="font-size: 12px; font-weight: 300;"> ${order.totalWeight}g</td></tr>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">items price: </td><td style="font-size: 12px; font-weight: 300;"> €${order.itemsPrice.toFixed(2)}</td></tr>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">taxes included: </td><td style="font-size: 12px; font-weight: 300;"> €${order.taxPrice.toFixed(2)}</td></tr>
               <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">shipping price: </td><td style="font-size: 12px; font-weight: 300;"> €${order.shippingPrice.toFixed(2)}</td></tr>
-              ${storecredit(order.storecredit)}
+              ${ifStorecredit(order.storecredit)}
               <tr><td style="text-align: right; font-size: 16px; font-weight: 600; height: 30px;">total price: </td><td style="font-size: 16px; font-weight: 600; height: 30px;"> €${order.totalPrice.toFixed(2)}</td></tr>
             </tbody>
           </table>
@@ -87,8 +81,9 @@ export const sendMailToManager = asyncHandler(async orderData => {
             <table cellpadding="15">
               <tbody>
                 <tr>
-                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/orders/${order.id}" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Order Details</a></div></td>
-                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/admin/orderlist" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Orders List</a></div></td>
+                  <td style="width:33%"><div style="width:100%; padding:10px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/orders/${order.id}" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Order Details</a></div></td>
+                  <td style="width:33%"><div style="width:100%; padding:10px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/admin/orderlist" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Orders List</a></div></td>
+                  <td style="width:33%"><div style="width:100%; padding:10px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/admin/user/${order.user._id}/edit" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Edit User</a></div></td>
                 </tr>
               </tbody>
             </table>  
@@ -100,8 +95,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
       <div>Copyright © Woolunatics 2021</div>
       <div><a href="mailto: woolunatics.nl@google.com" style="text-decoration:none; color:#f0f3f7" target="_blank" rel="noreferrer">woolunatics.nl@google.com</a></div>
       <div><small>Groningen, Netherlands</small></div>
-    </footer>
-    `
+    </footer>`
   }
 
   await transporter.sendMail(mailOptions, (error, info) => {

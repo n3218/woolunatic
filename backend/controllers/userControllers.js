@@ -19,6 +19,7 @@ export const authUser = asyncHandler(async (req, res) => {
       phone: user.phone,
       isAdmin: user.isAdmin,
       storecredit: user.storecredit,
+      address: user.address,
       token: generateToken(user._id)
     })
   } else {
@@ -50,6 +51,7 @@ export const registerUser = asyncHandler(async (req, res) => {
         phone: user.phone,
         isAdmin: user.isAdmin,
         storecredit: user.storecredit,
+        address: user.address,
         token: generateToken(user._id)
       })
     } else {
@@ -71,7 +73,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
       email: user.email,
       phone: user.phone,
       isAdmin: user.isAdmin,
-      storecredit: user.storecredit
+      storecredit: user.storecredit,
+      address: user.address
     })
   } else {
     res.status(401)
@@ -88,6 +91,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     user.name = req.body.name || user.name
     user.email = req.body.email || user.email
     user.phone = req.body.phone || user.phone
+    user.address = req.body.address || user.address
     if (req.body.password) {
       user.password = req.body.password
     }
@@ -97,6 +101,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       phone: user.phone,
+      address: user.address,
       isAdmin: updatedUser.isAdmin,
       storecredit: updatedUser.storecredit,
       token: generateToken(updatedUser._id)
@@ -151,6 +156,7 @@ export const updateUser = asyncHandler(async (req, res) => {
     user.name = req.body.name || user.name
     user.email = req.body.email || user.email
     user.storecredit = req.body.storecredit || user.storecredit
+    user.address = req.body.address || user.address
     if (req.body.isAdmin === false) {
       user.isAdmin = req.body.isAdmin
     } else {
@@ -162,7 +168,8 @@ export const updateUser = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
-      phone: user.phone,
+      phone: updatedUser.phone,
+      address: updatedUser.address,
       isAdmin: updatedUser.isAdmin,
       storecredit: updatedUser.storecredit
     })
@@ -214,6 +221,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
           name: updatedUser.name,
           email: updatedUser.email,
           phone: updatedUser.phone,
+          address: updatedUser.address,
           isAdmin: updatedUser.isAdmin,
           storecredit: updatedUser.storecredit,
           token: generateToken(updatedUser._id)
