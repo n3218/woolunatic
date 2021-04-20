@@ -27,39 +27,41 @@ const ImagesBulkUpload = () => {
     setTotalSize(0)
     const file = e.target.files
     const formData = new FormData()
+    let size = 0
 
     //-----------------------------------------WITH COMRESSION
-    // const options = {
-    //   maxSizeMB: 0.5,
-    //   useWebWorker: true
-    // }
+    const options = {
+      maxSizeMB: 0.5,
+      useWebWorker: true
+    }
+    for (let i in file) {
+      if (typeof file[i] === "object") {
+        console.log("file[i]: ", file[i])
+        try {
+          setUploading(true)
+          size += file[i].size
+          const compressedFile = await imageCompression(file[i], options)
+          console.log("compressedFile: ", compressedFile)
+          await formData.append(`image`, compressedFile, compressedFile.name)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
+
+    //-----------------------------------------NO COMRESSION
     // for (let i in file) {
     //   if (typeof file[i] === "object") {
-    //     console.log("file[i]: ", file[i])
     //     try {
     //       setUploading(true)
-    //       const compressedFile = await imageCompression(file[i], options)
-    //       console.log("compressedFile: ", compressedFile)
-    //       await formData.append(`image`, compressedFile, compressedFile.name)
+    //       size += file[i].size
+    //       await formData.append(`image`, file[i], file[i].originalname)
     //     } catch (error) {
     //       console.log(error)
     //     }
     //   }
     // }
 
-    //-----------------------------------------NO COMRESSION
-    let size = 0
-    for (let i in file) {
-      if (typeof file[i] === "object") {
-        try {
-          setUploading(true)
-          size += file[i].size
-          await formData.append(`image`, file[i], file[i].originalname)
-        } catch (error) {
-          console.log(error)
-        }
-      }
-    }
     setTotalSize(size)
 
     try {
@@ -146,7 +148,7 @@ const ImagesBulkUpload = () => {
             </Message>
           )}
 
-          {uploading && <h3>Total uploading size: {(totalSize / 1024 / 1024).toFixed(1)}MB</h3>}
+          {uploading && <h4>Total uploading size: {(totalSize / 1024 / 1024).toFixed(1)}MB</h4>}
 
           {updatedProducts &&
             updatedProducts.map((prod, i) => (
