@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import axios from "axios"
 import { Form, Row, Col } from "react-bootstrap"
@@ -7,33 +7,60 @@ import Loader from "./Loader"
 import imageCompression from "browser-image-compression"
 import Message from "./Message"
 import { minithumbPath } from "../constants/commonConstans"
+import FormData from "form-data"
 
 const ImagesBulkUpload = () => {
   const [uploading, setUploading] = useState(false)
   const [images, setImages] = useState([])
   const [updatedProducts, setUpdatedProducts] = useState([])
+  const [notFoundProducts, setNotFoundProducts] = useState([])
+  const [fullsizeFiles, setFullsizeFiles] = useState(0)
+  const [thumbsFiles, setThumbsFiles] = useState(0)
+  const [minithumbsFiles, setMinithumbsFiles] = useState(0)
+  const [totalSize, setTotalSize] = useState(0)
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
 
   const handleImagesBulkUpload = async e => {
+    setImages([])
+    setUpdatedProducts([])
+    setTotalSize(0)
     const file = e.target.files
     const formData = new FormData()
+
+    //-----------------------------------------WITH COMRESSION
+    // const options = {
+    //   maxSizeMB: 0.5,
+    //   useWebWorker: true
+    // }
+    // for (let i in file) {
+    //   if (typeof file[i] === "object") {
+    //     console.log("file[i]: ", file[i])
+    //     try {
+    //       setUploading(true)
+    //       const compressedFile = await imageCompression(file[i], options)
+    //       console.log("compressedFile: ", compressedFile)
+    //       await formData.append(`image`, compressedFile, compressedFile.name)
+    //     } catch (error) {
+    //       console.log(error)
+    //     }
+    //   }
+    // }
+
+    //-----------------------------------------NO COMRESSION
+    let size = 0
     for (let i in file) {
       if (typeof file[i] === "object") {
-        const options = {
-          maxWidthOrHeight: 1440,
-          useWebWorker: true,
-          fileType: "jpeg"
-        }
         try {
           setUploading(true)
-          const compressedFile = await imageCompression(file[i], options)
-          await formData.append(`image`, compressedFile, compressedFile.name)
+          size += file[i].size
+          await formData.append(`image`, file[i], file[i].originalname)
         } catch (error) {
           console.log(error)
         }
       }
     }
+    setTotalSize(size)
 
     try {
       const config = {
@@ -44,11 +71,14 @@ const ImagesBulkUpload = () => {
       }
       const { data } = await axios.post("/api/upload/bulk", formData, config)
       console.log("data: ", data)
-      setTimeout(() => {
-        setImages(data.files)
+      if (data) {
+        setFullsizeFiles(data.fullsizeFiles)
+        setThumbsFiles(data.thumbsFiles)
+        setMinithumbsFiles(data.minithumbsFiles)
+        setNotFoundProducts(data.notFound)
         setUpdatedProducts(data.products)
         setUploading(false)
-      }, 15000)
+      }
     } catch (error) {
       console.error(error)
       setUploading(false)
@@ -75,28 +105,55 @@ const ImagesBulkUpload = () => {
           {updatedProducts && updatedProducts.length > 0 && !uploading && (
             <Message variant="success" onClose={() => setUpdatedProducts([])}>
               <div>
-                Uploaded{" "}
-                <span className="h5">
-                  <mark> {images.length} </mark>
-                </span>{" "}
-                images.
-              </div>
-              <div>
-                Updated{" "}
+                Updated:{" "}
                 <span className="h5">
                   <mark> {updatedProducts.length} </mark>
                 </span>{" "}
                 updatedProducts.
               </div>
+
+              {notFoundProducts.length > 0 && (
+                <div>
+                  Not Found Products:{" "}
+                  <span className="h5">
+                    <mark> {notFoundProducts.join(",")} </mark>
+                  </span>{" "}
+                  images.
+                </div>
+              )}
+
+              <div>
+                Now total images in fullsize folder:{" "}
+                <span className="h5">
+                  <mark> {fullsizeFiles} </mark>
+                </span>{" "}
+                images.
+              </div>
+              <div>
+                Now total images in thumbs folder:{" "}
+                <span className="h5">
+                  <mark> {thumbsFiles} </mark>
+                </span>{" "}
+                images.
+              </div>
+              <div>
+                Now total images in minithumbs folder:{" "}
+                <span className="h5">
+                  <mark> {minithumbsFiles} </mark>
+                </span>{" "}
+                images.
+              </div>
             </Message>
           )}
+
+          {uploading && <h3>Total uploading size: {(totalSize / 1024 / 1024).toFixed(1)}MB</h3>}
+
           {updatedProducts &&
             updatedProducts.map((prod, i) => (
               <div key={`${prod.art}${i}`}>
                 <Link to={`/products/${prod._id}`} className="mx-3">
                   {prod.art}
                 </Link>
-
                 {prod.image.map((img, i) => (
                   <span key={`${img.originalname}${i}`} className="color-picture">
                     <img src={minithumbPath + img} alt="Color Preview" width="60" />

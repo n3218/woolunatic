@@ -161,7 +161,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
       }
     }
 
-    await Promise.all([deleteImages, product.remove()])
+    await Promise.all([deleteImages, product.deleteMany()])
       .then(() => {
         console.log({ message: `Product was successfully deleted.` })
         res.json({ message: `Product was successfully deleted.` })
@@ -416,7 +416,7 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
 export const deleteAllProducts = asyncHandler(async (req, res) => {
   console.log("deleteAllProducts")
   try {
-    const result = await Product.deleteMany({})
+    const result = await Product.deleteMany()
     console.log("Data Destroyed!: ", result)
     res.json({ message: "All Products deleted from DB: " + result.deletedCount + " total" })
   } catch (error) {

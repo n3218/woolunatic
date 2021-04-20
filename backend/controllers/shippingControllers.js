@@ -79,7 +79,7 @@ export const deleteShipping = asyncHandler(async (req, res) => {
   const shipping = await Shipping.findById(req.params.id)
   if (shipping) {
     try {
-      await shipping.remove()
+      await Shipping.deleteOne({ _id: req.params.id })
       console.log({ message: `Shipping was successfully deleted.` })
       res.json({ message: `Shipping was successfully deleted.` })
     } catch (err) {
