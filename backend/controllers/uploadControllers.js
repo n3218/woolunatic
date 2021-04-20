@@ -11,7 +11,10 @@ dotenv.config()
 // upload single file to GCloud Bucket
 const blobAction = async (size, fileData) => {
   const blob = bucket.file(`${size}/${fileData.originalname}`)
-  const blobStream = blob.createWriteStream()
+  const blobStream = blob.createWriteStream({
+    resumable: false,
+    public: true
+  })
   const newFilePath = `${process.env.GCLOUD_STORAGE_URL}/${process.env.GCLOUD_BUCKET}`
   await blobStream
     .on("error", err => {
@@ -22,6 +25,7 @@ const blobAction = async (size, fileData) => {
       const publicUrl = `${newFilePath}/${blob.name}`
       const imageDetails = fileData
       imageDetails.image = publicUrl
+      console.log("uploading: ", publicUrl)
       return imageDetails
     })
     .end(fileData.buffer)
@@ -99,56 +103,103 @@ export const uploadProductImages = asyncHandler(async (req, res) => {
   }
 })
 
-// @desc   Upload Bulk Images and connecting to Products
-// @route  POST /api/upload/bulk
-// @access Private/+Admin
-export const uploadBulkImages = asyncHandler(async (req, res) => {
-  let productMap = {}
-  try {
-    const results = await Promise.all(
-      req.files.map(async file => {
-        uploadResizedImages(file)
+export const makeProdMap = async files => {
+  const productMap = new Map()
 
+  try {
+    await Promise.all(
+      files.map(async file => {
         if (file.originalname) {
-          let productArt = file.originalname.split("-")[0]
-          if (productMap[productArt]) {
-            productMap[productArt].push(file.originalname)
+          const productArt = file.originalname.replace(/[ a-z.]+/g, "").split("-")[0]
+          console.log("uploadBulkImages: productArt: ", productArt)
+          if (productMap.has(productArt)) {
+            productMap.set(productArt, {
+              images: [...productMap.get(productArt).images, file.originalname],
+              files: [...productMap.get(productArt).files, file]
+            })
           } else {
-            productMap[productArt] = [file.originalname]
+            productMap.set(productArt, {
+              images: [file.originalname],
+              files: [file]
+            })
           }
         }
       })
-    )
-    if (results) {
-      try {
-        await Promise.all(
-          Object.keys(productMap).map(async key => {
-            const filter = { art: key }
-            const update = { $set: { image: productMap[key] } }
-            return await Product.findOneAndUpdate(filter, update, { new: true }, (err, doc) => {
-              if (err) {
-                console.log("Something wrong when updating data!")
-                return err
-              } else {
-                return doc
-              }
-            })
-          })
-        ).then(result => {
-          console.log("uploadBulkImages: result.length: ", result.length)
-          res.json({ files: req.files, products: result })
-        })
-      } catch (err) {
-        console.error("Error on updating products after uploading images: ", err)
-        res.status(404)
-        throw new Error("Error on updating products after uploading images", err)
-      }
-    }
+    ) // fill the prodMap with values
+
+    return productMap
   } catch (err) {
     console.error("Error on generating images: ", err)
     res.status(404)
     throw new Error("Error on generating images", err)
   }
+}
+
+// @desc   Upload Bulk Images and connecting to Products
+// @route  POST /api/upload/bulk
+// @access Private/+Admin
+export const uploadBulkImages = asyncHandler(async (req, res) => {
+  const products = []
+  const notFound = []
+  const totalSize = (req.files.reduce((acc, el) => acc + el.size, 0) / 1024 / 1024).toFixed(1)
+  const expectedTime = totalSize * 500
+  console.log("uploadBulkImages: totalSize: ", totalSize)
+
+  const prodMap = await makeProdMap(req.files)
+  console.log("----------------------------prodMap: ", prodMap)
+  if (prodMap) {
+    console.log("========================")
+    // Promise.all(
+    await prodMap.forEach(async (value, key) => {
+      const product = await Product.findOne({ art: key })
+      if (product) {
+        prodMap.get(key).files.map(file => {
+          uploadResizedImages(file)
+        })
+        product.image = value.images
+        console.log("product.image: ", product.image)
+        try {
+          const updatedProduct = await product.save()
+          products.push(updatedProduct)
+          return updatedProduct
+        } catch (err) {
+          console.log("Error on updating product: ", err)
+        }
+      } else {
+        console.log("ELSE: ")
+        notFound.push(key)
+        return "Product not found"
+      }
+    })
+    // .then(res => {
+    //   console.log("res: ", res)
+    // })
+    setTimeout(async () => {
+      console.log("products.length: ", products.length)
+      console.log("notFound: ", notFound)
+      let [fullsizeFiles] = await bucket.getFiles({ prefix: "fullsize" })
+      let [thumbsFiles] = await bucket.getFiles({ prefix: "thumbs" })
+      let [minithumbsFiles] = await bucket.getFiles({ prefix: "minithumbs" })
+
+      console.log("fullsizeFiles.length: ", fullsizeFiles.length)
+      console.log("thumbsFiles.length: ", thumbsFiles.length)
+      console.log("minithumbsFiles.length: ", minithumbsFiles.length)
+
+      res.json({ products, notFound, fullsizeFiles: fullsizeFiles.length, thumbsFiles: thumbsFiles.length, minithumbsFiles: minithumbsFiles.length })
+    }, expectedTime)
+
+    // ).then(res => console.log("res: ", res))
+    // console.log("data: ", data)
+
+    // console.log("uploadBulkImages: products: ", products)
+  }
+  // try {
+
+  // } catch (err) {
+  //   console.error("Error on updating products after uploading images: ", err)
+  //   res.status(404)
+  //   throw new Error("Error on updating products after uploading images", err)
+  // }
 })
 
 //

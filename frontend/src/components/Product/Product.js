@@ -29,15 +29,17 @@ const Product = ({ product }) => {
         {product.name && (
           <Card.Title className="product-card_name">
             <Link to={`/products/${product._id}`}>
-              <nobr className="text-capitalize">{product.name}</nobr>
+              <nobr className="text-capitalize">
+                {product.art} {product.name}
+              </nobr>
             </Link>
           </Card.Title>
         )}
         {product.color && (
           <Card.Subtitle as="div" className="product-card_color">
-            <nobr>
-              <span className="text-capitalize">{product.color}</span>
-            </nobr>
+            <Link to={`/products/${product._id}`}>
+              <nobr className="text-capitalize">{product.color}</nobr>
+            </Link>
           </Card.Subtitle>
         )}
 

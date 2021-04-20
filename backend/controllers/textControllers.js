@@ -95,7 +95,7 @@ export const deleteText = asyncHandler(async (req, res) => {
   const text = await Text.findById(req.params.id)
   if (text) {
     try {
-      await text.remove()
+      await Text.deleteOne({ _id: req.params.id })
       console.log({ message: `Text was successfully deleted.` })
       res.json({ message: `Text was successfully deleted.` })
     } catch (err) {

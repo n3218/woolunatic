@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const shippingSchema = mongoose.Schema({
-  country: { type: String, required: true, unique: true },
+  country: { type: String, required: true, unique: true, index: true },
   local: { type: String, required: true },
   options: [
     {

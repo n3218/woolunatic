@@ -28,7 +28,7 @@ const holdsSchema = mongoose.Schema({
 
 const productSchema = mongoose.Schema(
   {
-    art: { type: String, required: true, default: "" },
+    art: { type: String, required: true, unique: true, index: true, default: "" },
     brand: { type: String, required: true, default: "" },
     name: { type: String, required: true, default: "" },
     color: { type: String, required: true, default: "" },
