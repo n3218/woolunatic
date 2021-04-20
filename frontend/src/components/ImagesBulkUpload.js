@@ -17,20 +17,26 @@ const ImagesBulkUpload = () => {
   const [fullsizeFiles, setFullsizeFiles] = useState(0)
   const [thumbsFiles, setThumbsFiles] = useState(0)
   const [minithumbsFiles, setMinithumbsFiles] = useState(0)
-  const [totalSize, setTotalSize] = useState(0)
+  const [totalSizeBefore, setTotalSizeBefore] = useState(0)
+  const [totalSizeAfter, setTotalSizeAfter] = useState(0)
+  const [resized, setResized] = useState([])
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
 
   const handleImagesBulkUpload = async e => {
     setImages([])
     setUpdatedProducts([])
-    setTotalSize(0)
+    setTotalSizeBefore(0)
+    setTotalSizeAfter(0)
     const file = e.target.files
     const formData = new FormData()
-    let size = 0
+    let totalSizeBeforeVar = 0
+    let totalSizeAfterVar = 0
+    let resizedVar = []
 
     //-----------------------------------------WITH COMRESSION
     const options = {
+      maxWidthOrHeight: 1024,
       maxSizeMB: 0.5,
       useWebWorker: true
     }
@@ -39,9 +45,17 @@ const ImagesBulkUpload = () => {
         console.log("file[i]: ", file[i])
         try {
           setUploading(true)
-          size += file[i].size
+          totalSizeBeforeVar += file[i].size
+          setTotalSizeBefore(totalSizeBeforeVar)
+
           const compressedFile = await imageCompression(file[i], options)
-          console.log("compressedFile: ", compressedFile)
+
+          totalSizeAfterVar += compressedFile.size
+          setTotalSizeAfter(totalSizeAfterVar)
+
+          resizedVar.push({ name: file[i].name, sizeBefore: file[i].size, sizeAfter: compressedFile.size })
+          setResized(resizedVar)
+          console.log("resized: ", resized)
           await formData.append(`image`, compressedFile, compressedFile.name)
         } catch (error) {
           console.log(error)
@@ -62,7 +76,7 @@ const ImagesBulkUpload = () => {
     //   }
     // }
 
-    setTotalSize(size)
+    // setTotalSize(size)
 
     try {
       const config = {
@@ -90,18 +104,29 @@ const ImagesBulkUpload = () => {
   return (
     <Form.Group controlId="images" className="mb-4">
       <Row>
-        <Col sm="2">
+        <Col xl={3} md={3}>
           <h4>Uploading Images</h4>
           <Form.Label>
             <div>
               <small>
-                named by ART., like: 101957-1.jpg,
-                <br /> 101957-2.jpg,
-                <br /> 101957-3.jpg
-                <br /> (max 100 per transaction)
+                named by ART. field, like: "101957-1.jpg"...
+                <div className="h5">If total images in folders are not equal, reupload the same images.</div>
+                <br />
               </small>
             </div>
           </Form.Label>
+          <br />
+          <br />
+          {totalSizeBefore > 0 && <h4>Total size before: {(totalSizeBefore / 1024 / 1024).toFixed(1)}MB</h4>}
+          {totalSizeAfter > 0 && <h4>Total size after: {(totalSizeAfter / 1024 / 1024).toFixed(1)}MB</h4>}
+          <br />
+          {resized &&
+            resized.map(el => (
+              <div>
+                {el.name}: <span className="mx-3">{(el.sizeBefore / 1024).toFixed(0)}KB</span> {" -> "} {(el.sizeAfter / 1024).toFixed(0)}KB
+              </div>
+            ))}
+          <br />
         </Col>
         <Col>
           {updatedProducts && updatedProducts.length > 0 && !uploading && (
@@ -120,7 +145,7 @@ const ImagesBulkUpload = () => {
                   <span className="h5">
                     <mark> {notFoundProducts.join(",")} </mark>
                   </span>{" "}
-                  images.
+                  and their images did not upload.
                 </div>
               )}
 
@@ -148,8 +173,6 @@ const ImagesBulkUpload = () => {
             </Message>
           )}
 
-          {uploading && <h4>Total uploading size: {(totalSize / 1024 / 1024).toFixed(1)}MB</h4>}
-
           {updatedProducts &&
             updatedProducts.map((prod, i) => (
               <div key={`${prod.art}${i}`}>
@@ -163,7 +186,9 @@ const ImagesBulkUpload = () => {
                 ))}
               </div>
             ))}
+
           <Form.File id="images" label="Choose Images to upload" custom onChange={handleImagesBulkUpload} multiple accept="image/*"></Form.File>
+          <Form.Label className="h5">Refresh/reload page after every use uploading form (⌘ + R)</Form.Label>
           {uploading && (
             <div className="mt-5">
               <Loader />

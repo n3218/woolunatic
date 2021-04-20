@@ -46,11 +46,12 @@ const ProductsBulkUpload = () => {
       <Form id="UploadCsvData">
         <Form.Group controlId="csv-file">
           <Row>
-            <Col sm="2">
-              <h4>Updating Products</h4>
-              <Form.Label>CSV file</Form.Label>
+            <Col sm={12} md={4}>
+              <nobr>
+                <h4>Updating Products</h4>
+              </nobr>
             </Col>
-            <Col>
+            <Col sm={12} md={8}>
               <Form.File //
                 id="csv-file"
                 label="Choose Csv File"
