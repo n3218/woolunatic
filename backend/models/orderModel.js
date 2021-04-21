@@ -1,13 +1,13 @@
 import mongoose from "mongoose"
-import autoIncrement from "mongoose-auto-increment"
+// import autoIncrement from "mongoose-auto-increment"
 
 var connection = mongoose.createConnection(process.env.MONGO_URI)
 
-autoIncrement.initialize(connection)
+// autoIncrement.initialize(connection)
 
 const orderSchema = mongoose.Schema(
   {
-    orderId: { type: Number, required: true, unique: true, default: 0 },
+    orderId: { type: Number, required: true, unique: true, default: 210000 },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -69,11 +69,24 @@ const orderSchema = mongoose.Schema(
   }
 )
 
-orderSchema.plugin(autoIncrement.plugin, {
-  model: "Order",
-  field: "orderId",
-  startAt: 210000,
-  incrementBy: 1
+// orderSchema.plugin(autoIncrement.plugin, {
+//   model: "Order",
+//   field: "orderId",
+//   startAt: 210000,
+//   incrementBy: 1
+// })
+
+orderSchema.pre("save", function (next) {
+  // Only increment when the document is new
+  if (this.isNew) {
+    Order.count().then(res => {
+      const newOrderId = 210000 + res
+      this.orderId = newOrderId // Increment count
+      next()
+    })
+  } else {
+    next()
+  }
 })
 
 const Order = mongoose.model("Order", orderSchema)
