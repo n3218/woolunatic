@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Woolunatics Server",
   "engines": {
-    "node": "14.x.x"
+    "node": "14.15.1",
+    "npm": "7.6.0"
   },
   "main": "server.js",
   "type": "module",
@@ -14,7 +15,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=true npm install --prefix frontend && npm run build --prefix frontend"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
   "repository": {
     "type": "git",
