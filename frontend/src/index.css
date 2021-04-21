@@ -330,33 +330,6 @@ th:first-of-type {
   min-width: 120px;
 }
 
-button.image-gallery-icon {
-  filter: none;
-}
-
-.image-gallery-right-nav,
-.image-gallery-left-nav {
-  transform: translateY(-50%) scale(0.5);
-  padding: 0;
-  background-color: rgb(0, 0, 0, 0.2);
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-}
-
-.image-gallery-left-nav .image-gallery-svg,
-.image-gallery-right-nav .image-gallery-svg {
-  height: 100px;
-  width: 100px;
-}
-
-.image-gallery-fullscreen-button {
-  padding: 3px;
-  top: 0;
-  left: 0;
-  bottom: auto;
-}
-
 .list-group-item p {
   margin-bottom: 0.5rem;
 }

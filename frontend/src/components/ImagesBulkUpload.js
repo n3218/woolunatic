@@ -104,21 +104,17 @@ const ImagesBulkUpload = () => {
   return (
     <Form.Group controlId="images" className="mb-4">
       <Row>
-        <Col xl={3} md={3}>
+        <Col xl={3} md={4}>
           <h4>Uploading Images</h4>
-          <Form.Label>
-            <div>
-              <small>
-                named by ART. field, like: "101957-1.jpg"...
-                <div className="h5">If total images in folders are not equal, reupload the same images.</div>
-                <br />
-              </small>
-            </div>
-          </Form.Label>
-          <br />
-          <br />
+          <div>
+            <small>
+              named by ART. field, like: "101957-1.jpg"...
+              <div className="h5">If total images in folders are not equal, reUpload the same bunch of images.</div>
+              <br />
+            </small>
+          </div>
           {totalSizeBefore > 0 && <h4>Total size before: {(totalSizeBefore / 1024 / 1024).toFixed(1)}MB</h4>}
-          {totalSizeAfter > 0 && <h4>Total size after: {(totalSizeAfter / 1024 / 1024).toFixed(1)}MB</h4>}
+          {totalSizeAfter > 0 && <h4>Total size after compressing: {(totalSizeAfter / 1024 / 1024).toFixed(1)}MB</h4>}
           <br />
           {resized &&
             resized.map(el => (
@@ -172,6 +168,11 @@ const ImagesBulkUpload = () => {
               </div>
             </Message>
           )}
+          {fullsizeFiles !== thumbsFiles && thumbsFiles !== minithumbsFiles && (
+            <Message variant="warning" onClose={() => setUpdatedProducts([])}>
+              If total images in folders are not equal, reupload the same images.
+            </Message>
+          )}
 
           {updatedProducts &&
             updatedProducts.map((prod, i) => (
@@ -188,7 +189,7 @@ const ImagesBulkUpload = () => {
             ))}
 
           <Form.File id="images" label="Choose Images to upload" custom onChange={handleImagesBulkUpload} multiple accept="image/*"></Form.File>
-          <Form.Label className="h5">Refresh/reload page after every use uploading form (⌘ + R)</Form.Label>
+          <Form.Label className="h5">Refresh/reload page (⌘ + R) after every use uploading form.</Form.Label>
           {uploading && (
             <div className="mt-5">
               <Loader />

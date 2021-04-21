@@ -28,9 +28,8 @@ const ImageUploadScreen = () => {
       {deleteAllProductsImagesSuccess && <Message variant="success">{deleteAllProductsImagesMessage}</Message>}
 
       <div className="submenu">
-        <Button onClick={deleteAllProductsImagesHandler} className="btn btn-danger bg-red my-3 py-3 px-4 mx-1">
-          <i className="fas fa-trash text-white"></i> Delete
-          <br /> all Images
+        <Button onClick={deleteAllProductsImagesHandler} className="btn btn-danger bg-red my-3 py-2 px-5">
+          <i className="fas fa-trash text-white px-2"> </i> Delete all Images
         </Button>
       </div>
     </>

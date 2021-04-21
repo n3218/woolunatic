@@ -11,8 +11,8 @@ import Loader from "../../components/Loader"
 import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DELETE_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
 import { TranslateToWeight } from "../../components/Utils"
-import "./ProductScreen.css"
 import { noimage, imagePath, thumbPath } from "../../constants/commonConstans"
+import "./ProductScreen.css"
 
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch()
@@ -136,7 +136,13 @@ const ProductScreen = ({ history, match }) => {
             {/* ---------------------------Gallery--------------------------- */}
 
             <div id="product-gallery">
-              <ImageGallery onErrorImageURL={noimage} items={initialImages} showPlayButton={false} showIndex={true} thumbnailPosition="bottom" />
+              <ImageGallery //
+                onErrorImageURL={noimage}
+                items={initialImages}
+                showPlayButton={false}
+                showIndex={true}
+                thumbnailPosition="bottom"
+              />
             </div>
 
             {/* ---------------------------Title--------------------------- */}
