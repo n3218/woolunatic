@@ -51,8 +51,9 @@ const ProductsBulkUpload = () => {
                 <h4>Updating Products</h4>
               </nobr>
             </Col>
-            <Col sm={12} md={8}>
+            <Col sm={12} md={8} className="py-0">
               <Form.File //
+                className="my-0"
                 id="csv-file"
                 label="Choose Csv File"
                 custom

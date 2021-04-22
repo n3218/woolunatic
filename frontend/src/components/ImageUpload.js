@@ -8,6 +8,7 @@ import { productImageDeleteAction } from "../actions/productActions"
 import { PRODUCT_IMAGE_DELETE_RESET } from "../constants/productConstants"
 import Message from "./Message"
 import { UPLOADS } from "../constants/commonConstans"
+import { OptionsForCompressingImages } from "./Utils"
 
 const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
   const dispatch = useDispatch()
@@ -28,13 +29,8 @@ const ImageUpload = ({ image, setImage, uploading, setUploading }) => {
     const formData = new FormData()
     for (let i in file) {
       if (typeof file[i] === "object") {
-        const options = {
-          maxSizeMB: 0.3,
-          maxWidthOrHeight: 1440,
-          useWebWorker: true
-        }
         try {
-          const compressedFile = await imageCompression(file[i], options)
+          const compressedFile = await imageCompression(file[i], OptionsForCompressingImages)
           console.log("compressedFile: ", compressedFile)
           await formData.append(`image`, compressedFile, compressedFile.name) // write your own logic
         } catch (error) {

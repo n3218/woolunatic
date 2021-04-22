@@ -31,7 +31,7 @@ const UserEditScreen = ({ history, match }) => {
       dispatch({ type: USER_UPDATE_RESET })
       history.push("/admin/userList")
     } else {
-      if ((user && !user.name) || user._id !== userId) {
+      if ((user && !user.email) || user._id !== userId) {
         dispatch(getUserDetails(userId))
       } else {
         setName(user.name)
@@ -70,8 +70,8 @@ const UserEditScreen = ({ history, match }) => {
               <Form.Control type="text" placeholder="Enter Name" value={name} onChange={e => setName(e.target.value)}></Form.Control>
             </Form.Group>
             <Form.Group controlId="email">
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control type="email" placeholder="Enter Email" value={email} onChange={e => setEmail(e.target.value)}></Form.Control>
+              <Form.Label required>Email Address</Form.Label>
+              <Form.Control required type="email" placeholder="Enter Email" value={email} onChange={e => setEmail(e.target.value)}></Form.Control>
             </Form.Group>
             <Form.Group controlId="phone">
               <Form.Label>Phone Number</Form.Label>

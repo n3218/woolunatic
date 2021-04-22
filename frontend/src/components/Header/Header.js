@@ -57,21 +57,13 @@ const Header = ({ location }) => {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ml-auto">
-                  {/* <LinkContainer to="/about">
-                    <Nav.Link>About</Nav.Link>
-                  </LinkContainer>
-                  <LinkContainer to="/how-to">
-                    <Nav.Link>
-                      <nobr>How To Order</nobr>
-                    </Nav.Link>
-                  </LinkContainer> */}
                   <LinkContainer to="/cart" className="text-nowrap">
                     <Nav.Link>
                       <i className="fas fa-shopping-cart"></i>({(items && items.length) || 0})
                     </Nav.Link>
                   </LinkContainer>
                   {userInfo ? (
-                    <NavDropdown title={userInfo.name} id="username">
+                    <NavDropdown title={userInfo.name ? userInfo.name : <i className="fas fa-user"></i>} id="username">
                       <LinkContainer to="/profile">
                         <NavDropdown.Item>Profile</NavDropdown.Item>
                       </LinkContainer>

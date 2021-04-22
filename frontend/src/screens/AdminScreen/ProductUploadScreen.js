@@ -28,7 +28,7 @@ const ProductUploadScreen = () => {
       {deleteAllProductsSuccess && <Message variant="success">{deleteAllProductsMessage}</Message>}
 
       <div className="submenu">
-        <Button onClick={deleteAllProductsDataHandler} className="btn btn-danger bg-red py-2 px-5">
+        <Button onClick={deleteAllProductsDataHandler} className="btn btn-danger bg-red my-3 py-2 px-5">
           <i className="fas fa-trash text-white mx-2"></i> Delete all Data
         </Button>
       </div>

@@ -367,10 +367,16 @@ th:first-of-type {
   justify-content: center;
 }
 .form-group {
+  margin-top: 1.2rem;
   margin-bottom: 0;
 }
+label[required]::after {
+  content: "*";
+  color: red;
+  font-size: 1.6em;
+  line-height: 0.1;
+}
 label {
-  margin-top: 0.8rem;
   margin-bottom: 0;
   cursor: pointer;
 }
@@ -430,4 +436,11 @@ label {
 .form-control {
   height: calc(1.5em + 0.25rem + 2px);
   padding: 0.25rem 0.75rem;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: var(--green);
 }

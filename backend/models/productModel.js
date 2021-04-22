@@ -35,7 +35,7 @@ const productSchema = mongoose.Schema(
     colorWay: { type: String, required: true, default: "" },
     category: { type: String, required: true, default: "" },
     nm: { type: String, required: false, default: "" },
-    meterage: { type: Number, required: false, default: 0 },
+    meterage: { type: Number, required: true, default: 0 },
     fibers: { type: String, required: false, default: "" },
     price: { type: Number, required: true, default: 0 },
     description: { type: String, required: false, default: "" },

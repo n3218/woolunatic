@@ -60,7 +60,7 @@ const ShippingScreen = ({ history }) => {
             {
               <>
                 <Form.Group controlId="address">
-                  <Form.Label>Address</Form.Label>
+                  <Form.Label required={shippingPrice > 0}>Address</Form.Label>
                   <Form.Control //
                     type="text"
                     placeholder="Enter Address"
@@ -70,7 +70,7 @@ const ShippingScreen = ({ history }) => {
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="city">
-                  <Form.Label>City</Form.Label>
+                  <Form.Label required={shippingPrice > 0}>City</Form.Label>
                   <Form.Control //
                     type="text"
                     placeholder="Enter City"
@@ -80,7 +80,7 @@ const ShippingScreen = ({ history }) => {
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="zipCode">
-                  <Form.Label>Zip Code</Form.Label>
+                  <Form.Label required={shippingPrice > 0}>Zip Code</Form.Label>
                   <Form.Control //
                     type="text"
                     placeholder="Enter ZipCode"
@@ -92,7 +92,7 @@ const ShippingScreen = ({ history }) => {
               </>
             }
             <Form.Group controlId="city">
-              <Form.Label>Phone</Form.Label>
+              <Form.Label required={shippingPrice > 0}>Phone</Form.Label>
               <Form.Control //
                 type="text"
                 placeholder="Enter Phone"

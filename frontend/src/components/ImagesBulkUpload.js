@@ -8,6 +8,7 @@ import imageCompression from "browser-image-compression"
 import Message from "./Message"
 import { minithumbPath } from "../constants/commonConstans"
 import FormData from "form-data"
+import { OptionsForCompressingImages } from "./Utils"
 
 const ImagesBulkUpload = () => {
   const [uploading, setUploading] = useState(false)
@@ -35,11 +36,6 @@ const ImagesBulkUpload = () => {
     let resizedVar = []
 
     //-----------------------------------------WITH COMRESSION
-    const options = {
-      maxWidthOrHeight: 1024,
-      maxSizeMB: 0.5,
-      useWebWorker: true
-    }
     for (let i in file) {
       if (typeof file[i] === "object") {
         console.log("file[i]: ", file[i])
@@ -48,7 +44,7 @@ const ImagesBulkUpload = () => {
           totalSizeBeforeVar += file[i].size
           setTotalSizeBefore(totalSizeBeforeVar)
 
-          const compressedFile = await imageCompression(file[i], options)
+          const compressedFile = await imageCompression(file[i], OptionsForCompressingImages)
 
           totalSizeAfterVar += compressedFile.size
           setTotalSizeAfter(totalSizeAfterVar)
@@ -118,28 +114,28 @@ const ImagesBulkUpload = () => {
           <br />
           {resized &&
             resized.map(el => (
-              <div>
+              <div key={el.name}>
                 {el.name}: <span className="mx-3">{(el.sizeBefore / 1024).toFixed(0)}KB</span> {" -> "} {(el.sizeAfter / 1024).toFixed(0)}KB
               </div>
             ))}
           <br />
         </Col>
         <Col>
-          {updatedProducts && updatedProducts.length > 0 && !uploading && (
+          {(updatedProducts > 0 || thumbsFiles > 0 || minithumbsFiles > 0) && (
             <Message variant="success" onClose={() => setUpdatedProducts([])}>
               <div>
                 Updated:{" "}
                 <span className="h5">
                   <mark> {updatedProducts.length} </mark>
                 </span>{" "}
-                updatedProducts.
+                Products.
               </div>
 
               {notFoundProducts.length > 0 && (
                 <div>
                   Not Found Products:{" "}
                   <span className="h5">
-                    <mark> {notFoundProducts.join(",")} </mark>
+                    <mark> {notFoundProducts.join(", ")} </mark>
                   </span>{" "}
                   and their images did not upload.
                 </div>

@@ -20,10 +20,10 @@ const cartSchema = mongoose.Schema(
         image: { type: String, required: false },
         message: { type: String, required: false },
         price: { type: Number, required: false },
-        qty: { type: Number, required: true },
+        qty: { type: Number, required: false },
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          required: true,
+          required: false,
           ref: "Product"
         }
       }

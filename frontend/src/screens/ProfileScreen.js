@@ -41,7 +41,7 @@ const ProfileScreen = ({ history }) => {
       history.push("/login")
     } else {
       // if (successUpdate) dispatch({ type: USER_UPDATE_PROFILE_RESET })
-      if (user && user.name) {
+      if (user && user.email) {
         setName(user.name)
         setEmail(user.email)
         setPhone(user.phone)
@@ -95,8 +95,8 @@ const ProfileScreen = ({ history }) => {
                   <Form.Control type="text" placeholder="Enter Name" value={name} autoComplete="name" onChange={e => setName(e.target.value)}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="email">
-                  <Form.Label>Email Address</Form.Label>
-                  <Form.Control type="email" placeholder="Enter Email" value={email} autoComplete="email" onChange={e => setEmail(e.target.value)}></Form.Control>
+                  <Form.Label required>Email Address</Form.Label>
+                  <Form.Control required type="email" placeholder="Enter Email" value={email} autoComplete={email} onChange={e => setEmail(e.target.value)}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="phone">
                   <Form.Label>Phone Number</Form.Label>

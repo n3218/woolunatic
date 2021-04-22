@@ -1,5 +1,11 @@
 import React from "react"
 
+export const OptionsForCompressingImages = {
+  maxWidthOrHeight: 1024,
+  maxSizeMB: 0.5,
+  useWebWorker: true
+}
+
 export const PaymentStatus = ({ paymentStatus }) => {
   const badges = {
     paid: "success",

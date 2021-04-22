@@ -155,7 +155,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   if (user) {
     user.name = req.body.name || user.name
     user.email = req.body.email || user.email
-    user.storecredit = req.body.storecredit || user.storecredit
+    user.storecredit = Number(req.body.storecredit.replace(/[,]+/g, ".").replace(/[ €Ū]+/g, "")).toFixed(2) || user.storecredit
     user.address = req.body.address || user.address
     if (req.body.isAdmin === false) {
       user.isAdmin = req.body.isAdmin
