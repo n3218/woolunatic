@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
-import { itemRow, ifStorecredit, infoBlock } from "./mailComponents.js"
+import { itemRow, ifStorecredit, infoBlock, userButtons } from "./mailComponents.js"
 
 dotenv.config()
 
@@ -22,7 +22,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
   })
 
   const mailOptions = {
-    from: `Order WOOLUNATICS <${ORDERS_EMAIL}>`,
+    from: `WOOLUNATICS Order <${ORDERS_EMAIL}>`,
     to: `${order.user.email}`,
     subject: `Thank you for your order!`,
     envelope: {
@@ -54,17 +54,6 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
             ORDER DETAILS (total ${order.orderItems.length} items):
           </div>
           <table style="width: 100%; border: 1px solid gray; font-weight: 200">
-            <thead>
-              <tr style="border-bottom: 1px solid gray; height: 24px; font-size: 10px;">
-                <th><i></i></th>
-                <th><i>art.</i></th>
-                <th><i>fibers,%</i></th>
-                <th><i>weight,g</i></th>
-                <th><i>m/100gr</i></th>
-                <th><i>€/100gr</i></th>
-                <th><i>price</i></th>
-              </tr>
-            </thead>
             <tbody>
               ${order.orderItems.map(item => itemRow(item))}
               <tr style="height: 30px;"></tr>
@@ -94,16 +83,8 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
 
           <hr style="border-top: 2px solid #e2e4e8;" />
 
-          <div align="center">
-            <table cellpadding="15">
-              <tbody>
-                <tr>
-                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/orders/${order.id}" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to your Order</a></div></td>
-                  <td style="width:50%"><div style="width:100%; padding:10px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/profile" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to your Profile</a></div></td>
-                </tr>
-              </tbody>
-            </table>  
-          </div>          
+          ${userButtons(order)}
+                  
         </div>
       </div>
     </div>

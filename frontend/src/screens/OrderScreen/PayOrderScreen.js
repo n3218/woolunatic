@@ -60,7 +60,7 @@ const PayOrderScreen = ({ match, history }) => {
         const data = {
           totalPrice: order.totalPrice,
           currency: "EUR",
-          description: `Order #${order._id}`,
+          description: `Order #${order.orderId}`,
           orderId: order._id
         }
         console.log("proceedMollyPayment: data: ", data)

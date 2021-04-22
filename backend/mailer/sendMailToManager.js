@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
-import { itemRowCompact, ifStorecredit, infoBlock } from "./mailComponents.js"
+import { itemRowCompact, ifStorecredit, infoBlock, footer } from "./mailComponents.js"
 
 dotenv.config()
 
@@ -91,11 +91,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
         </div>
       </div>
     </div>
-    <footer style="background-color:#81869c; color: #f0f3f7; padding:30px;" align="center">
-      <div>Copyright © Woolunatics 2021</div>
-      <div><a href="mailto: woolunatics.nl@google.com" style="text-decoration:none; color:#f0f3f7" target="_blank" rel="noreferrer">woolunatics.nl@google.com</a></div>
-      <div><small>Groningen, Netherlands</small></div>
-    </footer>`
+    ${footer}`
   }
 
   await transporter.sendMail(mailOptions, (error, info) => {

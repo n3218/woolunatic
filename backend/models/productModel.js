@@ -45,16 +45,16 @@ const productSchema = mongoose.Schema(
     numReviews: { type: Number, required: false, default: 0 },
     minimum: { type: Number, required: false, default: 0 },
     inStock: { type: String, required: false, default: "" },
-    onHold: [holdsSchema],
     outOfStock: { type: Boolean, required: false, default: false },
-    novelty: { type: Boolean, required: false, default: false },
-    inSale: { type: Boolean, required: false, default: false },
-    regular: { type: Boolean, required: false, default: false },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User"
-    }
+    },
+    onHold: [holdsSchema],
+    novelty: { type: Boolean, required: false, default: false },
+    inSale: { type: Boolean, required: false, default: false },
+    regular: { type: Boolean, required: false, default: false }
   },
   {
     timestamps: true

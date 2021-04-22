@@ -44,7 +44,7 @@ const ShippingScreen = ({ history }) => {
   return (
     <CartLayout history={history} checkoutStep={checkoutStep} title="Shipping" shippingPrice={shippingPrice}>
       <ListGroup variant="flush">
-        <ShippingSection cart={cart} checkoutStep={checkoutStep} userInfo={userInfo}>
+        <ShippingSection order={cart} checkoutStep={checkoutStep} userInfo={userInfo}>
           <Form onSubmit={submitShippingHandler}>
             <ShippingOptions //
               cart={cart}

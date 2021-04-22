@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
+import { footer } from "./mailComponents.js"
 
 dotenv.config()
 
@@ -20,7 +21,7 @@ export const sendMailWithResetPasswordConfirmation = asyncHandler(async ({ email
   })
 
   const mailOptions = {
-    from: `WOOLUNATICS <${ORDERS_EMAIL}>`,
+    from: `WOOLUNATICS Updated Password <${ORDERS_EMAIL}>`,
     to: email,
     subject: `Password reset confirmed on WOOLUNATICS.`,
     envelope: {
@@ -53,11 +54,7 @@ export const sendMailWithResetPasswordConfirmation = asyncHandler(async ({ email
         </div>          
       </div>
     </div>
-    <footer style="background-color:#81869c; color: #f0f3f7; padding:30px;" align="center">
-      <div>Copyright © Woolunatics 2021</div>
-      <div><a href="mailto: woolunatics.nl@google.com" style="text-decoration:none; color:#f0f3f7" target="_blank" rel="noreferrer">woolunatics.nl@google.com</a></div>
-      <div><small>Groningen, Netherlands</small></div>
-    </footer>
+    ${footer}
     `
   }
 

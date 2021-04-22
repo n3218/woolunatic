@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, ListGroup, Button, Table } from "react-bootstrap"
+import { Row, Col, ListGroup, Button, Table, Form } from "react-bootstrap"
 import Loader from "../../components/Loader"
 import Message from "../../components/Message"
 import { getOrderDetailsAction, deliverOrderAction } from "../../actions/orderActions"
@@ -27,7 +27,10 @@ const OrderScreen = ({ match, history }) => {
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const method = useSelector(state => state.paymentMethod)
+
   const [paymentMethod, setPaymentMethod] = useState(method || "")
+  const [shippingCode, setShippingCode] = useState("")
+  const [shippingLink, setShippingLink] = useState("")
 
   useEffect(() => {
     if (!userInfo) {
@@ -46,8 +49,9 @@ const OrderScreen = ({ match, history }) => {
     }
   }, [dispatch, order, orderId, successDeliver, successPay])
 
-  const deliverHandler = () => {
-    dispatch(deliverOrderAction(order))
+  const deliverHandler = e => {
+    e.preventDefault()
+    dispatch(deliverOrderAction(order, shippingCode, shippingLink))
   }
 
   return loading || loadingPay ? (
@@ -61,7 +65,7 @@ const OrderScreen = ({ match, history }) => {
       <Row>
         <Col md={9} xs={12}>
           <ListGroup variant="flush">
-            <ShippingSection cart={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
+            <ShippingSection order={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
             <PaymentSection order={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
             <ListGroup.Item>
               <h4>ORDER ITEMS</h4>
@@ -129,9 +133,19 @@ const OrderScreen = ({ match, history }) => {
             {loadingDeliver && <Loader />}
             {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
               <ListGroup.Item>
-                <Button type="button" className="btn-success btn-block bg-blue my-3" onClick={deliverHandler}>
-                  Mark as shipped
-                </Button>
+                <Form onSubmit={deliverHandler}>
+                  <Form.Group controlId="shippingCode">
+                    <Form.Label>Shipping Code</Form.Label>
+                    <Form.Control type="text" placeholder="Enter Code" value={shippingCode} autoComplete={shippingCode} onChange={e => setShippingCode(e.target.value)}></Form.Control>
+                  </Form.Group>
+                  <Form.Group controlId="shippinhLink">
+                    <Form.Label>Shipping Link</Form.Label>
+                    <Form.Control type="text" placeholder="Enter Link" value={shippingLink} autoComplete={shippingLink} onChange={e => setShippingLink(e.target.value)}></Form.Control>
+                  </Form.Group>
+                  <Button type="sybmit" className="btn-success btn-block bg-blue my-3">
+                    Mark as shipped
+                  </Button>
+                </Form>
               </ListGroup.Item>
             )}
           </OrderSummary>

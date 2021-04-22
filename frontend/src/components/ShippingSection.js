@@ -1,9 +1,10 @@
 import React from "react"
 import { ListGroup, Row, Col } from "react-bootstrap"
 import Message from "./Message"
+import { OrderDetailsRow } from "./Utils"
 
-const ShippingSection = ({ children, checkoutStep, userInfo, cart }) => {
-  const op = cart && cart.shippingAddress && cart.shippingAddress.shippingOption && cart.shippingAddress.shippingOption
+const ShippingSection = ({ children, checkoutStep, userInfo, order }) => {
+  const op = order && order.shippingAddress && order.shippingAddress.shippingOption && order.shippingAddress.shippingOption
   return (
     <ListGroup.Item>
       <Row>
@@ -18,15 +19,15 @@ const ShippingSection = ({ children, checkoutStep, userInfo, cart }) => {
               <div>
                 <a href={`mailto:${userInfo.email}`}>{userInfo.email}</a>
               </div>
-              {cart && cart.shippingAddress && (
+              {order && order.shippingAddress && (
                 <>
-                  {cart.shippingAddress.phone && <div>{cart.shippingAddress.phone}</div>}
+                  {order.shippingAddress.phone && <div>{order.shippingAddress.phone}</div>}
                   <div>{userInfo.name}</div>
-                  {cart.shippingAddress.address && <div>{cart.shippingAddress.address}</div>}
+                  {order.shippingAddress.address && <div>{order.shippingAddress.address}</div>}
                   <div>
-                    {cart.shippingAddress.city && cart.shippingAddress.city + ", "}
-                    {cart.shippingAddress.zipCode && cart.shippingAddress.zipCode + ", "}
-                    {cart.shippingAddress.country !== "" && cart.shippingAddress.country}
+                    {order.shippingAddress.city && order.shippingAddress.city + ", "}
+                    {order.shippingAddress.zipCode && order.shippingAddress.zipCode + ", "}
+                    {order.shippingAddress.country !== "" && order.shippingAddress.country}
                   </div>
                   {op && (
                     <div>
@@ -41,7 +42,25 @@ const ShippingSection = ({ children, checkoutStep, userInfo, cart }) => {
                       )}
                     </div>
                   )}
-                  {checkoutStep === "order" && <div className="my-3">{cart.isDelivered ? <Message variant="success">Shipped on {new Date(cart.deliveredAt).toString()}</Message> : <Message variant="warning">Not shipped</Message>}</div>}
+                  {checkoutStep === "order" && (
+                    <div className="my-3">
+                      {order.isDelivered ? (
+                        <>
+                          <Message variant="success">Shipped on {new Date(order.deliveredAt).toString()}</Message>
+                          {order.shippingAddress.shippingOption.shippingCode && <OrderDetailsRow name="Shipping Code">{order.shippingAddress.shippingOption.shippingCode}</OrderDetailsRow>}
+                          {order.shippingAddress.shippingOption.shippingLink && (
+                            <OrderDetailsRow name="Shipping Link">
+                              <a href={order.shippingAddress.shippingOption.shippingLink} target="_blank" rel="noreferrer">
+                                {order.shippingAddress.shippingOption.shippingLink}
+                              </a>
+                            </OrderDetailsRow>
+                          )}
+                        </>
+                      ) : (
+                        <Message variant="warning">Not shipped</Message>
+                      )}
+                    </div>
+                  )}
                 </>
               )}
             </>

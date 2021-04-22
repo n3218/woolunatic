@@ -3,7 +3,7 @@ import { Form, Col, Row, ListGroup, Card } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { savePaymentMethodAction } from "../../actions/cartActions"
 import Message from "../Message"
-import { PaymentStatus } from "../Utils"
+import { PaymentStatus, OrderDetailsRow, showLink } from "../Utils"
 import "./PaymentSection.css"
 
 const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPaymentMethod }) => {
@@ -25,25 +25,6 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
       onChange={onSelectPaymentMethod}
     ></Form.Check>
   )
-
-  const showLinks = links => {
-    const arr = JSON.parse(links)
-    console.log("arr: ", arr)
-    return Object.keys(arr).map(key => (
-      <Row key={key}>
-        <Col xs={4} sm={6} lg={4} className="p-0 m-0">
-          <small>
-            <i>{key}: </i>
-          </small>
-        </Col>
-        <Col className="m-0 p-0">
-          <a href={arr[key].href} target="_blank" rel="noreferrer">
-            {arr[key].href.substring(0, 20)}...
-          </a>
-        </Col>
-      </Row>
-    ))
-  }
 
   return (
     <ListGroup.Item>
@@ -80,31 +61,21 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
             <>
               <Message variant="success">Paid on {new Date(order.paidAt).toString()}</Message>
               {order.paymentMethod && (
-                <PaymentRow name="Payment Method">
-                  <span className="text-capitalize">{order.paymentMethod}</span>
-                </PaymentRow>
+                <OrderDetailsRow name="Payment Method" className="text-capitalize">
+                  {order.paymentMethod}
+                </OrderDetailsRow>
               )}
-              <PaymentRow name="Payment ID">{order.paymentResult.id}</PaymentRow>
-              <PaymentRow name="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</PaymentRow>
-              {order.paymentResult && order.paymentResult.email && <PaymentRow name="Email"> {order.paymentResult.email}</PaymentRow>}
-              {userInfo && userInfo.isAdmin && <PaymentRow name="Links">{order.paymentResult.links && showLinks(order.paymentResult.links)}</PaymentRow>}
+              <OrderDetailsRow name="Payment ID">{order.paymentResult.id}</OrderDetailsRow>
+              <OrderDetailsRow name="Status">{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</OrderDetailsRow>
+              {order.paymentResult && order.paymentResult.email && <OrderDetailsRow name="Email"> {order.paymentResult.email}</OrderDetailsRow>}
+
+              {userInfo && userInfo.isAdmin && order.paymentResult.links && <OrderDetailsRow name="Links">{showLink(order.paymentResult.links)}</OrderDetailsRow>}
             </>
           )}
           {checkoutStep === "order" && !order.isPaid && checkoutStep !== "payment" && <Message variant="warning">Not Paid</Message>}
         </Col>
       </Row>
     </ListGroup.Item>
-  )
-}
-
-const PaymentRow = ({ name, children }) => {
-  return (
-    <Row>
-      <Col xl={2} xs={2} className="mr-2 h6 mb-0">
-        {name}
-      </Col>
-      <Col className="p-0 m-0">{children}</Col>
-    </Row>
   )
 }
 

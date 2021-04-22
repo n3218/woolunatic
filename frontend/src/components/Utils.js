@@ -55,3 +55,24 @@ export const calculateWeight = items => {
       : itemsWeight < 20000 && itemsWeight + 1200 + items.length * 45
   return { itemsWeight, totalWeight }
 }
+
+export const OrderDetailsRow = ({ name, children, className }) => {
+  return (
+    <div>
+      <span className={`mr-2 h6 mb-0 ${className}`}>{name}: </span>
+      <span className="p-0 m-0"> {children}</span>
+    </div>
+  )
+}
+
+export const showLink = links => {
+  const arr = JSON.parse(links)
+  console.log("arr: ", arr)
+  return Object.keys(arr).map(key => (
+    <div className="ml-5 p-0" key={key}>
+      <a href={arr[key].href} target="_blank" rel="noreferrer">
+        {key}
+      </a>
+    </div>
+  ))
+}

@@ -10,6 +10,7 @@ import Order from "../models/orderModel.js"
 import Product from "../models/productModel.js"
 import Cart from "../models/cartModel.js"
 import User from "../models/userModel.js"
+import { sendOrderShipmentConfirmation } from "../mailer/sendOrderShipmentConfirmation.js"
 
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
@@ -106,11 +107,20 @@ export const getOrders = asyncHandler(async (req, res) => {
 // @route GET /api/orders/:id/deliver
 // @access Private/Admin
 export const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate("user", "name email phone")
+  const id = req.params.id
+  console.log("req.body: ", req.body)
+  const { shippingCode, shippingLink } = req.body
+  const order = await Order.findById(id).populate("user", "name email phone")
   if (order) {
     order.isDelivered = true
     order.deliveredAt = Date.now()
+    order.shippingAddress.shippingOption.shippingCode = shippingCode
+    order.shippingAddress.shippingOption.shippingLink = shippingLink
     const updatedOrder = await order.save()
+
+    // Send Email Confirmation to customer
+    await sendOrderShipmentConfirmation(updatedOrder).catch(err => console.error("Error on sendOrderShipmentConfirmation: ", err))
+
     res.json(updatedOrder)
   } else {
     res.status(404)

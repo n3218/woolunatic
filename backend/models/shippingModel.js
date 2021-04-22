@@ -5,8 +5,8 @@ const shippingSchema = mongoose.Schema({
   local: { type: String, required: true },
   options: [
     {
-      minWeight: { type: Number, required: true, default: 0 },
-      maxWeight: { type: Number, required: true, default: 0 },
+      minWeight: { type: Number, required: false, default: 0 },
+      maxWeight: { type: Number, required: false, default: 0 },
       operator: { type: String, required: false, default: "" },
       cost: { type: Number, required: false, default: 0 }
     }

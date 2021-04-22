@@ -2,7 +2,6 @@ import asyncHandler from "express-async-handler"
 import sharp from "sharp"
 import Product from "../models/productModel.js"
 import bucket from "../config/bucket.js"
-
 import dotenv from "dotenv"
 dotenv.config()
 

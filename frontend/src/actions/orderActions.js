@@ -120,7 +120,7 @@ export const listOrdersAction = (pageNumber = "") => async (dispatch, getState) 
   }
 }
 
-export const deliverOrderAction = order => async (dispatch, getState) => {
+export const deliverOrderAction = (order, shippingCode, shippingLink) => async (dispatch, getState) => {
   try {
     dispatch({ type: ORDER_DELIVER_REQUEST })
     const {
@@ -131,7 +131,11 @@ export const deliverOrderAction = order => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const { data } = await axios.put(`/api/orders/${order._id}/deliver`, {}, config)
+    const input = {
+      shippingCode,
+      shippingLink
+    }
+    const { data } = await axios.put(`/api/orders/${order._id}/deliver`, input, config)
     dispatch({ type: ORDER_DELIVER_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
