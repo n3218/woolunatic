@@ -284,7 +284,7 @@ export const startCheckout = asyncHandler(async (req, res) => {
       cart.items.map(async item => {
         const product = await Product.findById(item.product)
         if (product) {
-          console.log("-------------------------------- product._id: ", product._id)
+          console.log("--------------------------------startCheckout: product._id: ", product._id)
           if (!prodMap[product._id]) {
             prodMap[product._id] = product
           }
@@ -299,7 +299,7 @@ export const startCheckout = asyncHandler(async (req, res) => {
           console.log("prodMap[product._id].outOfStock: ", prodMap[product._id].outOfStock)
           console.log("prodMap[product._id].inStock: ", prodMap[product._id].inStock)
 
-          if (arr.length === 1 && arr[0] === item.qty) {
+          if (arr.length === 1 && Number(arr[0]) === Number(item.qty)) {
             //--------------------------------------- if only one weight is in Stock and is equal item.qty
             console.log("arr.length: ", arr.length)
             console.log("arr.length === 1: ", arr.length === 1)

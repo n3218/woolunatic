@@ -230,6 +230,15 @@ main {
   .jumbotron {
     padding: 1rem 1rem;
   }
+  .footer-payments-image {
+    width: 300px;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .footer-payments-image {
+    width: 250px;
+  }
 }
 
 .row {
@@ -443,4 +452,9 @@ label {
   color: #fff;
   text-decoration: none;
   background-color: var(--green);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  margin-top: 5px;
 }

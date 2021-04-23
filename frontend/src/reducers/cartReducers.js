@@ -16,9 +16,10 @@ import {
   START_CHECKOUT_SUCCESS,
   START_CHECKOUT_FAIL,
   START_CHECKOUT_RESET,
+  CART_SAVE_SHIPPING_ADDRESS,
+  CART_RESET_SHIPPING_ADDRESS,
   //
   CART_SAVE_PAYMENT_METHOD,
-  CART_SAVE_SHIPPING_ADDRESS,
   CART_CLEAN_ITEMS,
   CART_CLEAR_ITEMS
 } from "../constants/cartConstants"
@@ -153,6 +154,11 @@ export const cartReducer = (state = { items: [] }, action) => {
       return {
         ...state,
         shippingAddress: action.payload
+      }
+    case CART_RESET_SHIPPING_ADDRESS:
+      return {
+        ...state,
+        shippingAddress: {}
       }
     case CART_SAVE_PAYMENT_METHOD:
       return {

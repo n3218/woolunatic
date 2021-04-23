@@ -30,7 +30,8 @@ export const createNewOrder = asyncHandler(async (req, res) => {
     storecredit,
     totalPrice,
     itemsWeight,
-    totalWeight
+    totalWeight,
+    comment
   } = req.body
   if (orderItems && orderItems.length === 0) {
     res.status(400)
@@ -47,7 +48,8 @@ export const createNewOrder = asyncHandler(async (req, res) => {
       storecredit,
       totalPrice,
       itemsWeight,
-      totalWeight
+      totalWeight,
+      comment
     })
     try {
       const createdOrder = await order.save()

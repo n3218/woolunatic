@@ -11,7 +11,7 @@ import OrderSummary from "../../components/OrderSummary"
 import OrderWeightsSummary from "../../components/OrderWeightsSummary"
 import ShippingSection from "../../components/ShippingSection"
 import PaymentSection from "../../components/PaymentSection/PaymentSection"
-import { GET_CART_RESET } from "../../constants/cartConstants"
+import { CART_RESET_SHIPPING_ADDRESS, GET_CART_RESET } from "../../constants/cartConstants"
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id
@@ -46,6 +46,7 @@ const OrderScreen = ({ match, history }) => {
     if (successPay) {
       dispatch({ type: ORDER_PAY_RESET })
       dispatch({ type: GET_CART_RESET })
+      dispatch({ type: CART_RESET_SHIPPING_ADDRESS })
     }
   }, [dispatch, order, orderId, successDeliver, successPay])
 

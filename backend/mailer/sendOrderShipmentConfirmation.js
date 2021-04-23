@@ -44,8 +44,8 @@ export const sendOrderShipmentConfirmation = asyncHandler(async orderData => {
         ${
           order.shippingAddress.shippingOption.shippingCode &&
           `
-            <div style="font-size: 18px; font-weight: 600; margin-top: 30px;"">Track & Trace Number:</div>
-            <div style="font-size: 20px; margin-bottom: 30px;">${order.shippingAddress.shippingOption.shippingCode}</div>
+            <div style="font-size: 18px; font-weight: 600; margin-top: 30px;">Track & Trace Number:</div>
+            <div style="font-size: 18px; margin-bottom: 30px;">${order.shippingAddress.shippingOption.shippingCode}</div>
           `
         }
         ${

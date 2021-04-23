@@ -20,14 +20,18 @@ const CartScreen = ({ match, history }) => {
 
   useEffect(() => {
     if (productId) {
+      console.log("CartScreen: productId: ", productId)
       if (userInfo) {
+        console.log("CartScreen: IF userInfo: ", userInfo)
         dispatch(cartAddItemAction(productId, qty))
       } else {
+        console.log("CartScreen: ELSE userInfo: ", userInfo)
         dispatch(cartLocalAddItemAction(productId, qty))
       }
     } else {
+      console.log("CartScreen: ELSE: productId: ", productId)
       if (userInfo) {
-        console.log("getCartAction: userInfo.")
+        console.log("CartScreen: userInfo: ", userInfo)
         dispatch(getCartAction())
       }
     }

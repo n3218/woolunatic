@@ -22,6 +22,7 @@ const ProductScreen = ({ history, match }) => {
   const [comment, setComment] = useState("")
   const [initialImages, setInitialImages] = useState([])
   const [inStockArr, setInStockArr] = useState([])
+
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const productDetails = useSelector(state => state.productDetails)

@@ -19,7 +19,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray py-3">
-      <div className="mt-5 pl-5">
+      <div className="mt-5">
         <Row>
           <Col md={6} sm={12} className="pb-5 text-center">
             <div className="text-left ml-5">
@@ -110,11 +110,11 @@ const Footer = () => {
 
         <hr />
         <Row>
-          <Col className="text-center">
+          <Col className="text-center" xs={12} sm={4}>
             <small>© 2021 All rights reserved.</small>
           </Col>
           <Col className="text-center">
-            <img src={`/assets/payments/payments.png`} alt="payment methods" />
+            <img src={`/assets/payments/payments.png`} alt="payment methods" className="footer-payments-image" />
           </Col>
         </Row>
       </div>

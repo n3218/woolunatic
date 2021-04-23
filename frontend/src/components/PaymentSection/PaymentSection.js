@@ -32,25 +32,25 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
         <Col lg={3} md={3} sm={3} className="pl-0">
           <h4>PAYMENT METHOD</h4>
         </Col>
-        <Col>
+        <Col className="pl-0 pt-0">
           {(checkoutStep === "payment" || (checkoutStep === "order" && !order.isPaid)) && (
-            <Form className="mb-3">
-              <Form.Group>
+            <Form className="mb-3 mt-0 pt-0">
+              <Form.Group className="mt-2">
                 <Row>
-                  <Col xs={6} xl={6}>
-                    <Card bg="light">
+                  <Col xs={6} xl={6} className="pl-0 pr-2 pt-0">
+                    <Card bg="light" style={{ height: "100%" }}>
                       <Card.Header className="text-center">
                         <img src="/assets/payments/mollie-all.jpeg" alt="mollie-ideal" style={{ width: "100%" }} />
                       </Card.Header>
-                      <Card.Body className="text-center">{radioButton("Mollie", "Mollie")}</Card.Body>
+                      <Card.Body className="text-center py-2">{radioButton("Mollie", "Mollie")}</Card.Body>
                     </Card>
                   </Col>
-                  <Col xs={6} xl={6}>
-                    <Card bg="light">
+                  <Col xs={6} xl={6} className="pl-2 pr-0">
+                    <Card bg="light" style={{ height: "100%" }}>
                       <Card.Header className="text-center">
                         <img src="/assets/payments/pay.png" alt="paypal" style={{ width: "100%" }} />
                       </Card.Header>
-                      <Card.Body className="text-center">{radioButton("PayPal", "PayPal")}</Card.Body>
+                      <Card.Body className="text-center py-2">{radioButton("PayPal", "PayPal")}</Card.Body>
                     </Card>
                   </Col>
                 </Row>

@@ -16,7 +16,7 @@ export const itemRowCompact = item => {
   </td>
   <td style="text-align: center;">${item.brand}</td>
   <td style="text-align: center;">${item.name}</td>
-  <td style="text-align: center;">${item.color.replace(/_+/g, " ")}</td>
+  <td style="text-align: center;">${item.color}</td>
   <td style="text-align: center;">${item.fibers}</td>
   <td style="text-align: center;">${item.qty}</td>
   <td style="text-align: center;">${item.meterage}</td>
@@ -54,7 +54,7 @@ export const itemRowCompact = item => {
 
 export const itemRow = item => {
   return `<tr style="border: 1px solid #9AABBD">
-  <td style="text-align: center; ">
+  <td style="text-align: center;">
     <div style="vertical-align: top;">
       <a target="_blank" rel="noreferrer" href="${DOMAIN_NAME}/products/${item.product}">
         <img src="${process.env.GCLOUD_STORAGE_URL}/${process.env.GCLOUD_BUCKET}/minithumbs/${item.image}" alt=${item.art} width="80" height"80" />
@@ -172,35 +172,36 @@ export const infoBlock = order => {
 export const shippingDetails = order => {
   return `
     <div style="font-size: 18px; font-weight: 300;" align="left">SHIPPING DETAILS:</div>
-      <div>
-        <table>
-          <tbody>
-            <tr>
-              <td style="text-align: right; font-size: 12px; font-weight: 300;">email: </td>
-              <td style="font-size: 12px; font-weight: 300; text-decoration:none; color:#417d97">
-                <a href="mailto:" style="text-decoration:none; color:#417d97;">
-                  ${order.user.email}
-                </a>
-              </td>
-            </tr>
-            ${order.shippingAddress.phone && ifNotEmpty("phone", order.shippingAddress.phone)}
-            <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">name: </td><td style="font-size: 12px; font-weight: 300;"> ${order.user.name}</td></tr>
-            ${order.shippingAddress.address && ifNotEmpty("address", order.shippingAddress.address)}
-            ${order.shippingAddress.city && ifNotEmpty("city", order.shippingAddress.city)}
-            ${order.shippingAddress.zipCode && ifNotEmpty("zipCode", order.shippingAddress.zipCode)}
-            ${order.shippingAddress.country && ifNotEmpty("country", order.shippingAddress.country)}
-            ${order.isDelivered && ifNotEmpty("Ship date", String(order.updatedAt).slice(0, 16))}
-            ${order.isDelivered && ifNotEmpty("Shipped via", order.shippingAddress.shippingOption.operator)}
-            ${order.shippingAddress.shippingOption.shippingCode && ifNotEmpty("Tracking#", order.shippingAddress.shippingOption.shippingCode)}
-          </tbody>
-        </table>
-      </div>
-      ${pickUp(order.shippingPrice, order.shippingAddress.shippingOption.operator)}
+    <div>
+      <table>
+        <tbody>
+          <tr><td style="text-align: right; font-size: 12px; font-weight: 300;">name: </td><td style="font-size: 12px; font-weight: 300;"> ${order.user.name}</td></tr>
+          ${order.shippingAddress.address && ifNotEmpty("address", order.shippingAddress.address)}
+          ${order.shippingAddress.city && ifNotEmpty("city", order.shippingAddress.city)}
+          ${order.shippingAddress.zipCode && ifNotEmpty("zipCode", order.shippingAddress.zipCode)}
+          ${order.shippingAddress.country && ifNotEmpty("country", order.shippingAddress.country)}
+          ${order.shippingAddress.phone && ifNotEmpty("phone", order.shippingAddress.phone)}
+          <tr>
+            <td style="text-align: right; font-size: 12px; font-weight: 300;">email: </td>
+            <td style="font-size: 12px; font-weight: 300; text-decoration:none; color:#417d97">
+              <a href="mailto:" style="text-decoration:none; color:#417d97;">
+                ${order.user.email}
+              </a>
+            </td>
+          </tr>
+          ${ifNotEmpty("Ship date", String(order.updatedAt).slice(0, 16))}
+          ${ifNotEmpty("Shipped via", order.shippingAddress.shippingOption.operator)}
+          ${order.shippingAddress.shippingOption.shippingCode && ifNotEmpty("Tracking#", order.shippingAddress.shippingOption.shippingCode)}
+          ${order.comment && ifNotEmpty("Comment", order.comment)}
+        </tbody>
+      </table>
+    </div>
+    ${pickUp(order.shippingPrice, order.shippingAddress.shippingOption.operator)}
   `
 }
 
 export const footer = `
-  <footer style="background-color:#81869c; color: #f0f3f7; padding:30px;" align="center">
+  <footer style="background-color:#81869c; color: #f0f3f7; padding:30px; font-size: 12px; font-weight: 300;" align="center">
     <div>Copyright © Woolunatics 2021</div>
     <div><a href="mailto: woolunatics.nl@google.com" style="text-decoration:none; color:#f0f3f7" target="_blank" rel="noreferrer">woolunatics.nl@google.com</a></div>
   </footer>
@@ -209,8 +210,8 @@ export const footer = `
 export const userButtons = order => {
   return `
     <div style="display:flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
-      <div style="padding:10px 20px; margin: 10px 20px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/orders/${order.id}" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to your Order</a></div>
-      <div style="padding:10px 20px; margin: 10px 20px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/profile" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to your Profile</a></div>
+      <div style="padding:10px 30px; margin: 10px 20px 0px 20px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/orders/${order.id}" style="color:#f0f3f7; text-decoration:none; font-size: 12px; font-weight: 300;" target="_blank" rel="noreferrer">Go to your Order</a></div>
+      <div style="padding:10px 30px; margin: 10px 20px 0px 20px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/profile" style="color:#f0f3f7; text-decoration:none; font-size: 12px; font-weight: 300;" target="_blank" rel="noreferrer">Go to your Profile</a></div>
     </div>
   `
 }

@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
-import { itemRow, ifStorecredit, infoBlock, userButtons } from "./mailComponents.js"
+import { itemRow, ifStorecredit, infoBlock, userButtons, footer } from "./mailComponents.js"
 
 dotenv.config()
 
@@ -25,10 +25,6 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
     from: `WOOLUNATICS Order <${ORDERS_EMAIL}>`,
     to: `${order.user.email}`,
     subject: `Thank you for your order!`,
-    envelope: {
-      from: `WOOLUNATICS <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
-      to: `${order.user.email}` // used as RCPT TO: address for SMTP
-    },
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
@@ -56,7 +52,6 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
           <table style="width: 100%; border: 1px solid gray; font-weight: 200">
             <tbody>
               ${order.orderItems.map(item => itemRow(item))}
-              <tr style="height: 30px;"></tr>
             </tbody>
           </table>
         </div>
@@ -88,12 +83,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
         </div>
       </div>
     </div>
-    <footer style="background-color:#81869c; color: #f0f3f7; padding:30px;" align="center">
-      <div>Copyright © Woolunatics 2021</div>
-      <div><a href="mailto: woolunatics.nl@google.com" style="text-decoration:none; color:#f0f3f7" target="_blank" rel="noreferrer">woolunatics.nl@google.com</a></div>
-      <div><small>Groningen, Netherlands</small></div>
-    </footer>
-    `
+    ${footer}`
   }
 
   await transporter.sendMail(mailOptions, (error, info) => {

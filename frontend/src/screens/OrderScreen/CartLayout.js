@@ -28,20 +28,21 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const [checkout, setCheckout] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
 
-  useEffect(() => {
-    if (!cart.user) {
-      dispatch(getCartAction())
-      setWarning(false)
-    }
-  }, [dispatch, cart.user])
+  // useEffect(() => {
+  //   if (!cart.user) {
+  //     dispatch(getCartAction())
+  //     setWarning(false)
+  //   }
+  // }, [dispatch, cart.user])
 
   useEffect(() => {
     if (checkoutStep !== "cart" && !userInfo) {
-      if (redirect) {
-        history.push(`/login?redirect=${redirect}`)
-      } else {
-        history.push(`/login`)
-      }
+      console.log("CartLayout: checkoutStep: ", checkoutStep)
+      // if (redirect) {
+      //   history.push(`/login?redirect=${redirect}`)
+      // } else {
+      //   history.push(`/login`)
+      // }
     }
   }, [cart, history, redirect, userInfo, dispatch, checkoutStep])
 
@@ -117,7 +118,8 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
         storecredit: summary.storecredit,
         totalPrice: summary.totalPrice,
         itemsWeight: summary.itemsWeight,
-        totalWeight: summary.totalWeight
+        totalWeight: summary.totalWeight,
+        comment: cart.shippingAddress.comment
       })
     )
   }
@@ -151,7 +153,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
       {items && items.length > 0 && !(cartSuccess && isChecked && checkout) && (
         <Row>
-          <Col md={9} xs={12}>
+          <Col md={9} xs={12} className="px-0">
             {/* --------------------------------------------------------------------SHIPPING/PAYMENT CONTENT */}
             {children && checkoutStep !== "cart" && children}
             {/* --------------------------------------------------------------------ORDER ITEMS */}
@@ -167,7 +169,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
             <OrderWeightsSummary order={summary} />
             {checkoutStep === "cart" && children}
           </Col>
-          <Col>
+          <Col className="px-3 py-3">
             {/* --------------------------------------------------------------------ORDER SUMMARY */}
             <OrderSummary cart={summary} summary={summary} items={items} checkoutStep={checkoutStep} history={history} userInfo={userInfo}>
               {checkoutStep === "cart" && (

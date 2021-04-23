@@ -13,14 +13,15 @@ const ShippingScreen = ({ history }) => {
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
   const { user, shippingAddress } = cart
+
   const [address, setAddress] = useState("")
   const [city, setCity] = useState("")
   const [zipCode, setZipCode] = useState("")
   const [country, setCountry] = useState("")
   const [phone, setPhone] = useState("")
-
   const [shippingOption, setShippingOption] = useState({ cost: 0, operator: "PICKUP" })
   const [shippingPrice, setShippingPrice] = useState(0)
+  const [comment, setComment] = useState("")
 
   useEffect(() => {
     setAddress(user && user.address ? user.address.address : "")
@@ -28,14 +29,15 @@ const ShippingScreen = ({ history }) => {
     setZipCode(user && user.address ? user.address.zipCode : "")
     // setCountry(user && user.address ? user.address.country : "")
     setPhone(user && user.phone ? user.phone : "")
+    setComment(shippingAddress && shippingAddress.comment ? shippingAddress.comment : "")
   }, [shippingAddress, user])
 
   const submitShippingHandler = e => {
     e.preventDefault()
     if (country === "") {
-      dispatch(saveShippingAddressAction({ address, city, zipCode, country, phone, shippingOption }))
+      dispatch(saveShippingAddressAction({ address, city, zipCode, country, phone, shippingOption, comment }))
     } else {
-      dispatch(saveShippingAddressAction({ address, city, zipCode, country, phone, shippingOption }))
+      dispatch(saveShippingAddressAction({ address, city, zipCode, country, phone, shippingOption, comment }))
     }
     dispatch(savePaymentMethodAction(""))
     history.push("/checkout/payment")
@@ -99,6 +101,17 @@ const ShippingScreen = ({ history }) => {
                 value={phone}
                 required={shippingPrice > 0}
                 onChange={e => setPhone(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="comment">
+              <Form.Label>Comment</Form.Label>
+              <Form.Control //
+                as="textarea"
+                rows={3}
+                placeholder="Enter your comment"
+                value={comment}
+                onChange={e => setComment(e.target.value)}
               ></Form.Control>
             </Form.Group>
 

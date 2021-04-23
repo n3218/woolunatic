@@ -71,7 +71,7 @@ export const showLink = links => {
   return Object.keys(arr).map(key => (
     <div className="ml-5 p-0" key={key}>
       <a href={arr[key].href} target="_blank" rel="noreferrer">
-        {key}
+        {key}...
       </a>
     </div>
   ))
