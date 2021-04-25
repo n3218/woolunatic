@@ -20,8 +20,9 @@ import {
   CART_RESET_SHIPPING_ADDRESS,
   //
   CART_SAVE_PAYMENT_METHOD,
+  CART_CLEAR_ITEMS,
   CART_CLEAN_ITEMS,
-  CART_CLEAR_ITEMS
+  CART_CLEAN_ALL
 } from "../constants/cartConstants"
 
 export const cartReducer = (state = { items: [] }, action) => {
@@ -168,6 +169,10 @@ export const cartReducer = (state = { items: [] }, action) => {
     case CART_CLEAR_ITEMS:
       return {
         ...state,
+        items: []
+      }
+    case CART_CLEAN_ALL:
+      return {
         items: []
       }
     case CART_CLEAN_ITEMS:

@@ -257,9 +257,9 @@ export const actionsAfterOrderPay = async order => {
         product.onHold.map(hold => {
           console.log("IF ", hold.user, " = ", order.user._id, " && ", hold.qty, " == ", item.qty)
           if (String(hold.user) === String(order.user._id) && Number(hold.qty) === Number(item.qty)) {
-            console.log("++++++++++++++++++++++++++++++IF")
+            console.log("IF")
             let index = productsMap[product._id].onHold.indexOf(hold)
-            console.log("index: ", hold.qty, index)
+            console.log("actionsAfterOrderPay: index: ", hold.qty, index)
             productsMap[product._id].onHold.splice(index, 1)
           }
         })
@@ -280,7 +280,7 @@ export const actionsAfterOrderPay = async order => {
           }
         })
       )
-        .then(results => console.log("----------------------------Successfully updated Products: ", results.length))
+        .then(results => console.log("-----------Successfully updated Products: ", results.length))
         .catch(err => console.error("Error on updating Products: ", err))
     })
     .catch(err => console.error("Error on sendMail: ", err))

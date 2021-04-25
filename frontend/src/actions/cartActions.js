@@ -18,7 +18,7 @@ import {
   //
   CART_SAVE_SHIPPING_ADDRESS,
   CART_SAVE_PAYMENT_METHOD,
-  CART_CLEAN_ITEMS
+  CART_CLEAN_ALL
   // CART_CLEAR_REQUEST,
   // CART_CLEAR_SUCCESS,
   // CART_CLEAR_FAIL
@@ -27,7 +27,7 @@ import axios from "axios"
 import { logout } from "./userActions"
 
 const checkIfQtyAlreadyInCart = (cart, product, itemQty) => {
-  let totalInStock = product.inStock.split(",").reduce((acc, el) => acc + Number(el.trim()))
+  let totalInStock = product.inStock.split(",").reduce((acc, el) => Number(acc) + Number(el.trim()), 0)
   console.log("checkIfQtyAlreadyInCart: totalInStock: ", totalInStock)
   let relevantItems = cart.items.filter(it => it.product === product._id)
   console.log("checkIfQtyAlreadyInCart: relevantItems: ", relevantItems)
@@ -228,9 +228,14 @@ export const saveShippingAddressAction = data => async dispatch => {
   localStorage.setItem("shippingAddress", JSON.stringify(data))
 }
 
-export const cartCleanItemsAction = () => async (dispatch, getState) => {
+export const cartLocalCleanItemsAction = () => async (dispatch, getState) => {
   dispatch({
-    type: CART_CLEAN_ITEMS
+    type: CART_CLEAN_ALL
   })
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
+  // localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
+  // localStorage.setItem("shippingAddress", JSON.stringify({}))
+  // localStorage.setItem("paymentMethod", JSON.stringify({}))
+  localStorage.removeItem("cartItems")
+  localStorage.removeItem("shippingAddress")
+  localStorage.removeItem("paymentMethod")
 }

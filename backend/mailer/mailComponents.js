@@ -54,7 +54,7 @@ export const itemRowCompact = item => {
 
 export const itemRow = item => {
   return `<tr style="border: 1px solid #9AABBD">
-  <td style="text-align: center;">
+  <td style="text-align: right; padding-right: 5px;">
     <div style="vertical-align: top;">
       <a target="_blank" rel="noreferrer" href="${DOMAIN_NAME}/products/${item.product}">
         <img src="${process.env.GCLOUD_STORAGE_URL}/${process.env.GCLOUD_BUCKET}/minithumbs/${item.image}" alt=${item.art} width="80" height"80" />
@@ -162,7 +162,7 @@ export const infoBlock = order => {
           </table>
         </div>
       </div>
-      <div style="padding-bottom: 20px;">
+      <div>
         ${shippingDetails(order)}
       </div>
     </div>
@@ -189,10 +189,10 @@ export const shippingDetails = order => {
               </a>
             </td>
           </tr>
-          ${ifNotEmpty("Ship date", String(order.updatedAt).slice(0, 16))}
-          ${ifNotEmpty("Shipped via", order.shippingAddress.shippingOption.operator)}
-          ${order.shippingAddress.shippingOption.shippingCode && ifNotEmpty("Tracking#", order.shippingAddress.shippingOption.shippingCode)}
-          ${order.comment && ifNotEmpty("Comment", order.comment)}
+          ${ifNotEmpty("ship date", String(order.updatedAt).slice(0, 16))}
+          ${ifNotEmpty("shipped via", order.shippingAddress.shippingOption.operator)}
+          ${order.shippingAddress.shippingOption.shippingCode && ifNotEmpty("tracking#", order.shippingAddress.shippingOption.shippingCode)}
+          ${order.comment && ifNotEmpty("comment", order.comment)}
         </tbody>
       </table>
     </div>

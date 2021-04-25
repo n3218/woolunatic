@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, ListGroup, Button } from "react-bootstrap"
-import { getCartAction, startCheckoutAction } from "../../actions/cartActions"
+import { cartLocalCleanItemsAction, getCartAction, startCheckoutAction } from "../../actions/cartActions"
 import Message from "../../components/Message"
 import Meta from "../../components/Meta"
 import CartItem from "../../components/CartItem"
@@ -13,6 +13,7 @@ import Loader from "../../components/Loader"
 import { createOrderAction } from "../../actions/orderActions"
 import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
 import { calculateWeight } from "../../components/Utils"
+import { GET_CART_RESET } from "../../constants/cartConstants"
 
 const CartLayout = ({ history, redirect, checkoutStep, title, children, loading, error, shippingPrice }) => {
   const dispatch = useDispatch()
@@ -53,7 +54,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       const { itemsWeight, totalWeight } = calculateWeight(items)
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
       const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
-      let taxPrice = itemsPrice - itemsPrice / 1.21
+      let taxPrice = (itemsPrice - itemsPrice / 1.21).toFixed(2)
       const storecredit = cart.user && cart.user.storecredit ? cart.user.storecredit : 0
       console.log("==============storecredit: ", storecredit)
       const totalPrice = (Number(itemsPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
@@ -89,12 +90,15 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   useEffect(() => {
     if (orderCreateSuccess && order) {
       dispatch({ type: ORDER_CREATE_RESET })
+      dispatch({ type: GET_CART_RESET })
+      dispatch(cartLocalCleanItemsAction())
       history.push(`/checkout/payorder/${order._id}/${order.paymentMethod}`)
     }
   }, [order, history, orderCreateSuccess, dispatch])
 
   // ------------------------------------------------------ Handlers
   const checkoutHandler = () => {
+    setWarning(false)
     if (!userInfo) {
       console.log("NOT REGISTERED USER STARTS CHECKOUT")
       history.push("/login?redirect=/cart")

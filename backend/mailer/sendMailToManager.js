@@ -44,7 +44,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
             <thead>
               <tr>
                 <th><i></i></th>
-                <th><i>art.</i></th>
+                <th><i>art</i></th>
                 <th><i>brand</i></th>
                 <th><i>name</i></th>
                 <th><i>color</i></th>
@@ -57,7 +57,6 @@ export const sendMailToManager = asyncHandler(async orderData => {
             </thead>
             <tbody>
             ${order.orderItems.map(item => itemRowCompact(item))}
-            <tr style="height: 30px;"></tr>
             </tbody>
           </table>
         </div>
@@ -90,8 +89,7 @@ export const sendMailToManager = asyncHandler(async orderData => {
           </div>          
         </div>
       </div>
-    </div>
-    ${footer}`
+    </div>`
   }
 
   await transporter.sendMail(mailOptions, (error, info) => {

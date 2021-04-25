@@ -27,7 +27,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
     subject: `Thank you for your order!`,
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
-      <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
+      <div style="max-width: 500px; margin: 0px auto; background-color: white; padding: 16px;">
         <div style="font-size: 20px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
           <a href="${DOMAIN_NAME}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">
             Woolunatics.nl
