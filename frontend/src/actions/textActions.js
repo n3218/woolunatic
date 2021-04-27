@@ -105,7 +105,6 @@ export const textListAction = () => async dispatch => {
   try {
     dispatch({ type: TEXT_LIST_REQUEST })
     const { data } = await axios.get(`/api/texts`)
-    console.log("textListAction: data", data)
     dispatch({ type: TEXT_LIST_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message

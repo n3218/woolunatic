@@ -7,7 +7,7 @@ import { getUserDetails, updateUserProfileAction } from "../actions/userActions"
 import Loader from "../components/Loader"
 import { listMyOrdersAction } from "../actions/orderActions"
 import Meta from "../components/Meta"
-import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants"
+// import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants"
 
 const ProfileScreen = ({ history }) => {
   const [name, setName] = useState("")

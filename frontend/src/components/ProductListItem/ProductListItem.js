@@ -65,9 +65,9 @@ const ProductListItem = memo(({ product, history }) => {
         )}
       </td>
       <td>
-        <Link onClick={() => deleteHandler(product._id)} className="px-2">
+        <div onClick={() => deleteHandler(product._id)} className="px-2 cursor-pointer">
           <i className="fas fa-trash text-danger"></i>
-        </Link>
+        </div>
       </td>
       <td className="px-3">{product.outOfStock && <i className="fas fa-check text-danger font-weight-bold"></i>}</td>
     </tr>

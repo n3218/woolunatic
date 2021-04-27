@@ -32,7 +32,7 @@ const AdminLayout = ({ children, history }) => {
               </LinkContainer>
             </div>
             <div className="text-center">
-              <h4 className=" mt-4 text-medium-gray">Upload</h4>
+              <h4 className="ml-2 mt-4 text-medium-gray">Upload</h4>
             </div>
             <LinkContainer to="/admin/productsupload">
               <Nav.Link className="text-light">Products</Nav.Link>
@@ -41,26 +41,26 @@ const AdminLayout = ({ children, history }) => {
               <Nav.Link className="text-light">Images</Nav.Link>
             </LinkContainer>
             <div className="text-center">
-              <h4 className=" mt-4 text-medium-gray">Editing</h4>
+              <h4 className="ml-2 mt-4 text-medium-gray">Lists</h4>
             </div>
-            <LinkContainer to="/admin/textlist">
-              <Nav.Link className="text-light">Texts</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/admin/shippinglist">
-              <Nav.Link className="text-light">Shippings</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/admin/userlist">
-              <Nav.Link className="text-light">Users</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/admin/productlist">
-              <Nav.Link className="text-light">Products</Nav.Link>
-            </LinkContainer>
-            <div className="text-center">
-              <h4 className=" mt-4 text-medium-gray">Lists</h4>
+            <div>
+              <LinkContainer to="/admin/textlist">
+                <Nav.Link className="text-light">Texts</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/admin/shippinglist">
+                <Nav.Link className="text-light">Shippings</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/admin/userlist">
+                <Nav.Link className="text-light">Users</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/admin/productlist">
+                <Nav.Link className="text-light">Products</Nav.Link>
+              </LinkContainer>
+
+              <LinkContainer to="/admin/colorlist">
+                <Nav.Link className="text-light">Colors</Nav.Link>
+              </LinkContainer>
             </div>
-            <LinkContainer to="/admin/colorlist">
-              <Nav.Link className="text-light">Colors</Nav.Link>
-            </LinkContainer>
           </Nav>
         </div>
         <div className="admin-content px-0">{children}</div>

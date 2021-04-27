@@ -47,41 +47,42 @@ const OrderListScreen = ({ match }) => {
               </tr>
             </thead>
             <tbody>
-              {orders.map(order => (
-                <tr key={order._id}>
-                  <td>
-                    <Link to={`/orders/${order._id}`}>#{order.orderId}</Link>
-                  </td>
-                  <td>
-                    <Link to={`/orders/${order._id}`}>{order.createdAt.substring(0, 10)}</Link>
-                  </td>
-                  <td>
-                    <Link to={`/orders/${order._id}`}>€{order.totalPrice}</Link>
-                  </td>
-                  <td>
-                    <Link to={`/orders/${order._id}`}>€{order.storecredit}</Link>
-                  </td>
-                  <td className="text-capitalize">
-                    <Link to={`/orders/${order._id}`}>{order.paymentMethod && order.paymentMethod}</Link>
-                  </td>
-                  <td>{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</td>
-                  <td>{order.isPaid ? <span className="text-success">{order.paidAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
-                  <td>{order.isDelivered ? <span className="text-success">{order.deliveredAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
+              {orders &&
+                orders.map(order => (
+                  <tr key={order._id}>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>#{order.orderId}</Link>
+                    </td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>{order.createdAt.substring(0, 10)}</Link>
+                    </td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>€{order.totalPrice}</Link>
+                    </td>
+                    <td>
+                      <Link to={`/orders/${order._id}`}>€{order.storecredit}</Link>
+                    </td>
+                    <td className="text-capitalize">
+                      <Link to={`/orders/${order._id}`}>{order.paymentMethod && order.paymentMethod}</Link>
+                    </td>
+                    <td>{order.paymentResult && order.paymentResult.status && <PaymentStatus paymentStatus={order.paymentResult.status} />}</td>
+                    <td>{order.isPaid ? <span className="text-success">{order.paidAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
+                    <td>{order.isDelivered ? <span className="text-success">{order.deliveredAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
 
-                  <td>
-                    <Link to={`/admin/user/${order.user._id}/edit`}>{order.user && order.user.name}</Link>
-                  </td>
-                  <td>
-                    {order.shippingPrice === 0 ? (
-                      <PaymentStatus paymentStatus={order.shippingAddress.shippingOption.operator} />
-                    ) : (
-                      <span>
-                        {order.shippingAddress.city}, {order.shippingAddress.country}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      <Link to={`/admin/user/${order.user._id}/edit`}>{order.user && order.user.name}</Link>
+                    </td>
+                    <td>
+                      {order.shippingPrice === 0 ? (
+                        <PaymentStatus paymentStatus={order.shippingAddress.shippingOption.operator} />
+                      ) : (
+                        <span>
+                          {order.shippingAddress.city}, {order.shippingAddress.country}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
           <Paginate isAdmin={true} list="orderlist" pages={pages} page={page} />

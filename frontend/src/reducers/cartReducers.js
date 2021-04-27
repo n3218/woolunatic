@@ -20,6 +20,7 @@ import {
   CART_RESET_SHIPPING_ADDRESS,
   //
   CART_SAVE_PAYMENT_METHOD,
+  CART_SAVE_START_CHECKOUT,
   CART_CLEAR_ITEMS,
   CART_CLEAN_ITEMS,
   CART_CLEAN_ALL
@@ -68,25 +69,13 @@ export const cartReducer = (state = { items: [] }, action) => {
         ...state,
         loading: true
       }
-
     case GET_CART_SUCCESS:
-      console.log("cartReducer: GET_CART_SUCCESS: action.payload: ", action.payload)
-      if (state.items) {
-        return {
-          ...state,
-          loading: false,
-          success: true,
-          ...action.payload
-          // items: [...state.items, ...action.payload.items]
-        }
-      } else {
-        return {
-          ...state,
-          loading: false,
-          success: true,
-          ...action.payload
-          // items: action.payload.items
-        }
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        ...action.payload
       }
     case GET_CART_FAIL:
       return {
@@ -97,6 +86,7 @@ export const cartReducer = (state = { items: [] }, action) => {
     case GET_CART_RESET:
       return {
         ...state,
+        error: false,
         items: []
       }
 
@@ -118,6 +108,7 @@ export const cartReducer = (state = { items: [] }, action) => {
       return {
         ...state,
         loading: false,
+        error: false,
         ...action.payload,
         items: action.payload.items
       }
@@ -137,6 +128,7 @@ export const cartReducer = (state = { items: [] }, action) => {
       return {
         ...state,
         loading: false,
+        error: false,
         ...action.payload
       }
     case START_CHECKOUT_FAIL:
@@ -165,6 +157,11 @@ export const cartReducer = (state = { items: [] }, action) => {
       return {
         ...state,
         paymentMethod: action.payload
+      }
+    case CART_SAVE_START_CHECKOUT:
+      return {
+        ...state,
+        startCheckout: action.payload
       }
     case CART_CLEAR_ITEMS:
       return {

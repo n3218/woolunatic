@@ -7,6 +7,7 @@ import Loader from "../components/Loader"
 import { listProducts } from "../actions/productActions"
 import Meta from "../components/Meta"
 import Filter from "../components/Filter/Filter"
+// import Paginate from "../components/Paginate"
 
 const CollectionScreen = ({ match }) => {
   const keyword = match.params.keyword
@@ -15,6 +16,8 @@ const CollectionScreen = ({ match }) => {
   const dispatch = useDispatch()
   const productList = useSelector(state => state.productList)
   const { loading, error, success, products } = productList
+  // const { loading, error, success, products, page, pages, count } = productList
+
   const [filteredProducts, setFilteredProducts] = useState([])
 
   useEffect(() => {
@@ -40,9 +43,16 @@ const CollectionScreen = ({ match }) => {
                   </Col>
                 ))}
               </Row>
-              {loading ? <Loader /> : <div className="text-center">{/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} className="my-3 px-5 btn-success>
-                  Load More
-                </Button> */}</div>}
+              {loading ? (
+                <Loader />
+              ) : (
+                <div className="text-center">
+                  {/* <Paginate list="productlist" pages={pages} page={page} /> */}
+                  {/* <Button onClick={() => dispatch(listProducts(keyword, pageNumber + 1))} className="my-3 px-5 btn-success">
+                    Load More
+                  </Button> */}
+                </div>
+              )}
             </div>
           </div>
         </>

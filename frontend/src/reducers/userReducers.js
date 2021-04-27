@@ -77,17 +77,17 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
     case USER_DETAILS_REQUEST:
       return { ...state, loading: true }
     case USER_DETAILS_SUCCESS:
-      return { loading: false, user: action.payload }
+      return { ...state, loading: false, user: action.payload }
     case USER_DETAILS_FAIL:
-      return { loading: false, error: action.payload }
+      return { ...state, loading: false, error: action.payload }
     case USER_DETAILS_RESET:
       return { user: {} }
     case USER_UPDATE_PROFILE_REQUEST:
       return { ...state, loading: true }
     case USER_UPDATE_PROFILE_SUCCESS:
-      return { loading: false, successUpdate: true, user: action.payload }
+      return { ...state, loading: false, successUpdate: true, user: action.payload }
     case USER_UPDATE_PROFILE_FAIL:
-      return { loading: false, error: action.payload }
+      return { ...state, loading: false, error: action.payload }
     case USER_UPDATE_PROFILE_RESET:
       return { user: {} }
     default:

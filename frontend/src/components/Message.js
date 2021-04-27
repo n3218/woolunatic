@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Alert } from "react-bootstrap"
 
 const Message = ({ variant, children, header, onClose, className }) => {
@@ -10,6 +10,14 @@ const Message = ({ variant, children, header, onClose, className }) => {
       onClose()
     }
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (show) {
+        setShow(false)
+      }
+    }, 6000)
+  }, [show])
 
   if (show) {
     return (

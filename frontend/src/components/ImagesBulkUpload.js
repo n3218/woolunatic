@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { useSelector } from "react-redux"
 import axios from "axios"
 import { Form, Row, Col } from "react-bootstrap"
@@ -12,7 +12,6 @@ import { OptionsForCompressingImages } from "./Utils"
 
 const ImagesBulkUpload = () => {
   const [uploading, setUploading] = useState(false)
-  const [images, setImages] = useState([])
   const [updatedProducts, setUpdatedProducts] = useState([])
   const [notFoundProducts, setNotFoundProducts] = useState([])
   const [fullsizeFiles, setFullsizeFiles] = useState(0)
@@ -25,7 +24,6 @@ const ImagesBulkUpload = () => {
   const { userInfo } = userLogin
 
   const handleImagesBulkUpload = async e => {
-    setImages([])
     setUpdatedProducts([])
     setTotalSizeBefore(0)
     setTotalSizeAfter(0)
@@ -58,21 +56,6 @@ const ImagesBulkUpload = () => {
         }
       }
     }
-
-    //-----------------------------------------NO COMRESSION
-    // for (let i in file) {
-    //   if (typeof file[i] === "object") {
-    //     try {
-    //       setUploading(true)
-    //       size += file[i].size
-    //       await formData.append(`image`, file[i], file[i].originalname)
-    //     } catch (error) {
-    //       console.log(error)
-    //     }
-    //   }
-    // }
-
-    // setTotalSize(size)
 
     try {
       const config = {

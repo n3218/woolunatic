@@ -118,10 +118,10 @@ const ProductScreen = ({ history, match }) => {
 
   return (
     <>
-      {loading ? (
+      {loading || cartLoading ? (
         <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
+      ) : error || errorLoading ? (
+        <Message variant="danger">{error || errorLoading}</Message>
       ) : (
         <>
           <Meta title={product.name} description={product.description} />

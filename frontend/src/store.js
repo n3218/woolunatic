@@ -46,14 +46,16 @@ const reducer = combineReducers({
 
 const cartItemsFromLocalStorage = localStorage.getItem("cartItems") && localStorage.getItem("cartItems") !== "undefined" ? JSON.parse(localStorage.getItem("cartItems")) : []
 const userInfoFromLocalStorage = localStorage.getItem("userInfo") && localStorage.getItem("userInfo") !== "undefined" ? JSON.parse(localStorage.getItem("userInfo")) : null
-const shippingAddressFromStorage = localStorage.getItem("shippingAddress") && localStorage.getItem("shippingAddress") !== "undefined" ? JSON.parse(localStorage.getItem("shippingAddress")) : {}
-const paymentMethodFromStorage = localStorage.getItem("paymentMethod") && localStorage.getItem("paymentMethod") !== "undefined" ? JSON.parse(localStorage.getItem("paymentMethod")) : {}
+const shippingAddressFromLocalStorage = localStorage.getItem("shippingAddress") && localStorage.getItem("shippingAddress") !== "undefined" ? JSON.parse(localStorage.getItem("shippingAddress")) : {}
+const paymentMethodFromLocalStorage = localStorage.getItem("paymentMethod") && localStorage.getItem("paymentMethod") !== "undefined" ? JSON.parse(localStorage.getItem("paymentMethod")) : {}
+const startCheckoutFromLocalStorage = localStorage.getItem("startCheckout") && localStorage.getItem("startCheckout") !== "undefined" ? JSON.parse(localStorage.getItem("startCheckout")) : {}
 
 const initialState = {
   cart: {
     items: cartItemsFromLocalStorage,
-    shippingAddress: shippingAddressFromStorage,
-    paymentMethod: paymentMethodFromStorage
+    shippingAddress: shippingAddressFromLocalStorage,
+    paymentMethod: paymentMethodFromLocalStorage,
+    startCheckout: startCheckoutFromLocalStorage
   },
   userLogin: { userInfo: userInfoFromLocalStorage }
 }

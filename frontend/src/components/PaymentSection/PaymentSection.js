@@ -37,18 +37,32 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
             <Form className="mb-3 mt-0 pt-0">
               <Form.Group className="mt-2">
                 <Row>
-                  <Col xs={6} xl={6} className="pl-0 pr-2 pt-0">
+                  <Col md={12} xl={6} className="px-2 py-1">
                     <Card bg="light" style={{ height: "100%" }}>
                       <Card.Header className="text-center">
                         <img src="/assets/payments/mollie-all.jpeg" alt="mollie-ideal" style={{ width: "100%" }} />
+                        {/* <div>
+                          <nobr>
+                            <img src="/assets/payments/ideal.png" alt="ideal" style={{ maxHeight: "40px" }} />
+                            <img src="/assets/payments/bancontact.png" alt="bancontact" style={{ maxHeight: "40px" }} />
+                            <img src="/assets/payments/visa.png" alt="visa" style={{ maxHeight: "40px" }} />
+                          </nobr>
+                        </div>
+                        <div>
+                          <nobr>
+                            <img src="/assets/payments/mastercard.png" alt="mastercard" style={{ maxHeight: "40px" }} />
+                            <img src="/assets/payments/amex.png" alt="amex" style={{ maxHeight: "40px" }} />
+                            <img src="/assets/payments/applepay.jpg" alt="applepay" style={{ maxHeight: "40px" }} />
+                          </nobr>
+                        </div> */}
                       </Card.Header>
-                      <Card.Body className="text-center py-2">{radioButton("Mollie", "Mollie")}</Card.Body>
+                      <Card.Body className="text-center py-2 px-3">{radioButton("iDeal, Bancontact, Bank transfer, Credit cards, Apple Pay", "Mollie")}</Card.Body>
                     </Card>
                   </Col>
-                  <Col xs={6} xl={6} className="pl-2 pr-0">
+                  <Col md={12} xl={6} className="px-2 py-1">
                     <Card bg="light" style={{ height: "100%" }}>
                       <Card.Header className="text-center">
-                        <img src="/assets/payments/pay.png" alt="paypal" style={{ width: "100%" }} />
+                        <img src="/assets/payments/paypal.png" alt="paypal" style={{ maxHeight: "121px" }} />
                       </Card.Header>
                       <Card.Body className="text-center py-2">{radioButton("PayPal", "PayPal")}</Card.Body>
                     </Card>

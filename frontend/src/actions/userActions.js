@@ -50,6 +50,7 @@ export const logout = () => dispatch => {
   localStorage.removeItem("cartItems")
   localStorage.removeItem("shippingAddress")
   localStorage.removeItem("paymentMethod")
+  localStorage.removeItem("startCheckout")
   dispatch({ type: USER_LOGOUT })
   dispatch({ type: USER_DETAILS_RESET })
   dispatch({ type: ORDER_LIST_MY_RESET })
@@ -85,7 +86,7 @@ export const getUserDetails = id => async (dispatch, getState) => {
     const { data } = await axios.get(`/api/users/${id}`, config)
     dispatch({ type: USER_DETAILS_SUCCESS, payload: data })
     console.log("getUserDetails: ", data)
-    localStorage.setItem("userInfo", JSON.stringify(data))
+    localStorage.setItem("userInfo", JSON.stringify(getState().userLogin.userInfo))
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     if (message === "Not authorized, token failed") {

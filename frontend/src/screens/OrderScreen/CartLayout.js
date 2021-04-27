@@ -20,7 +20,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
   const cart = useSelector(state => state.cart)
-  const { loading: cartLoading, error: cartError, items, success: cartSuccess } = cart
+  const { loading: cartLoading, error: cartError, items, success: cartSuccess, startCheckout } = cart
   const orderCreate = useSelector(state => state.orderCreate)
   const { loading: orderLoading, order, success: orderCreateSuccess, error: orderCreateError } = orderCreate
 
@@ -28,24 +28,36 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const [warning, setWarning] = useState(false)
   const [checkout, setCheckout] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
+  const [minutesLeft, setMinutesLeft] = useState(false)
 
   // useEffect(() => {
-  //   if (!cart.user) {
-  //     dispatch(getCartAction())
-  //     setWarning(false)
+  //   if (new Date(startCheckout)) {
+  //     console.log("useEffect: startCheckout: ", startCheckout)
+  //     console.log("useEffect: startCheckout+15min: ", startCheckout + 900000)
+  //     console.log("useEffect: Date.now(): ", Date.now())
+  //     console.log("useEffect: Date.now() - startCheckout: ", Date.now() - startCheckout)
+  //     console.log("useEffect: Date.now() - startCheckout: ", (Date.now() - startCheckout) / 60000)
+  //     setInterval(() => {
+  //       console.log("useEffect: Date.now() - startCheckout: ", (Date.now() - startCheckout) / 60000)
+  //     }, 6000)
   //   }
-  // }, [dispatch, cart.user])
+  // }, [])
 
-  useEffect(() => {
-    if (checkoutStep !== "cart" && !userInfo) {
-      console.log("CartLayout: checkoutStep: ", checkoutStep)
-      // if (redirect) {
-      //   history.push(`/login?redirect=${redirect}`)
-      // } else {
-      //   history.push(`/login`)
-      // }
-    }
-  }, [cart, history, redirect, userInfo, dispatch, checkoutStep])
+  // useEffect(() => {
+
+  //   return () => clearInterval(interval)
+  // }, [startCheckout, history])
+
+  // useEffect(() => {
+  //   if (checkoutStep !== "cart" && !userInfo) {
+  //     console.log("CartLayout: checkoutStep: ", checkoutStep)
+  // if (redirect) {
+  //   history.push(`/login?redirect=${redirect}`)
+  // } else {
+  //   history.push(`/login`)
+  // }
+  //   }
+  // }, [cart, history, redirect, userInfo, dispatch, checkoutStep])
 
   // ----------------------------------------------Calculating totals
   useEffect(() => {
@@ -83,9 +95,20 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
     if (cartSuccess && isChecked && checkout) {
       console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
       dispatch(startCheckoutAction())
+
+      const interval = setInterval(() => {
+        setMinutesLeft(15 - (Date.now() - startCheckout) / 60000)
+        console.log("useEffect: Date.now() - startCheckout: ", minutesLeft)
+      }, 1000)
+
+      setTimeout(() => {
+        clearInterval(interval)
+        history.push(`/cart`)
+      }, 300000)
+
       history.push("/checkout/shipping")
     }
-  }, [checkout, isChecked, cartSuccess, dispatch, history, userInfo])
+  }, [checkout, isChecked, cartSuccess, dispatch, history, userInfo, startCheckout, minutesLeft])
 
   useEffect(() => {
     if (orderCreateSuccess && order) {
@@ -102,7 +125,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
     if (!userInfo) {
       console.log("NOT REGISTERED USER STARTS CHECKOUT")
       history.push("/login?redirect=/cart")
-      // history.push("/login?redirect=/checkout/shipping")
     } else {
       dispatch(getCartAction())
       setIsChecked(false)
@@ -138,7 +160,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       {(loading || cartLoading || orderLoading) && <Loader />}
 
       {(error || cartError || orderCreateError) && (
-        <Message variant="warning" className="py-4" onClose={() => dispatch(getCartAction())}>
+        <Message variant="danger" className="py-4" onClose={() => dispatch(getCartAction())}>
           {error || cartError || orderCreateError}
         </Message>
       )}
@@ -157,7 +179,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
       {items && items.length > 0 && !(cartSuccess && isChecked && checkout) && (
         <Row>
-          <Col md={9} xs={12} className="px-0">
+          <Col md={8} xs={12} className="px-0">
             {/* --------------------------------------------------------------------SHIPPING/PAYMENT CONTENT */}
             {children && checkoutStep !== "cart" && children}
             {/* --------------------------------------------------------------------ORDER ITEMS */}
@@ -174,6 +196,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
             {checkoutStep === "cart" && children}
           </Col>
           <Col className="px-3 py-3">
+            {startCheckout && minutesLeft}
             {/* --------------------------------------------------------------------ORDER SUMMARY */}
             <OrderSummary cart={summary} summary={summary} items={items} checkoutStep={checkoutStep} history={history} userInfo={userInfo}>
               {checkoutStep === "cart" && (

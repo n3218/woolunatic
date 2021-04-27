@@ -3,7 +3,6 @@ import { Row, Col, Card, ListGroup } from "react-bootstrap"
 import Message from "../components/Message"
 
 const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
-  console.log("---------------OrderSummary: cart: ", cart)
   const [storecredit, setStoreCredit] = useState()
 
   useEffect(() => {
