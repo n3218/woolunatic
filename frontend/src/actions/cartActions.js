@@ -168,6 +168,7 @@ export const cartRemoveItemAction = item => async (dispatch, getState) => {
       }
     }
     const { data } = await axios.put(`/api/cart/${userInfo._id}`, { item }, config)
+    console.log("cartRemoveItemAction: data: ", data)
     dispatch({ type: CART_REMOVE_ITEM_SUCCESS, payload: data })
     localStorage.setItem("cartItems", JSON.stringify(getState().cart.items)) // save to Local Storage
   } catch (error) {
@@ -189,9 +190,7 @@ export const startCheckoutAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const userId = {
-      user: userInfo._id
-    }
+    const userId = { user: userInfo._id }
     const { data } = await axios.put(`/api/cart/startcheckout`, userId, config)
     console.log("data: ", data)
     const dateNow = Date.now()
@@ -204,18 +203,12 @@ export const startCheckoutAction = () => async (dispatch, getState) => {
 }
 
 export const savePaymentMethodAction = data => async dispatch => {
-  dispatch({
-    type: CART_SAVE_PAYMENT_METHOD,
-    payload: data
-  })
+  dispatch({ type: CART_SAVE_PAYMENT_METHOD, payload: data })
   localStorage.setItem("paymentMethod", JSON.stringify(data))
 }
 
 export const saveShippingAddressAction = data => async dispatch => {
-  dispatch({
-    type: CART_SAVE_SHIPPING_ADDRESS,
-    payload: data
-  })
+  dispatch({ type: CART_SAVE_SHIPPING_ADDRESS, payload: data })
   localStorage.setItem("shippingAddress", JSON.stringify(data))
 }
 
@@ -224,7 +217,7 @@ export const saveStartCheckoutAction = data => async dispatch => {
   localStorage.setItem("startCheckout", JSON.stringify(data))
 }
 
-export const cartLocalCleanItemsAction = () => async (dispatch, getState) => {
+export const cartCleanAllAction = () => async (dispatch, getState) => {
   dispatch({ type: CART_CLEAN_ALL })
   localStorage.removeItem("cartItems")
   localStorage.removeItem("shippingAddress")

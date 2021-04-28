@@ -84,6 +84,12 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
       }
       if (row.inStock) {
         newData.inStock = row.inStock.trim()
+        if (Number(row.inStock.trim()) === 0) {
+          newData.outOfStock = true
+        } else if (row.inStock.trim().length > 0) {
+          newData.outOfStock = false
+        }
+        console.log("newData.outOfStock: ", newData.outOfStock)
       }
       if (Number(row.novelty) === 1 || String(row.novelty).toLowerCase() === "yes") {
         newData.novelty = true
@@ -100,9 +106,10 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
       } else {
         newData.inSale = false
       }
-      if (Number(row.outOfStock) === 1) {
+      if (Number(row.outOfStock) === 1 || String(row.outOfStock).toLowerCase() === "yes") {
         newData.outOfStock = true
-      } else {
+      }
+      if (Number(row.outOfStock) === 0 || String(row.outOfStock).toLowerCase() === "no") {
         newData.outOfStock = false
       }
       newData.user = `5fc6e1458fa9f7a30eaf05ec`
@@ -120,10 +127,11 @@ router.post("/", upload.single("csv-file"), async (req, res) => {
         product.novelty = newData.novelty
         product.regular = newData.regular
         product.inSale = newData.inSale
-        product.outOfStock = newData.outOfStock || product.outOfStock
+        if (newData.outOfStock === false || newData.outOfStock === true) {
+          product.outOfStock = newData.outOfStock
+        }
         product.inStock = newData.inStock || product.inStock
         product.user = `5fc6e1458fa9f7a30eaf05ec`
-
         let result = await product.save()
         if (result) {
           updatedProducts++

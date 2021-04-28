@@ -314,8 +314,11 @@ export const removeItemFromCart = asyncHandler(async (req, res) => {
   const item = req.body.item
   const userId = req.params.userId
   const cart = await Cart.findOne({ user: userId }).populate("user", "storecredit address phone")
+  console.log("removeItemFromCart: item: ", item)
+  console.log("removeItemFromCart: userId: ", userId)
+  console.log("removeItemFromCart: cart: ", cart)
   if (cart) {
-    const index = cart.items.findIndex(it => it.product == item.product._id && it.qty == item.qty)
+    const index = cart.items.findIndex(it => it.product == item.product && it.qty == item.qty)
     cart.items.splice(index, index >= 0 ? 1 : 0)
     let filteredCart = await cart.save()
     let updatedCart = await fillTheCartWithData(filteredCart)

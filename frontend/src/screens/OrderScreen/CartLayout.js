@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, ListGroup, Button } from "react-bootstrap"
-import { cartLocalCleanItemsAction, getCartAction, startCheckoutAction, cartCleanHoldsAction } from "../../actions/cartActions"
+import { cartCleanAllAction, getCartAction, startCheckoutAction, cartCleanHoldsAction } from "../../actions/cartActions"
 import Message from "../../components/Message"
 import Meta from "../../components/Meta"
 import CartItem from "../../components/CartItem"
@@ -96,7 +96,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
     if (orderCreateSuccess && order) {
       dispatch({ type: ORDER_CREATE_RESET })
       dispatch({ type: GET_CART_RESET })
-      dispatch(cartLocalCleanItemsAction())
+      dispatch(cartCleanAllAction())
       history.push(`/checkout/payorder/${order._id}/${order.paymentMethod}`)
     }
   }, [order, history, orderCreateSuccess, dispatch])
