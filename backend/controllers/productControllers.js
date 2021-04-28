@@ -161,7 +161,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
       }
     }
 
-    await Promise.all([deleteImages, product.deleteMany()])
+    await Promise.all([deleteImages, product.deleteOne()])
       .then(() => {
         console.log({ message: `Product was successfully deleted.` })
         res.json({ message: `Product was successfully deleted.` })

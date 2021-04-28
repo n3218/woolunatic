@@ -1,7 +1,6 @@
 import {
   CART_LOCAL_ADD_ITEM,
   CART_LOCAL_REMOVE_ITEM,
-  //
   CART_ADD_ITEM_REQUEST,
   CART_ADD_ITEM_SUCCESS,
   CART_ADD_ITEM_FAIL,
@@ -18,7 +17,11 @@ import {
   CART_SAVE_SHIPPING_ADDRESS,
   CART_SAVE_PAYMENT_METHOD,
   CART_CLEAN_ALL,
-  CART_SAVE_START_CHECKOUT
+  CART_SAVE_START_CHECKOUT,
+  CART_CLEAN_HOLDS_REQUEST,
+  CART_CLEAN_HOLDS_SUCCESS,
+  CART_CLEAN_HOLDS_FAIL
+
   // CART_CLEAR_REQUEST,
   // CART_CLEAR_SUCCESS,
   // CART_CLEAR_FAIL
@@ -87,7 +90,6 @@ export const cartLocalAddItemAction = (id, qty) => async (dispatch, getState) =>
 export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
   try {
     dispatch({ type: CART_ADD_ITEM_REQUEST })
-
     const {
       userLogin: { userInfo }
     } = getState()
@@ -103,12 +105,10 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
       qty
     }
     const { data } = await axios.post(`/api/cart`, item, config)
-
     if (data && data.items && data.items.length > 0) {
       localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
     }
     localStorage.removeItem("startCheckout") // remove from Local Storage
-
     console.log("cartAddItemAction: data: ", data)
     dispatch({ type: CART_ADD_ITEM_SUCCESS, payload: data })
   } catch (error) {
@@ -120,7 +120,6 @@ export const cartAddItemAction = (id, qty) => async (dispatch, getState) => {
 export const getCartAction = () => async (dispatch, getState) => {
   try {
     dispatch({ type: GET_CART_REQUEST })
-
     const {
       userLogin: { userInfo }
     } = getState()
@@ -136,12 +135,9 @@ export const getCartAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-
     const itemsFromLocalCart = items ? items.filter(el => !el._id) : {}
-
     console.log("getCartAction: itemsFromLocalCart: ", itemsFromLocalCart)
     const { data } = await axios.post(`/api/cart/${userInfo._id}`, itemsFromLocalCart, config)
-
     console.log("getCartAction: data: ", data)
     if (data && data.items && data.items.length > 0) {
       localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
@@ -154,16 +150,12 @@ export const getCartAction = () => async (dispatch, getState) => {
   }
 }
 
-export const cartLocalRemoveItemAction = (id, qty) => async (dispatch, getState) => {
-  console.log("cartLocalRemoveItemAction: ", id, qty)
-  dispatch({
-    type: CART_LOCAL_REMOVE_ITEM,
-    payload: { id, qty }
-  })
+export const cartLocalRemoveItemAction = item => async (dispatch, getState) => {
+  dispatch({ type: CART_LOCAL_REMOVE_ITEM, payload: item })
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
 }
 
-export const cartRemoveItemAction = (productId, qty) => async (dispatch, getState) => {
+export const cartRemoveItemAction = item => async (dispatch, getState) => {
   try {
     dispatch({ type: CART_REMOVE_ITEM_REQUEST })
     const {
@@ -175,13 +167,9 @@ export const cartRemoveItemAction = (productId, qty) => async (dispatch, getStat
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const item = {
-      productId: productId,
-      qty: qty
-    }
-    const { data } = await axios.put(`/api/cart/${userInfo._id}`, item, config)
-    localStorage.setItem("cartItems", JSON.stringify(data.items)) // save to Local Storage
+    const { data } = await axios.put(`/api/cart/${userInfo._id}`, { item }, config)
     dispatch({ type: CART_REMOVE_ITEM_SUCCESS, payload: data })
+    localStorage.setItem("cartItems", JSON.stringify(getState().cart.items)) // save to Local Storage
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
     dispatch({ type: CART_REMOVE_ITEM_FAIL, payload: message })
@@ -232,19 +220,38 @@ export const saveShippingAddressAction = data => async dispatch => {
 }
 
 export const saveStartCheckoutAction = data => async dispatch => {
-  dispatch({
-    type: CART_SAVE_START_CHECKOUT,
-    payload: data
-  })
+  dispatch({ type: CART_SAVE_START_CHECKOUT, payload: data })
   localStorage.setItem("startCheckout", JSON.stringify(data))
 }
 
 export const cartLocalCleanItemsAction = () => async (dispatch, getState) => {
-  dispatch({
-    type: CART_CLEAN_ALL
-  })
+  dispatch({ type: CART_CLEAN_ALL })
   localStorage.removeItem("cartItems")
   localStorage.removeItem("shippingAddress")
   localStorage.removeItem("paymentMethod")
   localStorage.removeItem("startCheckout")
+}
+
+export const cartCleanHoldsAction = () => async (dispatch, getState) => {
+  console.log("cartCleanHoldsAction")
+  try {
+    dispatch({ type: CART_CLEAN_HOLDS_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const userId = { userId: userInfo._id }
+    const { data } = await axios.put(`/api/cart/cleanholds`, userId, config)
+    console.log("data: ", data)
+    dispatch({ type: CART_CLEAN_HOLDS_SUCCESS, payload: data })
+    localStorage.setItem("cartItems", JSON.stringify(getState().cart.items)) // save to Local Storage
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    dispatch({ type: CART_CLEAN_HOLDS_FAIL, payload: message })
+  }
 }

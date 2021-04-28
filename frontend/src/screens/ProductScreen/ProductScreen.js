@@ -8,7 +8,7 @@ import Rating from "../../components/Rating/Rating"
 import { productDetailsAction, productCreateReviewAction } from "../../actions/productActions"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
-import { PRODUCT_CREATE_REVIEW_RESET, PRODUCT_DELETE_RESET } from "../../constants/productConstants"
+import { PRODUCT_CREATE_REVIEW_RESET } from "../../constants/productConstants"
 import Meta from "../../components/Meta"
 import { TranslateToWeight } from "../../components/Utils"
 import { noimage, imagePath, thumbPath } from "../../constants/commonConstans"
@@ -30,7 +30,7 @@ const ProductScreen = ({ history, match }) => {
   const productCreateReview = useSelector(state => state.productCreateReview)
   const { loading: loadingCreateReview, error: errorCreateReview, success: successCreateReview } = productCreateReview
   const cart = useSelector(state => state.cart)
-  const { loading: cartLoading, error: errorLoading, items } = cart
+  const { loading: cartLoading, items } = cart
 
   useEffect(() => {
     if (successCreateReview) {
@@ -39,8 +39,9 @@ const ProductScreen = ({ history, match }) => {
     }
     if (!product || !product._id || product._id !== productId || successCreateReview) {
       dispatch(productDetailsAction(productId))
+    }
+    if (successCreateReview) {
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
-      dispatch({ type: PRODUCT_DELETE_RESET })
     }
     if (product && product.inStock) {
       const arr = product.inStock
@@ -48,23 +49,16 @@ const ProductScreen = ({ history, match }) => {
         .map(el => Number(el.trim()))
         .sort((a, b) => a - b)
       setInStockArr([...arr])
-      if (qty > 0) {
-        console.log(`==========if (${arr.length} === 1 && ${!product.minimum})`)
-
-        if (arr.length === 1 && !product.minimum) {
-          console.log("==========if (arr.length === 1 && !product.minimum)")
-          if (!checkQtyExistsInCart(qty)) {
-            console.log("(`==========if (!checkQtyExistsInCart(qty))")
-            setQty(arr[0])
-          } else {
-            console.log("(`==========ELSE")
-            console.log("(`==========if (checkQtyExistsInCart(qty))")
-
-            setQty(0)
-          }
+      // set as default option If it is Single weight in Stock
+      if (arr.length === 1 && !product.minimum) {
+        if (!checkQtyExistsInCart(qty)) {
+          setQty(arr[0])
+        } else {
+          setQty(0)
         }
       }
     }
+
     if (product && Array.isArray(product.image) && product.image.length > 0) {
       let imagesArray = []
       product.image.map(img => imagesArray.push({ original: imagePath + img, thumbnail: thumbPath + img }))
@@ -85,30 +79,18 @@ const ProductScreen = ({ history, match }) => {
 
   const showOptions = min => {
     let values = []
-    let minLeftover = Math.ceil(((1500 / product.meterage) * 100) / 100) * 100
-    let maxVal = inStockArr[inStockArr.length - 1] - minLeftover
+    let totalInCartVar = cart.items.filter(el => el.product._id === productId).reduce((acc, el) => Number(acc) + Number(el.qty), 0)
+    let maxVal = inStockArr[inStockArr.length - 1] - product.minimum - totalInCartVar
     for (let i = min; i <= maxVal; i += 50) {
       if (!inStockArr.includes(i)) {
         values.push(i)
       }
     }
-    console.log(
-      "total in Stock: ",
-      product.inStock.split(",").reduce((acc, el) => acc + Number(el.trim()), 0)
-    )
     return values
   }
 
-  const onChangeHandler = e => {
-    dispatch(productDetailsAction(productId))
-    setQty(e.target.value)
-  }
-
   const checkQtyExistsInCart = qty => {
-    console.log("checkQtyExistsInCart: qty: ", qty)
     let exists = items.filter(el => qty === el.qty && (el.product === product._id || el.product._id === product._id))
-    console.log("checkQtyExistsInCart: exists: ", exists)
-
     if (exists.length > 0) {
       return true
     } else {
@@ -116,12 +98,17 @@ const ProductScreen = ({ history, match }) => {
     }
   }
 
+  const onChangeHandler = e => {
+    dispatch(productDetailsAction(productId))
+    setQty(e.target.value)
+  }
+
   return (
     <>
       {loading || cartLoading ? (
         <Loader />
-      ) : error || errorLoading ? (
-        <Message variant="danger">{error || errorLoading}</Message>
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
       ) : (
         <>
           <Meta title={product.name} description={product.description} />
@@ -283,14 +270,13 @@ const ProductScreen = ({ history, match }) => {
               <h2 className="my-3" id="review-section">
                 Reviews
               </h2>
-              {product.reviews.length === 0 && <Message variant="warning">No Reviews for this product</Message>}
+              {product && product.reviews && product.reviews.length === 0 && <Message variant="warning">No Reviews for this product</Message>}
               <ListGroup variant="flush">
                 {product.reviews.map(review => (
                   <ListGroup.Item key={review._id}>
                     <div className="h6">
                       {review.name} | <small>{review.createdAt.substring(0, 10)}</small>
                     </div>
-
                     <Rating value={review.rating} />
                     <p>{review.comment}</p>
                   </ListGroup.Item>

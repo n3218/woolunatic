@@ -9,11 +9,12 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep, userInfo }) => {
   const dispatch = useDispatch()
   const productId = item.product._id || item.product
 
-  const removeFromCartHandler = () => {
+  const removeFromCartHandler = item => {
+    console.log("removeFromCartHandler: item: ", item)
     if (userInfo) {
-      dispatch(cartRemoveItemAction(productId, qty))
+      dispatch(cartRemoveItemAction(item))
     } else {
-      dispatch(cartLocalRemoveItemAction(productId, qty))
+      dispatch(cartLocalRemoveItemAction(item))
     }
     setCheckout(false)
   }
@@ -79,7 +80,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep, userInfo }) => {
           </div>
           {checkoutStep === "cart" && (
             <div>
-              <Button variant="link" className="text-danger py-2 px-0" onClick={() => removeFromCartHandler(item.product, item.qty)}>
+              <Button variant="link" className="text-danger py-2 px-0" onClick={() => removeFromCartHandler(item)}>
                 <small>delete...</small>
               </Button>
             </div>

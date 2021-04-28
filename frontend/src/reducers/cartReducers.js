@@ -92,11 +92,13 @@ export const cartReducer = (state = { items: [] }, action) => {
 
     case CART_LOCAL_REMOVE_ITEM:
       console.log("cartReducer:")
-      console.log("action.payload.qty: ", action.payload.qty)
-      console.log("action.payload.id: ", action.payload.id)
+      console.log("action.payload.item: ", action.payload)
+      let index = state.items.indexOf(action.payload)
+      console.log("index: ", index)
+      state.items.splice(index, 1)
       return {
         ...state,
-        items: state.items.filter(item => !item._id && !(item.qty === action.payload.qty && item.product === action.payload.id))
+        items: state.items
       }
 
     case CART_REMOVE_ITEM_REQUEST:

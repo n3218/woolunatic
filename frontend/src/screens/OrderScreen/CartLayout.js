@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, ListGroup, Button } from "react-bootstrap"
-import { cartLocalCleanItemsAction, getCartAction, startCheckoutAction } from "../../actions/cartActions"
+import { cartLocalCleanItemsAction, getCartAction, startCheckoutAction, cartCleanHoldsAction } from "../../actions/cartActions"
 import Message from "../../components/Message"
 import Meta from "../../components/Meta"
 import CartItem from "../../components/CartItem"
@@ -14,6 +14,7 @@ import { createOrderAction } from "../../actions/orderActions"
 import { ORDER_CREATE_RESET } from "../../constants/orderConstants"
 import { calculateWeight } from "../../components/Utils"
 import { GET_CART_RESET } from "../../constants/cartConstants"
+import { startCheckoutPeriod } from "../../constants/commonConstans"
 
 const CartLayout = ({ history, redirect, checkoutStep, title, children, loading, error, shippingPrice }) => {
   const dispatch = useDispatch()
@@ -28,7 +29,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const [warning, setWarning] = useState(false)
   const [checkout, setCheckout] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
-  const [minutesLeft, setMinutesLeft] = useState(false)
 
   // useEffect(() => {
   //   if (new Date(startCheckout)) {
@@ -61,14 +61,15 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
   // ----------------------------------------------Calculating totals
   useEffect(() => {
+    if (userInfo._id) {
+      readCookie(userInfo._id)
+    }
     if (items && items.length > 0) {
-      console.log("items: ", items)
       const { itemsWeight, totalWeight } = calculateWeight(items)
       const addDecimals = num => (Math.round(num * 100) / 100).toFixed(2)
       const itemsPrice = addDecimals(items.reduce((acc, item) => acc + (item.price * item.qty) / 100, 0))
       let taxPrice = (itemsPrice - itemsPrice / 1.21).toFixed(2)
       const storecredit = cart.user && cart.user.storecredit ? cart.user.storecredit : 0
-      console.log("==============storecredit: ", storecredit)
       const totalPrice = (Number(itemsPrice) + Number(shippingPrice) - Number(storecredit)).toFixed(2)
       setSummary({ itemsPrice, taxPrice, shippingPrice, storecredit, totalPrice, itemsWeight, totalWeight })
     }
@@ -92,25 +93,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   }, [items, checkout, checkoutStep])
 
   useEffect(() => {
-    if (cartSuccess && isChecked && checkout) {
-      console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
-      dispatch(startCheckoutAction())
-
-      const interval = setInterval(() => {
-        setMinutesLeft(15 - (Date.now() - startCheckout) / 60000)
-        console.log("useEffect: Date.now() - startCheckout: ", minutesLeft)
-      }, 1000)
-
-      setTimeout(() => {
-        clearInterval(interval)
-        history.push(`/cart`)
-      }, 300000)
-
-      history.push("/checkout/shipping")
-    }
-  }, [checkout, isChecked, cartSuccess, dispatch, history, userInfo, startCheckout, minutesLeft])
-
-  useEffect(() => {
     if (orderCreateSuccess && order) {
       dispatch({ type: ORDER_CREATE_RESET })
       dispatch({ type: GET_CART_RESET })
@@ -118,6 +100,58 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       history.push(`/checkout/payorder/${order._id}/${order.paymentMethod}`)
     }
   }, [order, history, orderCreateSuccess, dispatch])
+
+  // ------------------------------------------------------ GO CKECKOUT, NO WARNING, IS CHECKED
+  useEffect(() => {
+    if (cartSuccess && isChecked && checkout) {
+      console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
+      dispatch(startCheckoutAction())
+
+      writeCookie("checkoutStarted", userInfo._id, 3)
+      setTimeout(() => {
+        dispatch(cartCleanHoldsAction())
+        history.push("/cart")
+      }, startCheckoutPeriod)
+
+      history.push("/checkout/shipping")
+    }
+  }, [checkout, isChecked, cartSuccess, dispatch, history, userInfo, startCheckout])
+
+  // ------------------------------------------------------ Cookie
+  const writeCookie = (name, value, mins) => {
+    let date
+    let expires
+    if (mins) {
+      date = new Date()
+      console.log("writeCookie: date: ", date)
+      date.setTime(date.getTime() + mins * 60 * 1000)
+      console.log("writeCookie: new date: ", date)
+      expires = "; expires=" + date.toGMTString()
+      console.log("writeCookie: expires: ", expires)
+    } else {
+      expires = ""
+    }
+    document.cookie = name + "=" + value + expires + "; path=/"
+    console.log("writeCookie: document.cookie: ", document.cookie)
+  }
+
+  const readCookie = name => {
+    let c
+    let ca
+    let nameEQ = name + "="
+    ca = document.cookie.split(";")
+    for (let i = 0; i < ca.length; i++) {
+      c = ca[i]
+      while (c.charAt(0) === " ") {
+        c = c.substring(1, c.length)
+      }
+      if (c.indexOf(nameEQ) === 0) {
+        console.log("Header: readCookie: ", c.substring(nameEQ.length, c.length))
+        return c.substring(nameEQ.length, c.length)
+      }
+    }
+    return ""
+  }
 
   // ------------------------------------------------------ Handlers
   const checkoutHandler = () => {
@@ -149,7 +183,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       })
     )
   }
-  // ------------------------------------------------------ /Handlers
 
   return (
     <>
@@ -184,11 +217,11 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
             {children && checkoutStep !== "cart" && children}
             {/* --------------------------------------------------------------------ORDER ITEMS */}
             <ListGroup variant="flush">
-              {/* {checkoutStep !== "cart" && ( */}
-              <ListGroup.Item>
-                <h4>ORDER ITEMS</h4>
-              </ListGroup.Item>
-              {/* )} */}
+              {checkoutStep !== "cart" && (
+                <ListGroup.Item>
+                  <h4>ORDER ITEMS</h4>
+                </ListGroup.Item>
+              )}
               {items.map((item, i) => item && <CartItem userInfo={userInfo} key={`${i}-${item.art}-${item.qty}`} item={item} qty={item.qty} setCheckout={setCheckout} checkoutStep={checkoutStep} />)}
             </ListGroup>
             {/* --------------------------------------------------------------------ORDER WEIGHT SUMMARY */}
@@ -196,7 +229,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
             {checkoutStep === "cart" && children}
           </Col>
           <Col className="px-3 py-3">
-            {startCheckout && minutesLeft}
             {/* --------------------------------------------------------------------ORDER SUMMARY */}
             <OrderSummary cart={summary} summary={summary} items={items} checkoutStep={checkoutStep} history={history} userInfo={userInfo}>
               {checkoutStep === "cart" && (

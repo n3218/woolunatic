@@ -12,7 +12,6 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
   const { loading, success, error, shippings } = shippingList
   const [weight, setWeight] = useState(0)
   const initialShippingOption = { cost: 0, operator: "PICKUP" }
-  console.log("cart: ", cart)
 
   useEffect(() => {
     if (cart && cart.items) {
@@ -22,14 +21,11 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
   }, [cart])
 
   useEffect(() => {
-    if (!success) {
-      dispatch(getShippingListAction())
-    }
+    if (!success) dispatch(getShippingListAction())
   }, [dispatch, cart, success])
 
   useEffect(() => {
     if (country && shippings && weight) {
-      console.log("country && shippings && weight")
       const initialShippingOption = shippings.filter(el => el.country === country)[0].options.filter(op => weight < op.maxWeight && weight > op.minWeight)[0]
       setShippingPrice(initialShippingOption.cost)
       setShippingOption(initialShippingOption)
@@ -51,7 +47,6 @@ const ShippingOptions = ({ country, setCountry, cart, checkoutStep, shippingPric
 
   const selfPickUpHandler = () => {
     setShippingPrice(0)
-    // setCountry("")
     setShippingOption(initialShippingOption)
   }
 

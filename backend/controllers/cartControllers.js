@@ -311,25 +311,14 @@ const checkIfQtyExistsInStock = (cart, product, qty) => {
 // @route PUT /api/cart/:userId
 // @access Private
 export const removeItemFromCart = asyncHandler(async (req, res) => {
-  const productId = req.body.productId
-  const qty = req.body.qty
+  const item = req.body.item
   const userId = req.params.userId
-  console.log("removeItemFromCart: req.params: ", req.params)
-  console.log("removeItemFromCart: req.body: ", req.body)
   const cart = await Cart.findOne({ user: userId }).populate("user", "storecredit address phone")
   if (cart) {
-    const index = cart.items.findIndex(item => item.product == productId && item.qty == qty)
-    console.log("removeItemFromCart: index: ", index)
-
+    const index = cart.items.findIndex(it => it.product == item.product._id && it.qty == item.qty)
     cart.items.splice(index, index >= 0 ? 1 : 0)
-    console.log("removeItemFromCart: cart.items: ", cart.items)
-
     let filteredCart = await cart.save()
-    console.log("removeItemFromCart: filteredCart.items.length: ", filteredCart.items.length)
-
     let updatedCart = await fillTheCartWithData(filteredCart)
-    console.log("removeItemFromCart: updatedCart.items.length: ", updatedCart.items.length)
-
     res.status(201).json(updatedCart)
   } else {
     res.status(404)
@@ -436,6 +425,80 @@ export const startCheckout = asyncHandler(async (req, res) => {
       })
       res.status(201).json(cart)
     }
+  } else {
+    res.status(404)
+    throw new Error("Cart not found")
+  }
+})
+
+// @desc Remove Holds from Products in current user Cart
+// @route PUT /api/cart/cleanholds
+// @access Private
+export const cleanHolds = asyncHandler(async (req, res) => {
+  const userId = req.body.userId
+  const cart = await Cart.findOne({ user: userId }).populate("user", "storecredit address phone")
+  if (cart) {
+    cart.items.map(item => {
+      console.log("--------------------------------------")
+      console.log("item.inStock: ", item.inStock)
+      console.log("item.outOfStock: ", item.outOfStock)
+      console.log("item.onHold: ", JSON.stringify(item.onHold))
+      const query = { _id: item._id }
+      let needToUpdate = false
+      let newInStock = item.inStock
+      let newOnHold = []
+
+      item.onHold.forEach(hold => {
+        console.log("hold.qty: ", hold.qty)
+
+        if (new Date(hold.lockedAt).getTime() + holdTime < Date.now()) {
+          console.log("TIME OUT ", hold.lockedAt)
+          needToUpdate = true
+
+          if (newInStock.length > 0) {
+            newInStock += "," + hold.qty
+            newInStock
+              .split(",")
+              .map(el => Number(el.trim()))
+              .sort((a, b) => a - b)
+              .join(",")
+          } else {
+            newInStock = hold.qty
+          }
+          return "TIME OUT"
+        } else {
+          console.log("TIME NOT OUT ", hold.lockedAt)
+          return "TIME NOT OUT"
+        }
+      })
+    })
+    if (needToUpdate) {
+      update = {
+        $set: {
+          outOfStock: false,
+          inStock: newInStock,
+          onHold: newOnHold
+        }
+      }
+
+      console.log("update product: newInStock: ", newInStock)
+      console.log("update product: newOnHold: ", JSON.stringify(newOnHold))
+      // update Product
+      return productCollection
+        .updateOne(query, update, options)
+        .then(result => {
+          const { matchedCount, modifiedCount } = result
+          if (matchedCount && modifiedCount) {
+            console.log(`/////////////////////Successfully updated the item.`)
+          }
+        })
+        .catch(err => console.error(`Failed to update the item: ${err}`))
+    }
+    // const index = cart.items.findIndex(it => it.product == item.product._id && it.qty == item.qty)
+    // cart.items.splice(index, index >= 0 ? 1 : 0)
+    // let filteredCart = await cart.save()
+    // let updatedCart = await fillTheCartWithData(filteredCart)
+    // res.status(201).json(updatedCart)
   } else {
     res.status(404)
     throw new Error("Cart not found")

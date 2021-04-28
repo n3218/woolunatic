@@ -1,5 +1,5 @@
 import express from "express"
-import { getCart, addItemToCart, removeItemFromCart, startCheckout } from "../controllers/cartControllers.js"
+import { getCart, addItemToCart, removeItemFromCart, startCheckout, cleanHolds } from "../controllers/cartControllers.js"
 import { protect } from "../middleware/authMiddleware.js"
 const router = express.Router()
 
@@ -11,6 +11,10 @@ router //
 router //
   .route("/startcheckout")
   .put(protect, startCheckout)
+
+router //
+  .route("/cleanholds")
+  .put(protect, cleanHolds)
 
 router //
   .route("/:userId")

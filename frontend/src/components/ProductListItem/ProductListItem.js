@@ -4,7 +4,6 @@ import { Image } from "react-bootstrap"
 import { productDeleteAction } from "../../actions/productActions"
 import { minithumbPath, noimage } from "../../constants/commonConstans"
 import "./ProductListItem.css"
-import { Link } from "react-router-dom"
 
 const ProductListItem = memo(({ product, history }) => {
   const dispatch = useDispatch()
