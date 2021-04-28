@@ -13,7 +13,7 @@ const OrderListScreen = ({ match }) => {
   const dispatch = useDispatch()
   const pageNumber = match.params.pageNumber || 1
   const orderList = useSelector(state => state.orderList)
-  const { loading, error, orders, page, pages } = orderList
+  const { loading, error, orders, page, pages, count = 0 } = orderList
 
   useEffect(() => {
     dispatch(listOrdersAction(pageNumber))
@@ -22,7 +22,7 @@ const OrderListScreen = ({ match }) => {
   return (
     <>
       <Meta title="Admin | Orders | Woolunatics" />
-      <h2>Orders</h2>
+      <h2>Orders - {count}</h2>
 
       {loading ? (
         <Loader />

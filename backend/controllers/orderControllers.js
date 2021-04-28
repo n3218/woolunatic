@@ -102,7 +102,7 @@ export const getOrders = asyncHandler(async (req, res) => {
     .populate("user", "id name")
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-  res.json({ orders, page, pages: Math.ceil(count / pageSize) })
+  res.json({ orders, page, pages: Math.ceil(count / pageSize), count })
 })
 
 // @desc update Order to Delivered

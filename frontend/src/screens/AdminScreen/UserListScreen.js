@@ -75,9 +75,9 @@ const UserListScreen = () => {
                   )}
                 </td>
                 <td>
-                  <Link title="Delete" onClick={() => deleteHandler(user._id)}>
+                  <div title="Delete" onClick={() => deleteHandler(user._id)}>
                     <i className="fas fa-trash text-danger"></i>
-                  </Link>
+                  </div>
                 </td>
               </tr>
             ))}
