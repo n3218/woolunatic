@@ -55,7 +55,11 @@ export const createNewOrder = asyncHandler(async (req, res) => {
       const createdOrder = await order.save()
       if (createdOrder) {
         try {
+          // 1. Remove All Items from Cart
           await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] })
+
+          // 2. Remove holds from ordered Products
+          await removeHoldsFromProducts(createdOrder)
         } catch (err) {
           console.error("Error on updating Cart after creating Order: ", err)
         }
@@ -122,7 +126,6 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 
     // Send Email Confirmation to customer
     await sendOrderShipmentConfirmation(updatedOrder).catch(err => console.error("Error on sendOrderShipmentConfirmation: ", err))
-
     res.json(updatedOrder)
   } else {
     res.status(404)
@@ -243,9 +246,22 @@ export const mollieWebHook = asyncHandler(async (req, res) => {
 // @desc Actions after Order Pay
 export const actionsAfterOrderPay = async order => {
   console.log("-------------------------------- actionsAfterOrderPay")
-  const productsMap = {}
 
-  // 1. Remove holds from ordered Products
+  // 1. Send Email Confirmation to customer
+  await sendOrderConfirmation(order).catch(err => console.error("Error on sendOrderConfirmation: ", err))
+
+  // 2. Send Email to Manager
+  await sendMailToManager(order).catch(err => console.error("Error on sendMailToManager: ", err))
+
+  // 3. Remove userStore Credit
+  await removeStoreCredit(order.user._id).catch(err => console.error("Error on removeStoreCredit: ", err))
+}
+
+//
+//
+// @desc Remove holds from ordered Products depends on Order
+const removeHoldsFromProducts = async order => {
+  const productsMap = {}
   await Promise.all(
     order.orderItems.map(async item => {
       const product = await Product.findById(item.product)
@@ -284,24 +300,11 @@ export const actionsAfterOrderPay = async order => {
         .catch(err => console.error("Error on updating Products: ", err))
     })
     .catch(err => console.error("Error on sendMail: ", err))
-
-  // 2. Send Email Confirmation to customer
-  await sendOrderConfirmation(order).catch(err => console.error("Error on sendOrderConfirmation: ", err))
-
-  // 3. Send Email to Manager
-  await sendMailToManager(order).catch(err => console.error("Error on sendMailToManager: ", err))
-
-  // 4. Remove All Items from Cart
-  await clearCart(order.user._id).catch(err => console.error("Error on clearCart: ", err))
-
-  // 5. Remove userStore Credit
-  await removeStoreCredit(order.user._id).catch(err => console.error("Error on removeStoreCredit: ", err))
 }
 
 //
 //
-//
-// @desc Remove Store Credit
+// @desc Remove Store Credit depends on userId
 export const removeStoreCredit = asyncHandler(async userId => {
   await User.findByIdAndUpdate(userId, { storecredit: 0 }, { new: true }, (err, doc) => {
     if (err) {
@@ -316,98 +319,15 @@ export const removeStoreCredit = asyncHandler(async userId => {
 
 //
 //
-//
-// @desc Clear Cart
-export const clearCart = asyncHandler(async userId => {
-  await Cart.findOneAndUpdate({ user: userId }, { items: [] }, { new: true }, (err, doc) => {
-    if (err) {
-      console.log("Something wrong when cleaning Cart: ", err)
-      return err
-    } else {
-      console.log("-----------------------------Cart has been cleaned... " + doc)
-      return doc
-    }
-  })
-})
-
-//
-//
-// Save Mollie Order
-const saveOrderToMollie = async updatedOrder => {
-  console.log("----------------------------saveOrderToMollie: updatedOrder: ", updatedOrder)
-  const vat = Number(21.0)
-  try {
-    // const mollieItems = updatedOrder.orderItems.map(it => ({
-    //   type: "",
-    //   name: it.art + " " + it.brand + " " + it.name + " " + it.color,
-    //   productUrl: `${DOMAIN_NAME}/products/${it._id}`,
-    //   imageUrl: it.image ? `${DOMAIN_NAME}/uploads/tuhmbs/${it.image}` : "",
-    //   quantity: it.qty / 100,
-    //   vatRate: vat,
-    //   unitPrice: {
-    //     currency: "EUR",
-    //     value: ((it.price * it.qty) / 100).toFixed(2)
-    //   },
-    //   totalAmount: {
-    //     currency: "EUR",
-    //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21).toFixed(2)
-    //   },
-    //   discountAmount: {
-    //     currency: "EUR",
-    //     value: ""
-    //   },
-    //   vatAmount: {
-    //     currency: "EUR",
-    //     // value: ((it.price * it.qty) / 100) * 0.21
-    //     value: ((it.price * it.qty) / 100 + ((it.price * it.qty) / 100) * 0.21) * (vat / (100 + vat))
-    //   }
-    // }))
-    const mollieOrder = await mollieClient.orders.create({
-      testmode: true,
-      amount: {
-        value: updatedOrder.totalPrice,
-        currency: "EUR"
-      },
-      description: `Order #${updatedOrder._id}`,
-      redirectUrl: `${DOMAIN_NAME}/orders/${String(updatedOrder._id)}`,
-      webhookUrl: `${DOMAIN_NAME}/api/orders/molliewebhook`,
-      locale: "nl_NL",
-      // method: updatedOrder.paymentMethod,
-      metadata: {
-        order_id: updatedOrder._id,
-        description: "Woolunatics.Nl order"
-      },
-      // customerId: updatedOrder.user._id,
-      // billingAddress: {
-      //   organizationName: updatedOrder.user.name,
-      //   streetAndNumber: updatedOrder.shippingAddress.address,
-      //   city: updatedOrder.shippingAddress.city,
-      //   region: "",
-      //   postalCode: updatedOrder.shippingAddress.zipCode,
-      //   country: updatedOrder.shippingAddress.country,
-      //   givenName: updatedOrder.user.name,
-      //   familyName: "",
-      //   email: updatedOrder.user.email,
-      //   phone: ""
-      // },
-      // shippingAddress: {
-      //   organizationName: updatedOrder.user.name,
-      //   streetAndNumber: updatedOrder.shippingAddress.address,
-      //   city: updatedOrder.shippingAddress.city,
-      //   region: "",
-      //   postalCode: updatedOrder.shippingAddress.zipCode,
-      //   country: updatedOrder.shippingAddress.country,
-      //   givenName: updatedOrder.user.name,
-      //   familyName: "",
-      //   email: updatedOrder.user.email
-      // },
-      // consumerDateOfBirth: "",
-      // orderNumber: updatedOrder._id,
-      lines: []
-    })
-    console.log("---------------------------------mollieOrder: ", mollieOrder)
-    return mollieOrder
-  } catch (err) {
-    console.warn("Error on create MollieOrder: ", err)
-  }
-}
+// @desc Remove Items From Cart depends on userId
+// export const removeItemsFromCart = asyncHandler(async userId => {
+//   await Cart.findOneAndUpdate({ user: userId }, { items: [] }, { new: true }, (err, doc) => {
+//     if (err) {
+//       console.log("Something wrong when cleaning Cart: ", err)
+//       return err
+//     } else {
+//       console.log("-----------------------------Cart has been cleaned... " + doc)
+//       return doc
+//     }
+//   })
+// })

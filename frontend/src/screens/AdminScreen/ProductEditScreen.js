@@ -160,6 +160,20 @@ const ProductEditScreen = ({ history, match }) => {
                   <FormFieldAsRow value={price} comment="Whole number or separated by dot" label="Price" onChange={setPrice} />
                   <FormFieldAsRow value={minimum} comment="'0' if no winding" label="Minimum" onChange={setMinimum} />
                   <FormFieldAsRow value={inStock} comment="Cones weights, separated by commas" label="In Stock" onChange={setInStock} />
+                  {product.onHold && product.onHold.length > 0 && (
+                    // <Row>
+                    //   <Col>
+                    <Message variant="danger" className="text-center">
+                      On Hold:{" "}
+                      {product.onHold.map(hold => (
+                        <div>
+                          {hold.qty} ( {((Date.now() - new Date(hold.lockedAt)) / 1000 / 60).toFixed(0)} min)
+                        </div>
+                      ))}
+                    </Message>
+                    //   </Col>
+                    // </Row>
+                  )}
                   <FormFieldAsRowCheckbox value={regular} label="Regular" onChange={setRegular} />
                   <FormFieldAsRowCheckbox value={novelty} label="Novelty" onChange={setNovelty} />
                   <FormFieldAsRowCheckbox value={inSale} label="inSale" onChange={setInSale} />

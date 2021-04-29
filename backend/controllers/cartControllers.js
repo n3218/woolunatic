@@ -489,56 +489,6 @@ export const cleanHolds = asyncHandler(async (req, res) => {
       })
     }
 
-    // item.onHold.forEach(hold => {
-    //   console.log("hold.qty: ", hold.qty)
-    //   if (new Date(hold.lockedAt).getTime() + holdTime < Date.now()) {
-    //     console.log("TIME OUT ", hold.lockedAt)
-    //     needToUpdate = true
-    //     if (newInStock.length > 0) {
-    //       newInStock += "," + hold.qty
-    //       newInStock
-    //         .split(",")
-    //         .map(el => Number(el.trim()))
-    //         .sort((a, b) => a - b)
-    //         .join(",")
-    //     } else {
-    //       newInStock = hold.qty
-    //     }
-    //     return "TIME OUT"
-    //   } else {
-    //     console.log("TIME NOT OUT ", hold.lockedAt)
-    //     return "TIME NOT OUT"
-    //   }
-    // })
-
-    // if (needToUpdate) {
-    //   update = {
-    //     $set: {
-    //       outOfStock: false,
-    //       inStock: newInStock,
-    //       onHold: newOnHold
-    //     }
-    //   }
-
-    //   console.log("update product: newInStock: ", newInStock)
-    //   console.log("update product: newOnHold: ", JSON.stringify(newOnHold))
-    //   // update Product
-    //   return productCollection
-    //     .updateOne(query, update, options)
-    //     .then(result => {
-    //       const { matchedCount, modifiedCount } = result
-    //       if (matchedCount && modifiedCount) {
-    //         console.log(`/////////////////////Successfully updated the item.`)
-    //       }
-    //     })
-    //     .catch(err => console.error(`Failed to update the item: ${err}`))
-    // }
-
-    // const index = cart.items.findIndex(it => it.product == item.product._id && it.qty == item.qty)
-    // cart.items.splice(index, index >= 0 ? 1 : 0)
-    // let filteredCart = await cart.save()
-    // let updatedCart = await fillTheCartWithData(filteredCart)
-    // res.status(201).json(updatedCart)
     let updatedCart = await fillTheCartWithData(cart)
     res.status(201).json(updatedCart)
   } else {

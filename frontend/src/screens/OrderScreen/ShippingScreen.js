@@ -27,7 +27,7 @@ const ShippingScreen = ({ history }) => {
     setAddress(user && user.address ? user.address.address : "")
     setCity(user && user.address ? user.address.city : "")
     setZipCode(user && user.address ? user.address.zipCode : "")
-    // setCountry(user && user.address ? user.address.country : "")
+    setCountry(user && user.address ? user.address.country : "")
     setPhone(user && user.phone ? user.phone : "")
     setComment(shippingAddress && shippingAddress.comment ? shippingAddress.comment : "")
   }, [shippingAddress, user])

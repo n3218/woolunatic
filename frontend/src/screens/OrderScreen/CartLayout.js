@@ -30,35 +30,6 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   const [checkout, setCheckout] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
 
-  // useEffect(() => {
-  //   if (new Date(startCheckout)) {
-  //     console.log("useEffect: startCheckout: ", startCheckout)
-  //     console.log("useEffect: startCheckout+15min: ", startCheckout + 900000)
-  //     console.log("useEffect: Date.now(): ", Date.now())
-  //     console.log("useEffect: Date.now() - startCheckout: ", Date.now() - startCheckout)
-  //     console.log("useEffect: Date.now() - startCheckout: ", (Date.now() - startCheckout) / 60000)
-  //     setInterval(() => {
-  //       console.log("useEffect: Date.now() - startCheckout: ", (Date.now() - startCheckout) / 60000)
-  //     }, 6000)
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-
-  //   return () => clearInterval(interval)
-  // }, [startCheckout, history])
-
-  // useEffect(() => {
-  //   if (checkoutStep !== "cart" && !userInfo) {
-  //     console.log("CartLayout: checkoutStep: ", checkoutStep)
-  // if (redirect) {
-  //   history.push(`/login?redirect=${redirect}`)
-  // } else {
-  //   history.push(`/login`)
-  // }
-  //   }
-  // }, [cart, history, redirect, userInfo, dispatch, checkoutStep])
-
   // ----------------------------------------------Calculating totals
   useEffect(() => {
     if (userInfo && userInfo._id) {
@@ -78,7 +49,9 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
   useEffect(() => {
     if (warning === true) {
       dispatch(cartCleanHoldsAction())
-      dispatch(getCartAction())
+      setTimeout(() => {
+        dispatch(getCartAction())
+      }, 1000)
     }
   }, [dispatch, warning])
 
@@ -114,8 +87,9 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
       dispatch(startCheckoutAction())
       writeCookie("checkoutStarted", userInfo._id, startCheckoutPeriod)
+
       setTimeout(() => {
-        dispatch(cartCleanHoldsAction())
+        dispatch(cartCleanHoldsAction()) // timeout counting 15min from checkout start
         history.push("/cart")
       }, startCheckoutPeriod)
 
