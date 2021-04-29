@@ -61,8 +61,8 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
   // ----------------------------------------------Calculating totals
   useEffect(() => {
-    if (userInfo._id) {
-      readCookie(userInfo._id)
+    if (userInfo && userInfo._id) {
+      readCookie(userInfo._id) // --------??????
     }
     if (items && items.length > 0) {
       const { itemsWeight, totalWeight } = calculateWeight(items)
@@ -74,6 +74,13 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
       setSummary({ itemsPrice, taxPrice, shippingPrice, storecredit, totalPrice, itemsWeight, totalWeight })
     }
   }, [items, checkoutStep, dispatch, userInfo, shippingPrice, cart])
+
+  useEffect(() => {
+    if (warning === true) {
+      dispatch(cartCleanHoldsAction())
+      dispatch(getCartAction())
+    }
+  }, [dispatch, warning])
 
   useEffect(() => {
     if (checkoutStep === "cart") {
@@ -106,8 +113,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
     if (cartSuccess && isChecked && checkout) {
       console.log("GO CKECKOUT, NO WARNING, IS CHECKED: ")
       dispatch(startCheckoutAction())
-
-      writeCookie("checkoutStarted", userInfo._id, 3)
+      writeCookie("checkoutStarted", userInfo._id, startCheckoutPeriod)
       setTimeout(() => {
         dispatch(cartCleanHoldsAction())
         history.push("/cart")

@@ -22,7 +22,7 @@ const Header = ({ location }) => {
   useEffect(() => {
     console.log("-------------------window.scrollTo(0, 0)")
     window.scrollTo(0, 0)
-  }, [location, userInfo._id])
+  }, [location, userInfo])
 
   return (
     <header>

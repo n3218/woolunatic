@@ -155,7 +155,8 @@ export const cartLocalRemoveItemAction = item => async (dispatch, getState) => {
   localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
 }
 
-export const cartRemoveItemAction = item => async (dispatch, getState) => {
+export const cartRemoveItemAction = (qty, productId) => async (dispatch, getState) => {
+  console.log("cartRemoveItemAction: qty, productId", qty, productId)
   try {
     dispatch({ type: CART_REMOVE_ITEM_REQUEST })
     const {
@@ -167,7 +168,8 @@ export const cartRemoveItemAction = item => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const { data } = await axios.put(`/api/cart/${userInfo._id}`, { item }, config)
+    const item = { qty, productId }
+    const { data } = await axios.put(`/api/cart/${userInfo._id}`, item, config)
     console.log("cartRemoveItemAction: data: ", data)
     dispatch({ type: CART_REMOVE_ITEM_SUCCESS, payload: data })
     localStorage.setItem("cartItems", JSON.stringify(getState().cart.items)) // save to Local Storage
@@ -240,8 +242,9 @@ export const cartCleanHoldsAction = () => async (dispatch, getState) => {
     }
     const userId = { userId: userInfo._id }
     const { data } = await axios.put(`/api/cart/cleanholds`, userId, config)
-    console.log("data: ", data)
+    console.log("cartCleanHoldsAction: data: ", data)
     dispatch({ type: CART_CLEAN_HOLDS_SUCCESS, payload: data })
+    console.log("cartCleanHoldsAction: data: ", data)
     localStorage.setItem("cartItems", JSON.stringify(getState().cart.items)) // save to Local Storage
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
