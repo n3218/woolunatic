@@ -156,7 +156,7 @@ const ProfileScreen = ({ history }) => {
             <tbody>
               {orders &&
                 orders.map(order => (
-                  <tr key={order.orderId}>
+                  <tr key={order.orderId} className={`product-list-item ${order.cancellation.cancelled && " text-desabled "}`}>
                     <td>
                       <Link to={`/orders/${order._id}`}>#{order.orderId}</Link>
                     </td>

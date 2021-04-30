@@ -33,7 +33,7 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
           <h4>PAYMENT METHOD</h4>
         </Col>
         <Col className="pl-0 pt-0">
-          {(checkoutStep === "payment" || (checkoutStep === "order" && !order.isPaid)) && (
+          {(checkoutStep === "payment" || (checkoutStep === "order" && !order.isPaid && order.cancellation && !order.cancellation.cancelled)) && (
             <Form className="mb-3 mt-0 pt-0">
               <Form.Group className="mt-2">
                 <Row>

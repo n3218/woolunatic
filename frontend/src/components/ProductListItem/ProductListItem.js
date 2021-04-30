@@ -4,6 +4,7 @@ import { Image } from "react-bootstrap"
 import { productDeleteAction } from "../../actions/productActions"
 import { minithumbPath, noimage } from "../../constants/commonConstans"
 import "./ProductListItem.css"
+import { Link } from "react-router-dom"
 
 const ProductListItem = memo(({ product, history }) => {
   const dispatch = useDispatch()
@@ -17,35 +18,49 @@ const ProductListItem = memo(({ product, history }) => {
   const detailsHandler = () => history.push(`/admin/product/${product._id}/edit`)
 
   return (
-    <tr key={product._id} className={`product-list-item ${product.outOfStock && "font-weight-light"}`}>
-      <td onClick={detailsHandler}>{product.art}</td>
-      <td onClick={detailsHandler} className="product-list-item_image">
-        {product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={minithumbPath + product.image[0]} alt={product.name} fluid className="product-list-image" />}
+    <tr key={product._id} className={`product-list-item ${product.outOfStock && " text-desabled "}`}>
+      <td>
+        <Link to={`/admin/product/${product._id}/edit`}>{product.art}</Link>
       </td>
-      <td onClick={detailsHandler}>
-        {product.brand}
-        <div className="text-capitalize">{product.name}</div>
+      <td className="product-list-item_image">
+        <Link to={`/admin/product/${product._id}/edit`}>{product.image.length === 0 ? <Image src={noimage} alt={product.name} fluid className="product-list-image" /> : <Image src={minithumbPath + product.image[0]} alt={product.name} fluid className="product-list-image" />}</Link>
       </td>
-      <td onClick={detailsHandler}>
-        {product.color && product.color}
-        <br />
-        {product.colorWay && product.colorWay}
+      <td>
+        <Link to={`/admin/product/${product._id}/edit`}>
+          {product.brand}
+          <div className="text-capitalize">{product.name}</div>
+        </Link>
       </td>
-      <td onClick={detailsHandler}>
-        {product.category}
-        <br />
-        {product.fibers}
+      <td>
+        <Link to={`/admin/product/${product._id}/edit`}>
+          {product.color && product.color}
+          <br />
+          {product.colorWay && product.colorWay}
+        </Link>
       </td>
-      <td onClick={detailsHandler}>
-        {product.nm}
-        <br />
-        {product.meterage}
+      <td>
+        <Link to={`/admin/product/${product._id}/edit`}>
+          {product.category}
+          <br />
+          {product.fibers}
+        </Link>
       </td>
-      <td onClick={detailsHandler}>€{product.price}</td>
-      <td onClick={detailsHandler} className="product-list-max">
-        {product.inStock}
+      <td>
+        <Link to={`/admin/product/${product._id}/edit`}>
+          {product.nm}
+          <br />
+          {product.meterage}
+        </Link>
       </td>
-      <td>{product.minimum > 0 && product.minimum}</td>
+      <td>
+        <Link to={`/admin/product/${product._id}/edit`}>€{product.price}</Link>
+      </td>
+      <td className="product-list-max">
+        <Link to={`/admin/product/${product._id}/edit`}>{product.inStock}</Link>
+      </td>
+      <td>
+        <Link to={`/admin/product/${product._id}/edit`}>{product.minimum > 0 && product.minimum}</Link>
+      </td>
       <td>
         {product.novelty && (
           <div className="p-0 m-0">

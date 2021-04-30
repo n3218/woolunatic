@@ -65,7 +65,17 @@ const orderSchema = mongoose.Schema(
     paidAt: { type: Date },
     isDelivered: { type: Boolean, required: true, default: false },
     deliveredAt: { type: Date },
-    comment: { type: String, required: false }
+    comment: { type: String, required: false },
+    cancellation: {
+      cancelled: { type: Boolean, required: false, default: false },
+      cancelledAt: { type: Date },
+      notes: { type: String, required: false },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: false,
+        ref: "User"
+      }
+    }
   },
   {
     timestamps: true

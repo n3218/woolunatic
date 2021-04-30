@@ -20,9 +20,9 @@ import {
   ORDER_MOLLIE_PAY_REQUEST,
   ORDER_MOLLIE_PAY_SUCCESS,
   ORDER_MOLLIE_PAY_FAIL,
-  ORDER_REMOVE_ITEMS_FROM_STOCK_REQUEST,
-  ORDER_REMOVE_ITEMS_FROM_STOCK_SUCCESS,
-  ORDER_REMOVE_ITEMS_FROM_STOCK_FAIL
+  ORDER_CANCEL_REQUEST,
+  ORDER_CANCEL_SUCCESS,
+  ORDER_CANCEL_FAIL
 } from "../constants/orderConstants"
 
 import axios from "axios"
@@ -121,32 +121,6 @@ export const listOrdersAction = (pageNumber = "") => async (dispatch, getState) 
   }
 }
 
-export const deliverOrderAction = (order, shippingCode, shippingLink) => async (dispatch, getState) => {
-  try {
-    dispatch({ type: ORDER_DELIVER_REQUEST })
-    const {
-      userLogin: { userInfo }
-    } = getState()
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`
-      }
-    }
-    const input = {
-      shippingCode,
-      shippingLink
-    }
-    const { data } = await axios.put(`/api/orders/${order._id}/deliver`, input, config)
-    dispatch({ type: ORDER_DELIVER_SUCCESS, payload: data })
-  } catch (error) {
-    const message = error.response && error.response.data.message ? error.response.data.message : error.message
-    if (message === "Not authorized, token failed") {
-      dispatch(logout())
-    }
-    dispatch({ type: ORDER_DELIVER_FAIL, payload: message })
-  }
-}
-
 export const payOrderAction = (orderId, paymentResult) => async (dispatch, getState) => {
   console.log("payOrderAction: orderId: ", orderId)
   console.log("payOrderAction: paymentResult: ", paymentResult)
@@ -199,27 +173,54 @@ export const molliePayAction = orderData => async (dispatch, getState) => {
   }
 }
 
-export const orderRemoveItemsFromStockAction = order => async (dispatch, getState) => {
+export const deliverOrderAction = (order, shippingCode, shippingLink) => async (dispatch, getState) => {
   try {
-    dispatch({ type: ORDER_REMOVE_ITEMS_FROM_STOCK_REQUEST })
+    dispatch({ type: ORDER_DELIVER_REQUEST })
     const {
       userLogin: { userInfo }
     } = getState()
     const config = {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const { data } = await axios.post(`/api/products/removefromdb`, order, config)
-    if (data) {
-      console.log("=========================REMOVEProductsFromDBAction:data: ", data)
-      dispatch({ type: ORDER_REMOVE_ITEMS_FROM_STOCK_SUCCESS, payload: data })
+    const input = {
+      shippingCode,
+      shippingLink
     }
+    const { data } = await axios.put(`/api/orders/${order._id}/deliver`, input, config)
+    dispatch({ type: ORDER_DELIVER_SUCCESS, payload: data })
   } catch (error) {
     const message = error.response && error.response.data.message ? error.response.data.message : error.message
-    console.error(message)
-    dispatch({ type: ORDER_REMOVE_ITEMS_FROM_STOCK_FAIL, payload: message })
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({ type: ORDER_DELIVER_FAIL, payload: message })
   }
-  localStorage.setItem("cartItems", JSON.stringify(getState().cart.items))
+}
+
+export const cancelOrderAction = (id, notes) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_CANCEL_REQUEST })
+    const {
+      userLogin: { userInfo }
+    } = getState()
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    }
+    const input = {
+      notes,
+      user: userInfo._id
+    }
+    const { data } = await axios.put(`/api/orders/${id}/cancel`, input, config)
+    dispatch({ type: ORDER_CANCEL_SUCCESS, payload: data })
+  } catch (error) {
+    const message = error.response && error.response.data.message ? error.response.data.message : error.message
+    if (message === "Not authorized, token failed") {
+      dispatch(logout())
+    }
+    dispatch({ type: ORDER_CANCEL_FAIL, payload: message })
+  }
 }

@@ -1,11 +1,11 @@
 import nodemailer from "nodemailer"
 import asyncHandler from "express-async-handler"
 import dotenv from "dotenv"
-import { footer, itemRow, shippingDetails, userButtons } from "./mailComponents.js"
+import { footer, itemRow, infoBlock, userButtons } from "./mailComponents.js"
 
 dotenv.config()
 
-export const sendOrderShipmentConfirmation = asyncHandler(async orderData => {
+export const sendOrderCancellation = asyncHandler(async orderData => {
   const order = new Object(orderData)
   const OUGOING_ORDERS_EMAIL = process.env.OUGOING_ORDERS_EMAIL
   const OUGOING_ORDERS_PASSWORD = process.env.OUGOING_ORDERS_PASSWORD
@@ -22,9 +22,9 @@ export const sendOrderShipmentConfirmation = asyncHandler(async orderData => {
   })
 
   const mailOptions = {
-    from: `WOOLUNATICS Shipping <${ORDERS_EMAIL}>`,
+    from: `WOOLUNATICS Cancellation <${ORDERS_EMAIL}>`,
     to: `${order.user.email}`,
-    subject: `Order #${order.orderId} shipped!`,
+    subject: `Order #${order.orderId} cancelled!`,
     envelope: {
       from: `WOOLUNATICS <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
       to: `${order.user.email}` // used as RCPT TO: address for SMTP
@@ -39,30 +39,22 @@ export const sendOrderShipmentConfirmation = asyncHandler(async orderData => {
           <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
         </div>
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
-          Your order <a href="${DOMAIN_NAME}/orders/${order._id}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">#${order.orderId}</a> on its way!
+          Your order <a href="${DOMAIN_NAME}/orders/${order._id}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">#${order.orderId}</a> has been cancelled.
         </div>
-        ${
-          order.shippingAddress.shippingOption.shippingCode &&
-          `
-            <div style="font-size: 18px; font-weight: 600; margin-top: 30px;">Track & Trace Number:</div>
-            <div style="font-size: 18px; margin-bottom: 30px;">${order.shippingAddress.shippingOption.shippingCode}</div>
-          `
-        }
-        ${
-          order.shippingAddress.shippingOption.shippingLink &&
-          `
-            <div style="text-align:center;">  
-              <div style="padding:1rem 3rem; margin-bottom: 30px; margin-top: 30px; text-align:center; background-color:#81869c">
-                <a href="${order.shippingAddress.shippingOption.shippingLink}" style="color:#f0f3f7; text-decoration:none;" target="_blank" rel="noreferrer">
-                  Track Package
-                </a>
-              </div>
-            </div>
-          `
-        }
+
         <hr style="border-top: 2px solid #e2e4e8;" />
-        ${shippingDetails(order)}
-        <hr style="border-top: 2px solid #e2e4e8;" />
+        <div style="font-size: 18px; font-weight: 300;" align="left">CANCELLATION DETAILS:</div>
+        <div>
+          <table>
+            <tbody>
+              <tr>
+                <td style="font-size: 12px; font-weight: 300; padding: 20px 0;"> ${order.cancellation.notes}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        ${infoBlock(order)}
 
         <div>
           <div style="font-size: 18px; font-weight: 300; margin: 10px 0px;" align="left">
@@ -88,7 +80,7 @@ export const sendOrderShipmentConfirmation = asyncHandler(async orderData => {
       console.log(error)
       return error
     } else {
-      console.log("Email with order shipment confirmation sent... " + info.response)
+      console.log("Email with order cancellation sent... " + info.response)
       return info.response
     }
   })

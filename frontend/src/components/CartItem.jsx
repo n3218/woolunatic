@@ -12,7 +12,7 @@ const CartItem = ({ item, qty, setCheckout, checkoutStep, userInfo }) => {
   const removeFromCartHandler = item => {
     console.log("removeFromCartHandler: item: ", item)
     if (userInfo) {
-      dispatch(cartRemoveItemAction(item.qty, item.product._id))
+      dispatch(cartRemoveItemAction(item.qty, productId))
     } else {
       dispatch(cartLocalRemoveItemAction(item))
     }

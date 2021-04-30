@@ -10,8 +10,8 @@ const OrderSummary = ({ cart, items, error, checkoutStep, children }) => {
   }, [cart.storecredit])
 
   return (
-    <Card className="mx-1">
-      <Card.Header className="card-header text-center">
+    <Card className="mx-1" border="light">
+      <Card.Header className="pb-0 card-header text-center">
         <h3>Order Summary</h3>
       </Card.Header>
 

@@ -49,7 +49,7 @@ const OrderListScreen = ({ match }) => {
             <tbody>
               {orders &&
                 orders.map(order => (
-                  <tr key={order._id}>
+                  <tr key={order._id} className={`product-list-item ${order.cancellation.cancelled && " text-desabled "}`}>
                     <td>
                       <Link to={`/orders/${order._id}`}>#{order.orderId}</Link>
                     </td>
@@ -77,7 +77,9 @@ const OrderListScreen = ({ match }) => {
                         <PaymentStatus paymentStatus={order.shippingAddress.shippingOption.operator} />
                       ) : (
                         <span>
-                          {order.shippingAddress.city}, {order.shippingAddress.country}
+                          <Link to={`/orders/${order._id}`}>
+                            {order.shippingAddress.city}, {order.shippingAddress.country}
+                          </Link>
                         </span>
                       )}
                     </td>

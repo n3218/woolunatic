@@ -8,6 +8,7 @@ import {
   updateOrderToPaid,
   getOrders,
   updateOrderToDelivered,
+  cancelOrder,
   molliePay,
   mollieWebHook
 } from "../controllers/orderControllers.js"
@@ -28,11 +29,14 @@ router //
   .route("/:id/pay")
   .put(protect, updateOrderToPaid)
 router //
+  .route("/:id/molliepay")
+  .put(protect, molliePay)
+router //
   .route("/:id/deliver")
   .put(protect, updateOrderToDelivered)
 router //
-  .route("/:id/molliepay")
-  .put(protect, molliePay)
+  .route("/:id/cancel")
+  .put(protect, admin, cancelOrder)
 router //
   .route("/molliewebhook")
   .post(mollieWebHook)

@@ -11,6 +11,8 @@ import Product from "../models/productModel.js"
 import Cart from "../models/cartModel.js"
 import User from "../models/userModel.js"
 import { sendOrderShipmentConfirmation } from "../mailer/sendOrderShipmentConfirmation.js"
+import { sendOrderCancellation } from "../mailer/sendOrderCancellation.js"
+import { sendCancellationToManager } from "../mailer/sendCancellationToManager.js"
 
 dotenv.config()
 const mollieClient = createMollieClient({ apiKey: process.env.MOLLIE_API_KEY })
@@ -107,30 +109,6 @@ export const getOrders = asyncHandler(async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1))
   res.json({ orders, page, pages: Math.ceil(count / pageSize), count })
-})
-
-// @desc update Order to Delivered
-// @route GET /api/orders/:id/deliver
-// @access Private/Admin
-export const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  const id = req.params.id
-  console.log("req.body: ", req.body)
-  const { shippingCode, shippingLink } = req.body
-  const order = await Order.findById(id).populate("user", "name email phone")
-  if (order) {
-    order.isDelivered = true
-    order.deliveredAt = Date.now()
-    order.shippingAddress.shippingOption.shippingCode = shippingCode
-    order.shippingAddress.shippingOption.shippingLink = shippingLink
-    const updatedOrder = await order.save()
-
-    // Send Email Confirmation to customer
-    await sendOrderShipmentConfirmation(updatedOrder).catch(err => console.error("Error on sendOrderShipmentConfirmation: ", err))
-    res.json(updatedOrder)
-  } else {
-    res.status(404)
-    throw new Error("Order not found")
-  }
 })
 
 // @desc update Order to Paid by PAYPAL
@@ -317,17 +295,101 @@ export const removeStoreCredit = asyncHandler(async userId => {
   })
 })
 
+// @desc update Order to Delivered
+// @route GET /api/orders/:id/deliver
+// @access Private/Admin
+export const updateOrderToDelivered = asyncHandler(async (req, res) => {
+  const id = req.params.id
+  const { shippingCode, shippingLink } = req.body
+  const order = await Order.findById(id).populate("user", "name email phone")
+  if (order) {
+    order.isDelivered = true
+    order.deliveredAt = Date.now()
+    order.shippingAddress.shippingOption.shippingCode = shippingCode
+    order.shippingAddress.shippingOption.shippingLink = shippingLink
+    const updatedOrder = await order.save()
+    // 1. Send Email Confirmation to customer
+    await sendOrderShipmentConfirmation(updatedOrder).catch(err => console.error("Error on sendOrderShipmentConfirmation: ", err))
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error("Order not found")
+  }
+})
+
+// @desc Cancel Order
+// @route GET /api/orders/:id/cancel
+// @access Private/Admin
+export const cancelOrder = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const { notes, user } = req.body
+  const order = await Order.findById(id).populate("user", "name email phone")
+  if (order) {
+    order.cancellation.cancelled = true
+    order.cancellation.cancelledAt = Date.now()
+    order.cancellation.notes = notes
+    order.cancellation.user = user
+    const updatedOrder = await order.save()
+    console.log("cancelOrder: updatedOrder: ", updatedOrder)
+    // 1. Restock Items to DB
+    await restockItems(updatedOrder).catch(err => console.error("Error on restockItems: ", err))
+    // 2. Send Email with Cancellation to customer
+    await sendOrderCancellation(updatedOrder).catch(err => console.error("Error on sendOrderShipmentConfirmation: ", err))
+    // 3. Send Email with Cancellation to manager
+    await sendCancellationToManager(updatedOrder).catch(err => console.error("Error on sendOrderShipmentConfirmation: ", err))
+    res.json(updatedOrder)
+  } else {
+    res.status(404)
+    throw new Error("Order not found")
+  }
+})
+
 //
 //
-// @desc Remove Items From Cart depends on userId
-// export const removeItemsFromCart = asyncHandler(async userId => {
-//   await Cart.findOneAndUpdate({ user: userId }, { items: [] }, { new: true }, (err, doc) => {
-//     if (err) {
-//       console.log("Something wrong when cleaning Cart: ", err)
-//       return err
-//     } else {
-//       console.log("-----------------------------Cart has been cleaned... " + doc)
-//       return doc
-//     }
-//   })
-// })
+// @desc Restock Items to DB depends on Order
+const restockItems = async order => {
+  const productsMap = {}
+  await Promise.all(
+    order.orderItems.map(async item => {
+      const product = await Product.findById(item.product)
+      if (product) {
+        if (!productsMap[product._id]) {
+          productsMap[product._id] = { product, newInStock: [item.qty] }
+        } else {
+          productsMap[product._id].newInStock.push(item.qty)
+        }
+      } else {
+        console.error("Product not found")
+        return "Product not found"
+      }
+    })
+  )
+    .then(async () => {
+      await Promise.all(
+        Object.keys(productsMap).map(async key => {
+          let stock = productsMap[key].product.inStock
+          productsMap[key].product.inStock = stock
+            .split(",")
+            .filter(el => Number(el) !== 0 || String(el) !== "")
+            .concat(productsMap[key].newInStock)
+            .join(",")
+          productsMap[key].product.outOfStock = false
+          let id = productsMap[key].product._id
+          let update = {
+            outOfStock: productsMap[key].product.outOfStock,
+            inStock: productsMap[key].product.inStock
+          }
+          await Product.findByIdAndUpdate(id, update, (err, doc) => {
+            if (err) {
+              console.error("Can't update a product after restocking cancelled Order: ", err)
+            } else {
+              return doc //not modified value
+            }
+          })
+        })
+      )
+        .then(results => console.log("-----------Successfully updated Products: ", results.length))
+        .catch(err => console.error("Error on updating Products: ", err))
+    })
+    .catch(err => console.error("Error on restockItems: ", err))
+}

@@ -4,7 +4,7 @@ import { Row, Col, Card } from "react-bootstrap"
 const OrderWeightsSummary = ({ order }) => {
   return (
     <Card border="light" className="mb-3">
-      <Card.Header className="card-header text-center">
+      <Card.Header>
         <Row>
           <Col xs={10} xl={10} className="text-right">
             <strong>Items weight: </strong>
