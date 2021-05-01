@@ -75,7 +75,7 @@ const UserListScreen = () => {
                   )}
                 </td>
                 <td>
-                  <div title="Delete" onClick={() => deleteHandler(user._id)}>
+                  <div title="Delete" onClick={() => deleteHandler(user._id)} className="cursor-pointer">
                     <i className="fas fa-trash text-danger"></i>
                   </div>
                 </td>

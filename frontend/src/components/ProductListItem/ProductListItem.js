@@ -15,8 +15,6 @@ const ProductListItem = memo(({ product, history }) => {
     }
   }
 
-  const detailsHandler = () => history.push(`/admin/product/${product._id}/edit`)
-
   return (
     <tr key={product._id} className={`product-list-item ${product.outOfStock && " text-desabled "}`}>
       <td>

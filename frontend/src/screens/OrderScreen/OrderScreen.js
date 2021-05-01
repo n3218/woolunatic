@@ -149,6 +149,11 @@ const OrderScreen = ({ match, history }) => {
                     <span className="h6">Notes:</span> {order.cancellation.notes}
                   </div>
                 )}
+                <div className="p-3">
+                  <Button className="btn-success btn-block" onClick={() => history.push(`/admin/user/${order.user && order.user._id}/edit`)}>
+                    Edit User Delails
+                  </Button>
+                </div>
               </Card.Body>
             </Card>
           ) : (

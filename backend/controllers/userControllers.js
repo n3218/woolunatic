@@ -4,6 +4,7 @@ import User from "../models/userModel.js"
 import jwt from "jsonwebtoken"
 import { sendMailToResetPasswordEmail } from "../mailer/sendMailToResetPassword.js"
 import { sendMailWithResetPasswordConfirmation } from "../mailer/sendMailWithResetPasswordConfirmation.js"
+import { sendWelcomeEmail } from "../mailer/sendWelcomeEmail.js"
 
 // @desc Auth user & get token
 // @route POST /api/users/login
@@ -43,7 +44,10 @@ export const registerUser = asyncHandler(async (req, res) => {
       email,
       password
     })
+    console.log("registerUser: user: ", user)
     if (user) {
+      // Send Welcome Email at registration
+      await sendWelcomeEmail(user.email).catch(err => console.error("Error on sendWelcomeEmail: ", err))
       res.status(201).json({
         _id: user._id,
         name: user.name,

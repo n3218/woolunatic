@@ -24,7 +24,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
   const mailOptions = {
     from: `WOOLUNATICS Order <${ORDERS_EMAIL}>`,
     to: `${order.user.email}`,
-    subject: `Thank you for your order!`,
+    subject: `Order #${order.orderId} received!`,
     html: `
     <div style="color: #373a3c; font-family: 'Source Sans Pro',Roboto,'Helvetica Neue',Arial,sans-serifs; font-weight: 300; background-color: #f7f7f7; padding: 20px;">
       <div style="max-width: 500px; margin: 0px auto; background-color: white; padding: 16px;">

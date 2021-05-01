@@ -49,7 +49,7 @@ const OrderListScreen = ({ match }) => {
             <tbody>
               {orders &&
                 orders.map(order => (
-                  <tr key={order._id} className={`product-list-item ${order.cancellation.cancelled && " text-desabled "}`}>
+                  <tr key={order._id} className={`product-list-item ${order.cancellation && order.cancellation.cancelled && " text-desabled "}`}>
                     <td>
                       <Link to={`/orders/${order._id}`}>#{order.orderId}</Link>
                     </td>
@@ -70,7 +70,7 @@ const OrderListScreen = ({ match }) => {
                     <td>{order.isDelivered ? <span className="text-success">{order.deliveredAt.substring(0, 10)}</span> : <i className="fas fa-times text-danger"></i>}</td>
 
                     <td>
-                      <Link to={`/admin/user/${order.user._id}/edit`}>{order.user && order.user.name}</Link>
+                      <Link to={`/admin/user/${order.user && order.user._id}/edit`}>{order.user && order.user.name}</Link>
                     </td>
                     <td>
                       {order.shippingPrice === 0 ? (

@@ -5,7 +5,7 @@ import { footer } from "./mailComponents.js"
 
 dotenv.config()
 
-export const sendMailWithResetPasswordConfirmation = asyncHandler(async ({ email }) => {
+export const sendWelcomeEmail = asyncHandler(async email => {
   const OUGOING_ORDERS_EMAIL = process.env.OUGOING_ORDERS_EMAIL
   const OUGOING_ORDERS_PASSWORD = process.env.OUGOING_ORDERS_PASSWORD
   const DOMAIN_NAME = String(process.env.DOMAIN_NAME)
@@ -21,9 +21,9 @@ export const sendMailWithResetPasswordConfirmation = asyncHandler(async ({ email
   })
 
   const mailOptions = {
-    from: `WOOLUNATICS Updated Password <${ORDERS_EMAIL}>`,
+    from: `WOOLUNATICS registration <${ORDERS_EMAIL}>`,
     to: email,
-    subject: `Password reset confirmed on WOOLUNATICS.`,
+    subject: `Welcome to WOOLUNATICS!`,
     envelope: {
       from: `WOOLUNATICS <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
       to: email // used as RCPT TO: address for SMTP
@@ -37,21 +37,15 @@ export const sendMailWithResetPasswordConfirmation = asyncHandler(async ({ email
           </a>
           <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
         </div>
-        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px; margin-top: 30px;">Password reset confirmation</div>
+        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px; margin-top: 30px;">Registration confirmation</div>
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Hello!</div> 
-        <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">Your password was successfully reset.</div>
+        <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">We are excited to welcome you on Woolunatics!</div>
 
-        <div style="display: flex; flex-wrap: nowrap; justify-content: space-evenly; padding-top: 40px; padding-bottom: 40px; background-color: #f7f7f7;">
-          <div style="width:28%; padding:10px; text-align:center; background-color:#81869c">
-            <a href="${DOMAIN_NAME}/yarns" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go shopping</a>
-          </div>   
-          <div style="width:28%; padding:10px; text-align:center; background-color:#81869c">
-            <a href="${DOMAIN_NAME}/cart" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Cart</a>
-          </div>  
-          <div style="width:28%; padding:10px; text-align:center; background-color:#81869c">
-            <a href="${DOMAIN_NAME}/profile" style="color:#f0f3f7; text-decoration:none" target="_blank" rel="noreferrer">Go to Profile</a>
-          </div>              
-        </div>          
+
+        <div style="display:flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
+        <div style="padding:10px 30px; margin: 10px 20px 0px 20px; text-align:center; background-color:#81869c"><a href="${DOMAIN_NAME}/yarns" style="color:#f0f3f7; text-decoration:none; font-size: 12px; font-weight: 300;" target="_blank" rel="noreferrer">Go shopping</a></div>
+        <div style="padding:10px 30px; margin: 10px 20px 0px 20px; text-align:center; background-color:#56556e"><a href="${DOMAIN_NAME}/profile" style="color:#f0f3f7; text-decoration:none; font-size: 12px; font-weight: 300;" target="_blank" rel="noreferrer">Go to your Profile</a></div>
+      </div>
       </div>
     </div>
     ${footer}
