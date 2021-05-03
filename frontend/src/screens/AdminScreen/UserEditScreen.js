@@ -95,7 +95,7 @@ const UserEditScreen = ({ history, match }) => {
             </Form.Group>
             <Form.Group controlId="email">
               <Form.Label>Store Credit</Form.Label>
-              <Form.Control type="text" placeholder="Enter Storecredit" value={storecredit} onChange={e => setStorecredit(e.target.value)}></Form.Control>
+              <Form.Control type="text" placeholder="Enter Storecredit" value={storecredit} onChange={e => setStorecredit(Number(e.target.value.replace(/[,]+/g, ".").replace(/[ €Ū]+/g, "")).toFixed(2))}></Form.Control>
             </Form.Group>
             <Form.Group controlId="isAdmin">
               <Form.Check type="checkbox" className="custom-checkbox" label="isAdmin" checked={isAdmin} onChange={e => setIsAdmin(e.target.checked)}></Form.Check>

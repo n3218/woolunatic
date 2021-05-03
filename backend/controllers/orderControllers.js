@@ -59,7 +59,6 @@ export const createNewOrder = asyncHandler(async (req, res) => {
         try {
           // 1. Remove All Items from Cart
           await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] })
-
           // 2. Remove holds from ordered Products
           await removeHoldsFromProducts(createdOrder)
         } catch (err) {

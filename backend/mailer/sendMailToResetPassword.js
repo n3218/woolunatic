@@ -38,7 +38,7 @@ export const sendMailToResetPasswordEmail = asyncHandler(async ({ id, email, tok
           <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
         </div>
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px; margin-top: 30px;">Password reset request</div>
-        <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Hello!</div> 
+        <div style="font-size: 18px; font-weight: 300; margin-bottom: 10px;">Hello!</div> 
         <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">Here you will find the link to reset your password.</div>
 
 

@@ -29,10 +29,10 @@ const PaymentSection = ({ order, checkoutStep, userInfo, paymentMethod, setPayme
   return (
     <ListGroup.Item>
       <Row>
-        <Col lg={3} md={3} sm={3} className="pl-0">
+        <Col lg={3} md={3} sm={3} className="pl-0 py-3">
           <h4>PAYMENT METHOD</h4>
         </Col>
-        <Col className="pl-0 pt-0">
+        <Col className="pl-0 py-3">
           {(checkoutStep === "payment" || (checkoutStep === "order" && !order.isPaid && order.cancellation && !order.cancellation.cancelled)) && (
             <Form className="mb-3 mt-0 pt-0">
               <Form.Group className="mt-2">

@@ -69,7 +69,7 @@ const OrderScreen = ({ match, history }) => {
           <ListGroup variant="flush">
             <ShippingSection order={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} />
             <PaymentSection order={order} history={history} checkoutStep={checkoutStep} userInfo={userInfo} paymentMethod={paymentMethod} setPaymentMethod={setPaymentMethod} />
-            <ListGroup.Item>
+            <ListGroup.Item className="py-3">
               <h4>ORDER ITEMS</h4>
             </ListGroup.Item>
           </ListGroup>
@@ -126,7 +126,7 @@ const OrderScreen = ({ match, history }) => {
             </div>
           )} */}
         </Col>
-        <Col>
+        <Col className="px-0 mx-0">
           <OrderSummary cart={order} items={order.orderItems} error={error}>
             {!order.isPaid && paymentMethod && (
               <ListGroup.Item>

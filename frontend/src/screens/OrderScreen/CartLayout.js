@@ -208,7 +208,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
             <OrderWeightsSummary order={summary} />
             {checkoutStep === "cart" && children}
           </Col>
-          <Col className="px-3 py-3">
+          <Col className="px-0 py-3">
             {/* --------------------------------------------------------------------ORDER SUMMARY */}
             <OrderSummary cart={summary} summary={summary} items={items} checkoutStep={checkoutStep} history={history} userInfo={userInfo}>
               {checkoutStep === "cart" && (
