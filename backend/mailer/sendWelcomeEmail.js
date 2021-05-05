@@ -21,11 +21,11 @@ export const sendWelcomeEmail = asyncHandler(async email => {
   })
 
   const mailOptions = {
-    from: `WOOLUNATICS registration <${ORDERS_EMAIL}>`,
+    from: `YarnShop registration <${ORDERS_EMAIL}>`,
     to: email,
-    subject: `Welcome to WOOLUNATICS!`,
+    subject: `Welcome to YarnShop!`,
     envelope: {
-      from: `WOOLUNATICS <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
+      from: `YarnShop <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
       to: email // used as RCPT TO: address for SMTP
     },
     html: `
@@ -33,13 +33,13 @@ export const sendWelcomeEmail = asyncHandler(async email => {
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
         <div style="font-size: 20px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
           <a href="${DOMAIN_NAME}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">
-            Woolunatics.nl
+            YarnShop
           </a>
-          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
+          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="YarnShop" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
         </div>
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px; margin-top: 30px;">Registration confirmation</div>
         <div style="font-size: 18px; font-weight: 300; margin-bottom: 10px;">Hello!</div> 
-        <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">We are excited to welcome you on Woolunatics!</div>
+        <div style="font-size: 16px; font-weight: 300; margin-bottom: 30px;">We are excited to welcome you on YarnShop!</div>
 
 
         <div style="display:flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">

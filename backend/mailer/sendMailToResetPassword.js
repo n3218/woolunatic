@@ -21,11 +21,11 @@ export const sendMailToResetPasswordEmail = asyncHandler(async ({ id, email, tok
   })
 
   const mailOptions = {
-    from: `WOOLUNATICS Reset Password <${ORDERS_EMAIL}>`,
+    from: `YarnShop Reset Password <${ORDERS_EMAIL}>`,
     to: email,
-    subject: `Password reset requested on WOOLUNATICS`,
+    subject: `Password reset requested on YarnShop`,
     envelope: {
-      from: `WOOLUNATICS <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
+      from: `YarnShop <${ORDERS_EMAIL}>`, // used as MAIL FROM: address for SMTP
       to: email // used as RCPT TO: address for SMTP
     },
     html: `
@@ -33,9 +33,9 @@ export const sendMailToResetPasswordEmail = asyncHandler(async ({ id, email, tok
       <div style="max-width: 700px; margin: 0px auto; background-color: white; padding: 16px;">
         <div style="font-size: 20px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
           <a href="${DOMAIN_NAME}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">
-            Woolunatics.nl
+            YarnShop
           </a>
-          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
+          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="YarnShop" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
         </div>
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px; margin-top: 30px;">Password reset request</div>
         <div style="font-size: 18px; font-weight: 300; margin-bottom: 10px;">Hello!</div> 

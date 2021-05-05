@@ -62,7 +62,7 @@ const OrderScreen = ({ match, history }) => {
     <Message variant="danger">{error}</Message>
   ) : (
     <>
-      <Meta title={`Order #${order.orderId} | Woolunatics`} />
+      <Meta title={`Order #${order.orderId} | YarnShop`} />
       <h2>Order #{order.orderId}</h2>
       <Row>
         <Col md={8} xs={12}>
@@ -119,12 +119,6 @@ const OrderScreen = ({ match, history }) => {
               <OrderWeightsSummary order={order} />
             </>
           )}
-          {/* {userInfo && userInfo.isAdmin && (
-            <div className="jumbotron text-right">
-              <h5>Test user for PayPal payments : sb-k30x54012881@personal.example.com</h5>
-              <h5>Test password for PayPal payments : {`RHU*Oy6{`}</h5>
-            </div>
-          )} */}
         </Col>
         <Col className="px-0 mx-0">
           <OrderSummary cart={order} items={order.orderItems} error={error}>

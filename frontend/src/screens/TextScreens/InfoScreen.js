@@ -32,7 +32,7 @@ const InfoScreen = ({ match }) => {
       {error && <Message variant="danger">{error}</Message>}
       {text && (
         <>
-          <Meta title={`${text.title} | Woolunatics`} />
+          <Meta title={`${text.title} | YarnShop`} />
           {userInfo && userInfo.isAdmin && (
             <div className="submenu">
               <Link to={`/admin/text/${text._id}/edit`} className="btn btn-success bg-blue my-3 px-5">

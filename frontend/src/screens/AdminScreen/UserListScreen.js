@@ -26,7 +26,7 @@ const UserListScreen = () => {
 
   return (
     <>
-      <Meta title="Admin | User List | Woolunatics" />
+      <Meta title="Admin | User List | YarnShop" />
       <h2>Users {users && ` - ${users.length}`}</h2>
       {loading ? (
         <Loader />

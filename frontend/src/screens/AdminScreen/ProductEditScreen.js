@@ -118,7 +118,7 @@ const ProductEditScreen = ({ history, match }) => {
 
   return (
     <>
-      <Meta title="Admin | Edit Product | Woolunatics" />
+      <Meta title="Admin | Edit Product | YarnShop" />
       {successProductDelete ? (
         <Message variant="success" onClose={successDeleteProductHandler}>
           {messageProductDelete}

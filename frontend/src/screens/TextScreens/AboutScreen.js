@@ -6,7 +6,7 @@ import FormContainer from "../../components/FormContainer"
 const AboutScreen = () => {
   return (
     <Jumbotron>
-      <Meta title="About | Woolunatics" />
+      <Meta title="About | YarnShop" />
       <FormContainer>
         <h1>About Me</h1>
         <Image src={`/assets/elena.jpg`} width="200" align="left" className="mr-4" roundedCircle />

@@ -53,7 +53,7 @@ const ShippingEditScreen = ({ history, match }) => {
 
   return (
     <>
-      <Meta title="Admin | Edit Shipping | Woolunatics" />
+      <Meta title="Admin | Edit Shipping | YarnShop" />
 
       <Row>
         <Col>

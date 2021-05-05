@@ -36,7 +36,7 @@ const ResetPasswordScreen = ({ history, location, match }) => {
 
   return (
     <FormContainer>
-      <Meta title="Reset Password | Woolunatics" />
+      <Meta title="Reset Password | YarnShop" />
       <h2>Reset Password</h2>
       {loading && <Loader />}
       {(error || warning) && <Message variant="danger">{error || warning}</Message>}

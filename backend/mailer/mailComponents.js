@@ -202,8 +202,8 @@ export const shippingDetails = order => {
 
 export const footer = `
   <footer style="background-color:#81869c; color: #f0f3f7; padding:30px; font-size: 12px; font-weight: 300;" align="center">
-    <div>Copyright © Woolunatics 2021</div>
-    <div><a href="mailto: woolunatics.nl@google.com" style="text-decoration:none; color:#f0f3f7" target="_blank" rel="noreferrer">woolunatics.nl@google.com</a></div>
+    <div>Copyright © YarnShop 2021</div>
+    <div><a href="mailto: yarnshop@google.com" style="text-decoration:none; color:#f0f3f7" target="_blank" rel="noreferrer">yarnshop@google.com</a></div>
   </footer>
 `
 

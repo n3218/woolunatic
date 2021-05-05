@@ -30,7 +30,7 @@ const LoginScreen = ({ history, location }) => {
 
   return (
     <FormContainer>
-      <Meta title="Sign In | Woolunatics" />
+      <Meta title="Sign In | YarnShop" />
       <h2>Sign In</h2>
       {error && <Message variant="danger">{error}</Message>}
       {loading && <Loader />}

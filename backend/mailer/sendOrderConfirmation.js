@@ -22,7 +22,7 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
   })
 
   const mailOptions = {
-    from: `WOOLUNATICS Order <${ORDERS_EMAIL}>`,
+    from: `YarnShop Order <${ORDERS_EMAIL}>`,
     to: `${order.user.email}`,
     subject: `Order #${order.orderId} received!`,
     html: `
@@ -30,9 +30,9 @@ export const sendOrderConfirmation = asyncHandler(async orderData => {
       <div style="max-width: 500px; margin: 0px auto; background-color: white; padding: 16px;">
         <div style="font-size: 20px; line-height: 2; font-weight: 800; margin-bottom: 30px;" align="left">
           <a href="${DOMAIN_NAME}" style="text-decoration:none; color:#417d97; font-weight: 600;" target="_blank" rel="noreferrer">
-            Woolunatics.nl
+            YarnShop
           </a>
-          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="Woolunatics.NL" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
+          <a href="${DOMAIN_NAME}" rel="noreferrer" target="_blank"><img alt="YarnShop" src="${DOMAIN_NAME}/assets/logo.png" height="80" width="80" align="right" /></a>
         </div>
         <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Order confirmation 
           <span style="font-size: 20px; margin-bottom: 10px;">

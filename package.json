@@ -1,7 +1,7 @@
 {
-  "name": "woolunatics-backend",
+  "name": "yarnshop-backend",
   "version": "1.0.0",
-  "description": "Woolunatics Server",
+  "description": "YarnShop Server",
   "engines": {
     "node": "14.x.x",
     "npm": "7.6.0"

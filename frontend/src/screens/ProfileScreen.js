@@ -74,7 +74,7 @@ const ProfileScreen = ({ history }) => {
 
   return (
     <Row>
-      <Meta title="Profile | Woolunatics" />
+      <Meta title="Profile | YarnShop" />
       <Col md={4}>
         <h2>My Profile</h2>
         {message && <Message variant="danger">{message}</Message>}

@@ -6,7 +6,7 @@ import Meta from "../../components/Meta"
 const HowToScreen = () => {
   return (
     <Jumbotron>
-      <Meta title="How to Order | Woolunatics" />
+      <Meta title="How to Order | YarnShop" />
       <FormContainer>
         <h1>How to Order:</h1>
         <ol>

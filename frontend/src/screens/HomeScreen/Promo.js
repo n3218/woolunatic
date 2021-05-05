@@ -12,11 +12,11 @@ const Promo = () => {
       </div>
 
       <div className="overflow-hidden position-relative">
-        <Link to="/products/5fd9c80930203c1975431952" target="_blank">
+        <Link to="/products/607fe2dd536823000a3e86e5">
           <Image src={`${UPLOADS}/promo/coral-ball.jpg`} alt="Promo Block" />
           <div className="blured-container-text blured-container">
-            <nobr>Monteluce (Japan)</nobr>
-            <div className="h1">Jupiter</div>
+            <nobr>Filati Buratti</nobr>
+            <div className="h1">Chameleon</div>
           </div>
         </Link>
       </div>

@@ -22,7 +22,7 @@ const AdminLayout = ({ children, history }) => {
 
   return (
     <>
-      <Meta title="Admin | Woolunatics" />
+      <Meta title="Admin | YarnShop" />
       <div className="admin-container">
         <div className="admin-panel bg-gray pl-1">
           <Nav>
