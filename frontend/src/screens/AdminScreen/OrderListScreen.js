@@ -21,7 +21,7 @@ const OrderListScreen = ({ match }) => {
 
   return (
     <>
-      <Meta title="Admin | Orders | YarnShop" />
+      <Meta title="Admin | Orders | YarnStore" />
       <h2>Orders - {count}</h2>
 
       {loading ? (

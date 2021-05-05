@@ -62,7 +62,7 @@ const OrderScreen = ({ match, history }) => {
     <Message variant="danger">{error}</Message>
   ) : (
     <>
-      <Meta title={`Order #${order.orderId} | YarnShop`} />
+      <Meta title={`Order #${order.orderId} | YarnStore`} />
       <h2>Order #{order.orderId}</h2>
       <Row>
         <Col md={8} xs={12}>

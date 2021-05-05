@@ -17,7 +17,7 @@ const AdminScreen = ({ history }) => {
 
   return (
     <>
-      <Meta title="Admin | YarnShop" />
+      <Meta title="Admin | YarnStore" />
       <Row>
         <Col>
           <h2>Admin Interface</h2>

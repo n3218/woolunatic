@@ -66,7 +66,7 @@ const ProductListScreen = ({ history, match }) => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
-          <Meta title="Admin | Product List | YarnShop" />
+          <Meta title="Admin | Product List | YarnStore" />
           <Paginate isAdmin list="productlist" pages={pages} page={page} />
           <Table striped hover responsive className="table-sm product-list">
             <thead>

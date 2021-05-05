@@ -166,7 +166,7 @@ const CartLayout = ({ history, redirect, checkoutStep, title, children, loading,
 
   return (
     <>
-      <Meta title={`${title} | YarnShop`} />
+      <Meta title={`${title} | YarnStore`} />
       <h2>{title}</h2>
       {checkoutStep !== "cart" && <CheckoutSteps step={checkoutStep} />}
 

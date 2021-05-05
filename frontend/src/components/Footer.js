@@ -24,13 +24,13 @@ const Footer = () => {
           <Col md={6} sm={12} className="pb-5 text-center">
             <div className="text-left ml-5">
               <h3>
-                <strong>YarnShop</strong>
+                <strong>YarnStore</strong>
               </h3>
               <div className="mt-3 mb-2">
                 <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">
                   <Icon.Instagram className="text-light h4 mr-3" />
                 </a>
-                <a href="mailto: info@wYarnShop" target="_blank" rel="noreferrer">
+                <a href="mailto: info@wYarnStore" target="_blank" rel="noreferrer">
                   <Icon.Envelope className="text-light h3" />
                 </a>
               </div>

@@ -35,7 +35,7 @@ const ShippingListScreen = ({ history }) => {
 
   return (
     <>
-      <Meta title="Admin | Shippings | YarnShop" />
+      <Meta title="Admin | Shippings | YarnStore" />
       <h2>Shippings {shippings && shippings.length > 0 && ` - ${shippings.length}`}</h2>
 
       <div className="submenu">

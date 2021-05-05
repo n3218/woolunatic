@@ -39,7 +39,7 @@ const RegisterScreen = ({ history, location }) => {
 
   return (
     <FormContainer>
-      <Meta title="Register | YarnShop" />
+      <Meta title="Register | YarnStore" />
       <h2>Sign Up</h2>
       {message && <Message variant="danger">{message}</Message>}
       {error && <Message variant="danger">{error}</Message>}

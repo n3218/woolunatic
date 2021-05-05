@@ -55,7 +55,7 @@ const createTransporter = async () => {
 
 export const sendMail = async order => {
   const mailOptions = {
-    from: `YarnShop <${process.env.OUGOING_ORDERS_EMAIL}>`,
+    from: `YarnStore <${process.env.OUGOING_ORDERS_EMAIL}>`,
     to: "natalia@tsigelnik.com",
     subject: "Sending email using MailerJS",
     text: `Hello World from Nodemailer`,

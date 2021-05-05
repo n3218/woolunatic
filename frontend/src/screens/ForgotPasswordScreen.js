@@ -27,7 +27,7 @@ const ForgotPasswordScreen = ({ history, location }) => {
 
   return (
     <FormContainer>
-      <Meta title="Reset Password | YarnShop" />
+      <Meta title="Reset Password | YarnStore" />
       <h2>Forgot Password</h2>
       {loading && <Loader />}
       {error && <Message variant="danger">{error}</Message>}

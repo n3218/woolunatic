@@ -1,4 +1,4 @@
-export const UPLOADS = "https://storage.googleapis.com/woolunatics-dev-uploads"
+export const UPLOADS = "https://storage.googleapis.com/yarnstore-uploads"
 // export const startCheckoutPeriod = 30000 // 60000ms=1min, 15min=900000ms
 
 // export const UPLOADS = "https://storage.googleapis.com/woolunatics-uploads" // PROD

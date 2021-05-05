@@ -35,7 +35,7 @@ const Header = ({ location }) => {
                   <img className="logo" alt="Logo" src="/assets/logo.png" />
                 </Col>
                 <Col>
-                  <div className="h1 mt-3">YarnShop</div>
+                  <div className="h1 mt-3">YarnStore</div>
                 </Col>
               </Row>
             </Navbar.Brand>

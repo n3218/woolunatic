@@ -35,7 +35,7 @@ const TextListScreen = ({ history }) => {
 
   return (
     <>
-      <Meta title="Admin | Text Pages | YarnShop" />
+      <Meta title="Admin | Text Pages | YarnStore" />
       <h2>Text Pages {texts && texts.length > 0 && ` - ${texts.length}`}</h2>
 
       <div className="submenu">

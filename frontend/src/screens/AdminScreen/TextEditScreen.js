@@ -72,7 +72,7 @@ const TextEditScreen = ({ history, match }) => {
 
   return (
     <>
-      <Meta title="Admin | Edit Text Page | YarnShop" />
+      <Meta title="Admin | Edit Text Page | YarnStore" />
 
       <div className="submenu">
         <div onClick={previewHandler} className="btn btn-success bg-blue my-3 px-5">

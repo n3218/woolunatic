@@ -9,7 +9,7 @@ const Promo2 = () => {
     <>
       <div className="promo-block bg-super-light-gray columns-2">
         <div className="columns-2-block-text">
-          <h3 className="mb-3">О коллекции YarnShop</h3>
+          <h3 className="mb-3">О коллекции YarnStore</h3>
           <div>Здесь вы найдете много эксклюзивных текстур и составов. В основном бобинная пряжа и в основном натуральные составы. Пряжа в этой коллекции - сток текстильного производства, у вас есть шанс преобрести редкие и снятые с производства наименования. Пряжа тонкая, толстая - как для ручного вязания, так и для машинного.</div>
           <div>
             <Link to="/yarns" className="btn btn-success px-5 py-2 my-5">

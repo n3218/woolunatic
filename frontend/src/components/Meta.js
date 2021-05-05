@@ -11,7 +11,7 @@ const Meta = ({ title, description }) => {
 }
 
 Meta.defaultProps = {
-  title: "YarnShop | Welcome to my Yarn Collection!",
+  title: "YarnStore | Welcome to my Yarn Collection!",
   description: "Bautiful yarns for knot lovers"
 }
 

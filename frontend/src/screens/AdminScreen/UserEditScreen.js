@@ -54,7 +54,7 @@ const UserEditScreen = ({ history, match }) => {
 
   return (
     <>
-      <Meta title="Admin | Edit User | YarnShop" />
+      <Meta title="Admin | Edit User | YarnStore" />
       <h2>Edit User</h2>
       <FormContainer>
         {loadingUpdate && <Loader />}
