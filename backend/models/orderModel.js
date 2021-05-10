@@ -1,9 +1,4 @@
 import mongoose from "mongoose"
-// import autoIncrement from "mongoose-auto-increment"
-
-var connection = mongoose.createConnection(process.env.MONGO_URI)
-
-// autoIncrement.initialize(connection)
 
 const orderSchema = mongoose.Schema(
   {
@@ -81,13 +76,6 @@ const orderSchema = mongoose.Schema(
     timestamps: true
   }
 )
-
-// orderSchema.plugin(autoIncrement.plugin, {
-//   model: "Order",
-//   field: "orderId",
-//   startAt: 210000,
-//   incrementBy: 1
-// })
 
 orderSchema.pre("save", function (next) {
   // Only increment when the document is new
